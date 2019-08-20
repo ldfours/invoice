@@ -1,0 +1,142 @@
+@import 'main';
+
+.invoice {
+  max-width: $invoiceMaxWidth;
+  margin: ($rhythm * 2) auto;
+  border-width: 0; //border: 1px solid $tableBorderColor;
+  padding: 2 * $rhythm;
+  background: $bgColor;
+}
+
+.brand {
+  margin-bottom: $rhythm * 2;
+  .logo {
+    display: inline-block;
+    border-radius: $borderRadius;
+  }
+}
+
+.description {
+  display: grid;
+  margin-bottom: $rhythm / 2;
+
+  grid-template-columns: // auto-fill or auto-fit to prevent grid wrapping
+          repeat(auto-fit, 1fr);
+  grid-column-gap: 2px;
+  .key {
+    margin-top: $rhythm / 4;
+    font-style: oblique;
+    .value {
+      font-style: normal;
+    }
+    .name {
+      font-weight: bold;
+    }
+  }
+}
+
+.major, .address, .label {
+  display: flex;
+  padding: ($rhythm / 4) 0 ($rhythm/4) $rhythm/4;
+}
+
+.addresses {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding: $rhythm / 6;
+  .major {
+    font-size: $fontSizeMajorHeading;
+    font-weight: bold;
+  }
+  .label {
+    font-style: oblique;
+  }
+  .from, .to {
+    padding: $rhythm;
+    border-radius: $borderRadius;
+    width: 100%;
+    max-width: $invoiceMaxWidth / 3;
+  }
+  .from {
+    display: block;
+    font-style: normal;
+    margin-right: $rhythm / 2;
+    border: 1px solid $tableBorderColor;
+  }
+  .to {
+    display: block;
+    margin-left: $rhythm / 2;
+    padding: 0;
+    .value {
+      text-align: right;
+    }
+  }
+  .address {
+    display: block;
+  }
+}
+
+.totalContainer {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+
+button.submit {
+  display: block;
+  padding: ($rhythm) ($rhythm * 2);
+  background: lightyellow;
+  border-radius: $borderRadius;
+  border: 1px solid #444;
+}
+
+.footer {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  align-items: center;
+  .comments {
+    padding: $rhythm;
+    border-radius: $borderRadius;
+    h4, h5 {
+      margin-top: 0;
+      margin-bottom: $rhythm / 2;
+    }
+  }
+  .comments {
+    text-align: left;
+    background: #eee;
+  }
+  .closing {
+    padding-top: $rhythm;
+  }
+
+}
+
+.lineItems {
+  margin-bottom: $rhythm * 4;
+  .addItem {
+    padding-top: $rhythm;
+    button {
+      @extend %flex-center;
+      background: none;
+      padding: $rhythm / 2;
+      border: 1px solid $addColor;
+      color: $addColor;
+      border-radius: $borderRadius;
+      float: right;
+      .addIcon {
+        color: $addColor;
+        margin-right: $rhythm / 4;
+      }
+    }
+  }
+}
+
+.rule {
+  margin-top: -10pt;
+  border-top: 5px double #999;
+  padding: 0 0;
+  margin-bottom: 40px;
+}

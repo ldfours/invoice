@@ -1,0 +1,13 @@
+{
+  /* https://firebase.google.com/docs/database/security */
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "invoices": {
+      ".indexOn": [
+        "created",
+        "customer"
+      ]
+    }
+  }
+}

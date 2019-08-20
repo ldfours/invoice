@@ -1,0 +1,40 @@
+// https://sass-lang.com/guide
+$rhythm: 20px;
+
+$invoiceMaxWidth: 800px;
+$borderRadius: 4px;
+$font-size-invoice: 0.6em;
+
+$tableBorderColor: black;
+$boxBgColor: #eee;
+$bgColor: white;
+$addColor: darkgreen;
+$removeColor: darkred;
+
+$fontFamilyText: "DejaVu Serif", "FreeSerif", serif;
+$fontSizeNotes: 0.8em;
+$fontSizeMajorHeading: 18pt;
+
+/*
+The first value passed to repeat() is the number of repetitions
+and the second value is the grid tracks to repeat, e.g
+    grid-template-rows: repeat(2, 100px auto 20%); =>
+    grid-template-rows: 100px auto 20% 100px auto 20px;
+*/
+$tableColumns: [date] 3fr [description] 5fr repeat(2, 1.2fr) [x icon] .4fr;
+
+%flex-center {
+  //display: flex;
+  //justify-content: center;
+  align-items: center;
+}
+
+.text {
+  font-family: "Times New Roman", "DejaVu Serif", "FreeSerif", serif;
+}
+
+// the same CSS syntax in a DIV or SPAN produce different effects
+div.hangingIndent {
+  padding-left: 9em;
+  text-indent: -9em;
+}

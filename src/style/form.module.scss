@@ -1,0 +1,23 @@
+@charset "UTF-8";
+.form {
+  position: relative;
+  width: 372px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: none;
+  justify-content: space-around;
+}
+
+.field {
+  padding: 3px 0 3px 0;
+  width: 368px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  border: 1px solid grey;
+}
+
+.button {
+  margin-top: 10px;
+  width: 200px;
+}
