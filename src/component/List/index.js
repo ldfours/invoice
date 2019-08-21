@@ -29,7 +29,7 @@ class InvoicesBase extends Component {
 
     this.setState({ loading: true });
 
-    this.props.firebase.invoices()
+    this.props.firebase.invoice()
       .orderByChild(query_key)
       .limitToLast(limit)
 
@@ -60,7 +60,7 @@ class InvoicesBase extends Component {
   };
 
   componentWillUnmount() {
-    this.props.firebase.invoices().off();
+    this.props.firebase.invoice().off();
   }
 
   loadMore = () => {

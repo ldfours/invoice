@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { MdAddCircle as AddIcon } from 'react-icons/md'
-
 import Header from './Form'
 /*
 * SCSS Modules are great
@@ -18,23 +17,8 @@ import Header from './Form'
 */
 import styles from './index.module.scss'
 
-/*
-const invoice Text =
-  process.env.REACT_APP_INVOICE_TEXT ?
-    stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6) : {}
-*/
-import invoiceText from '../../invoiceText'
-
 export default class Invoice extends Component {
 
-  /*
-   * Set the current state
-   * using:
-   * 1) readOnly flag
-   * 2) properties of the selected invoice
-   * 3) values of the initial state -
-   * (defined in .env config file)
-   * */
   state = {
     readOnly: false,
     description: '',
@@ -53,13 +37,14 @@ export default class Invoice extends Component {
 
     ...this.props.location.invoice,
 
-    heading1: process.env.REACT_APP_HEADING1,
-    heading2: process.env.REACT_APP_HEADING2,
-    heading3: process.env.REACT_APP_HEADING3,
-    heading4: process.env.REACT_APP_HEADING4,
-    customerAttribution: process.env.REACT_APP_CUSTOMER_ATTRIBUTION,
-    invoiceText: invoiceText,
+    head1: '',
+    head2: '',
+    head3: '',
+    head4: '',
+    customerAttribution: '',
+    invoiceText: [],
   };
+  // TODO queryLayout and set the state above
 
   /*
   * Each form input element is created as a Controlled Component.
@@ -91,7 +76,7 @@ export default class Invoice extends Component {
   * corresponds to a the property name of the line item.
   */
 
-  /* TODO
+  /*
   // It is sometimes convenient for users to have an input automatically
   // select its entire value whenever it receives focus.
   handleFocusSelect = (event) => {
@@ -100,7 +85,6 @@ export default class Invoice extends Component {
   handleInvoiceChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
-
   */
 
   handleLineItemChange = (elementIndex) => (event) => {
@@ -110,7 +94,6 @@ export default class Invoice extends Component {
     })
     this.setState({ lineItems })
   }
-
 
   /*
   * When the “Add Line Item” button is clicked,
@@ -160,10 +143,10 @@ export default class Invoice extends Component {
     return (
       <div className={styles.invoice}>
         <div className={styles.addresses}>
-          <div className={styles.major}>{this.state.heading1}</div>
-          <div className={styles.label}>{this.state.heading2}</div>
-          <div>{this.state.heading3}</div>
-          <div>{this.state.heading4}</div>
+          <div className={styles.major}>{this.state.head1}</div>
+          <div className={styles.label}>{this.state.head2}</div>
+          <div>{this.state.head3}</div>
+          <div>{this.state.head4}</div>
         </div>
 
         <h2>Invoice</h2>

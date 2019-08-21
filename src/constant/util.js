@@ -1,3 +1,4 @@
+import moment from 'moment';
 /*
  * group array @arr by specified number of elements, e.g.
  *    console.log(groupByRange(["a", "b", "c", "d", "e", "f", "g", "h"], 3))
@@ -27,6 +28,7 @@ function groupByRange(arr, n) {
     }
     console.log(stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6))
  */
+
 /*
 export function stringToObject(text, n) {
   const arr = text.split(":");
@@ -45,9 +47,10 @@ export function stringToObject(text, n) {
       }, {}
     ))
 }
+const invoiceText =
+  process.env.REACT_APP_INVOICE_TEXT ?
+    stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6) : {}
 */
-
-import moment from 'moment';
 
 export const compose = (...fns) => x =>
   fns.reduceRight((y, f) => f(y), x);

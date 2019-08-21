@@ -46,7 +46,8 @@ class Firebase {
       }
     });
 
-  invoices = () => this.db.ref('invoice');
+  layout = () => this.db.ref('layout');
+  invoice = () => this.db.ref('invoice');
 }
 
 export default Firebase;
