@@ -5,7 +5,6 @@
   "dependencies": {
     "env-cmd": "latest",
     "firebase": "latest",
-    "moment": "latest",
     "prop-types": "latest",
     "react": "latest",
     "react-beautiful-dnd": "latest",

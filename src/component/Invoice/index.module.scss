@@ -238,8 +238,8 @@ button.submit {
   border-radius: 50%; // circle shape
   -webkit-appearance: none; // radio or checkbox, then decorate
 
-  width: 0.6em;
-  height: 0.6em;
+  width: 0.4em;
+  height: 0.4em;
   background-color: white;
   vertical-align: middle;
   border: 1px solid black;
@@ -248,5 +248,5 @@ button.submit {
 }
 
 .radio:checked {
-  background-color: gray;
+  background-color: black;
 }

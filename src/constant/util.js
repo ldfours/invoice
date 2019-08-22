@@ -1,4 +1,3 @@
-import moment from 'moment';
 /*
  * group array @arr by specified number of elements, e.g.
  *    console.log(groupByRange(["a", "b", "c", "d", "e", "f", "g", "h"], 3))
@@ -58,12 +57,15 @@ export const compose = (...fns) => x =>
 export const range = (start, end) =>
   Array.from({ length: (end - start) }, (v, k) => k + start);
 
+/*
 export const formatDate = (date) => {
   const PARSING = "YYYY-MM-DD";
   const DISPLAY = "MMMM D, YYYY";
   return moment(date, PARSING).format(DISPLAY);
 }
+*/
 
+/*
 export const transformEntities = (lineItems, description) => {
   lineItems.map(line => {
       line.description = description;
@@ -74,6 +76,7 @@ export const transformEntities = (lineItems, description) => {
     }
   )
 };
+*/
 
 export const formatCurrency =
   (amount, currency = 'USD', locale = 'en-US') => {

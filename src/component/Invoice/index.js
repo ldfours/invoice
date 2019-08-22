@@ -116,7 +116,7 @@ class InvoiceBase extends Component {
 
   // It is sometimes convenient for users to have an input automatically
   // select its entire value whenever it receives focus.
-  handleFocusSelect = (event) => {
+  onInputFocus = (event) => {
     event.target.select()
   }
 
@@ -153,7 +153,7 @@ class InvoiceBase extends Component {
   * that omits the object at the i‘th position of the original array.
   * this.setState() updates the component state.
   * */
-  handleRemoveLineItem = (elementIndex) =>
+  onDeleteLine = (elementIndex) =>
     () => {
       this.setState({
         lineItems: this.state.lineItems.filter((item, i) => {
@@ -231,8 +231,8 @@ class InvoiceBase extends Component {
                       readOnly={this.state.readOnly}
                       addHandler={this.onAddLine}
                       changeHandler={this.onChangeLine}
-                      focusHandler={this.handleFocusSelect}
-                      deleteHandler={this.handleRemoveLineItem}
+                      focusHandler={this.onInputFocus}
+                      deleteHandler={this.onDeleteLine}
                 />
               ))}
               <div className={styles.totalLine}>

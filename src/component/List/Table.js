@@ -2,8 +2,6 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import * as ROUTES from '../../constant/route';
 
-import { transformEntities } from '../../constant/util';
-
 const Layout = ({ invoices, title }) => {
   return (
     <div>
@@ -22,7 +20,9 @@ const Layout = ({ invoices, title }) => {
         <tbody>
         {invoices.map(
           invoice => {
-            transformEntities(invoice.lineItems, invoice.description);
+              // set the same description for each line in the invoice
+              invoice.lineItems.map(line => line.description = invoice.description)
+
 
             return (
               <tr key={invoice.id}>
