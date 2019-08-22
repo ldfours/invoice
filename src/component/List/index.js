@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 
 import { compose } from '../../constant/util';
 import { AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
-import InvoiceList from './Layout';
+import Table from './Table';
 
 class InvoicesBase extends Component {
   constructor(props) {
@@ -79,7 +78,7 @@ class InvoicesBase extends Component {
             {loading && <div>loading..</div>}
 
             {invoices ? (
-              <InvoiceList
+              <Table
                 title={title}
                 invoices={invoices} />
             ) : <div>no invoices found</div>}
@@ -99,5 +98,4 @@ class InvoicesBase extends Component {
 
 export default compose(
   withFirebase,
-  withRouter,
 )(InvoicesBase);

@@ -11,8 +11,8 @@ $bgColor: white;
 $addColor: darkgreen;
 $removeColor: darkred;
 
-$fontFamilyText: "DejaVu Serif", "FreeSerif", serif;
-$fontSizeNotes: 0.8em;
+$fontFamilyText: "Times New Roman", "DejaVu Serif", "FreeSerif", serif;
+$fontSizeNotes: 0.96em;
 $fontSizeMajorHeading: 18pt;
 
 /*
@@ -30,11 +30,11 @@ $tableColumns: [date] 3fr [description] 5fr repeat(2, 1.2fr) [x icon] .4fr;
 }
 
 .text {
-  font-family: "Times New Roman", "DejaVu Serif", "FreeSerif", serif;
+  font-family: $fontFamilyText;
 }
 
 // the same CSS syntax in a DIV or SPAN produce different effects
 div.hangingIndent {
-  padding-left: 9em;
-  text-indent: -9em;
+  padding-left: 7.2em;
+  text-indent: -7.2em;
 }

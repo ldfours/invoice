@@ -15,41 +15,37 @@ export default class extends Component {
   }
 
   render() {
-    const {
-      index, date, description, quantity, price,
-      readOnly
-    } = this.props
 
-    const priceFormatted = formatCurrency(price)
+    const priceFormatted = formatCurrency(this.props.price)
 
     return (
       <div className={`${styles.lineItem} ${styles.text}`}>
         <div>
-          <input name="date" type="text" value={date}
-                 onChange={this.props.changeHandler(index)}
-                 readOnly={readOnly} />
+          <input name="date" type="text" value={this.props.date}
+                 onChange={this.props.changeHandler(this.props.index)}
+                 readOnly={this.props.readOnly} />
         </div>
 
         <div>
-          <input name="description" type="text" value={description}
-                 onChange={this.props.changeHandler(index)}
-                 readOnly={readOnly} />
+          <input name="description" type="text" value={this.props.description}
+                 onChange={this.props.changeHandler(this.props.index)}
+                 readOnly={this.props.readOnly} />
         </div>
         <div>
-          <input name="quantity" value={quantity}
-                 onChange={this.props.changeHandler(index)}
-                 readOnly={readOnly} />
+          <input name="quantity" value={this.props.quantity}
+                 onChange={this.props.changeHandler(this.props.index)}
+                 readOnly={this.props.readOnly} />
         </div>
         <div className={styles.currency}>
           <input name="price" value={priceFormatted}
-                 onChange={this.props.changeHandler(index)}
-                 readOnly={readOnly} />
+                 onChange={this.props.changeHandler(this.props.index)}
+                 readOnly={this.props.readOnly} />
         </div>
-        {!readOnly ? (
+        {!this.props.readOnly ? (
             <div style={{ borderLeft: 0 }}>
               <button type="button"
                       className={styles.deleteItem}
-                      onClick={this.props.deleteHandler(index)}>
+                      onClick={this.props.deleteHandler(this.props.index)}>
                 <DeleteIcon />
               </button>
             </div> ) :

@@ -19,7 +19,7 @@ const Navigation = () => (
 );
 
 const NavigationAuth = ({ authUser }) => (
-  <div>
+  <div className={"no-print"}>
     <Link to={ROUTES.SEARCH}>Search</Link>
     <span> </span>
     <Link to={{

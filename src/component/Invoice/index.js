@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { MdAddCircle as AddIcon } from 'react-icons/md'
-import Header from './Form'
+import { withFirebase } from '../Firebase';
+
+import { formatCurrency } from '../../constant/util'
+import Line from './Line'
+
 /*
 * SCSS Modules are great
 * for ensuring there are no naming conflicts in projects with multiple
@@ -17,10 +21,12 @@ import Header from './Form'
 */
 import styles from './index.module.scss'
 
-export default class Invoice extends Component {
+class InvoiceBase extends Component {
 
   state = {
     readOnly: false,
+
+    // db invoice properties
     description: '',
     created: '',
     customer: '',
@@ -37,14 +43,40 @@ export default class Invoice extends Component {
 
     ...this.props.location.invoice,
 
-    head1: '',
-    head2: '',
-    head3: '',
-    head4: '',
-    customerAttribution: '',
-    invoiceText: [],
+    // layout
+    title: '',
+    caption: '',
+    column: '',
+    head: '',
+    segment: '',
+    text: '',
+    category: ''
   };
-  // TODO queryLayout and set the state above
+
+  // db query
+  queryLayout = () => {
+    this.props
+      .firebase.layout()
+      .once('value', snapshot => {
+        const obj = snapshot.val()
+        if (obj) {
+          Object.keys(obj).map(key => {
+              this.setState({ [key]: obj[key] })
+              return key
+            }
+          )
+        }
+      })
+  }
+
+  // lifecycle events
+  componentDidMount() {
+    this.queryLayout();
+  }
+
+  componentWillUnmount() {
+    this.props.firebase.invoice().off();
+  }
 
   /*
   * Each form input element is created as a Controlled Component.
@@ -77,17 +109,18 @@ export default class Invoice extends Component {
   */
 
   /*
-  // It is sometimes convenient for users to have an input automatically
-  // select its entire value whenever it receives focus.
-  handleFocusSelect = (event) => {
-    event.target.select()
-  }
   handleInvoiceChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
   */
 
-  handleLineItemChange = (elementIndex) => (event) => {
+  // It is sometimes convenient for users to have an input automatically
+  // select its entire value whenever it receives focus.
+  handleFocusSelect = (event) => {
+    event.target.select()
+  }
+
+  onChangeLine = (elementIndex) => (event) => {
     let lineItems = this.state.lineItems.map((item, i) => {
       if (elementIndex !== i) return item
       return { ...item, [event.target.name]: event.target.value }
@@ -105,7 +138,7 @@ export default class Invoice extends Component {
   * It concatenates a second array containing a new blank line item object.
   * setState() is then called to update the state.
   * */
-  handleAddLineItem = (event) => {
+  onAddLine = (event) => {
     this.setState({
       lineItems: this.state.lineItems.concat(
         [{
@@ -120,66 +153,141 @@ export default class Invoice extends Component {
   * that omits the object at the i‘th position of the original array.
   * this.setState() updates the component state.
   * */
-  handleRemoveLineItem = (elementIndex) => (event) => {
-    this.setState({
-      lineItems: this.state.lineItems.filter((item, i) => {
-        return elementIndex !== i
+  handleRemoveLineItem = (elementIndex) =>
+    () => {
+      this.setState({
+        lineItems: this.state.lineItems.filter((item, i) => {
+          return elementIndex !== i
+        })
       })
-    })
-  }
+    }
 
   handleSubmit = () => {
-    alert('Not implemented')
+    //alert('Not implemented')
   }
 
   render() {
     const date = this.state.lineItems.length > 0 &&
       this.state.lineItems[this.state.lineItems.length - 1].date
 
-    const text = this.state.invoiceText &&
+    const note =
+      this.state.category &&
       this.state.description &&
-      this.state.invoiceText[this.state.description]
+      this.state.category[this.state.description].note
+
+    const totalFormatted = formatCurrency(this.state.total)
 
     return (
       <div className={styles.invoice}>
         <div className={styles.addresses}>
-          <div className={styles.major}>{this.state.head1}</div>
-          <div className={styles.label}>{this.state.head2}</div>
-          <div>{this.state.head3}</div>
-          <div>{this.state.head4}</div>
+          {this.state.head &&
+          this.state.head.map((r, i) =>
+            /*
+            * Conditional tag attribute
+            * <Button {...(condition ? { bsStyle: 'success' } : {})} />
+            * */
+            <div {...
+              (i === 0 ? { className: styles.major } :
+                (i === 1 ? { className: styles.label } :
+                  {} ))}
+                 key={r}>{r}
+            </div>)}
+
         </div>
 
-        <h2>Invoice</h2>
+        <h2>{this.state.title && this.state.title}</h2>
         <div className={styles.rule} />
 
         <div className={styles.description}>
-          <div className={styles.key}>Date:
+          <div className={styles.key}>
+            {this.state.caption.length > 0 && `${this.state.caption[0]}:`}
             <span className={styles.value}> {date}</span>
           </div>
-          <div className={`${styles.value}`} />
+          <div className={styles.value} />
           <div className={styles.key}>
-            {this.state.customerAttribution &&
-            `${this.state.customerAttribution}:`}
+            {this.state.caption && `${this.state.caption[1]}:`}
             <span className={`${styles.value} ${styles.name}`}><span>  </span>
               {this.state.customer}</span>
           </div>
           <div className={styles.value} />
         </div>
 
-        <Header
-          lineItems={this.state.lineItems}
-          total={this.state.total}
-          text={text}
-          readOnly={this.state.readOnly}
-          changeHandler={this.handleLineItemChange}
-          //focusHandler={this.handleFocusSelect}
-          deleteHandler={this.handleRemoveLineItem} />
+        <form>
+          <div className={styles.gridTable}>
+            <div className={`${styles.row} ${styles.header}`}>
+              {this.state.column.map &&
+              this.state.column.map(col =>
+                <div key={col} name={"col"}>{col}</div>)}
+            </div>
+
+            <div>
+              {this.state.lineItems.map((item, i) => (
+                <Line key={i}
+                      index={i}
+                      date={item.date}
+                      description={item.description}
+                      quantity={item.quantity}
+                      price={item.price}
+                      readOnly={this.state.readOnly}
+                      addHandler={this.onAddLine}
+                      changeHandler={this.onChangeLine}
+                      focusHandler={this.handleFocusSelect}
+                      deleteHandler={this.handleRemoveLineItem}
+                />
+              ))}
+              <div className={styles.totalLine}>
+                <div />
+                <div />
+                <div style={{ textAlign: "center" }}>
+                  <strong>Total</strong>
+                </div>
+                <div className={styles.text}
+                     style={{ textAlign: "left" }}>{totalFormatted}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${styles.note}`}>
+            {note &&
+            <div className={`${styles.note} ${styles.hangingIndent}`}>
+              {note[0]}:<span> </span>
+              {note
+                .slice(1, note.length)
+                .map((line, i) =>
+                  <span key={i}
+                        className={`${styles.note}`}>
+                  {line}
+                    {line.length > 0 && i < note.length - 2 && ". "}
+                </span>)}
+            </div>}
+          </div>
+
+          {this.state.segment.radio &&
+          <div className={styles.valueTable}>
+            <div className={styles.title}>
+              {this.state.segment.title && `${this.state.segment.title}:`}
+            </div>
+            {this.state.segment.radio.map(r =>
+              <React.Fragment key={r}>
+                <div className={`${styles.label}`}>
+                  <input className={styles.radio}
+                         type="radio"
+                         name={this.state.segment.title}
+                         value={r}
+                         onChange={this.onChangeLine()} />
+                </div>
+                <div className={styles.label}>{r}</div>
+              </React.Fragment>
+            )}
+          </div>
+          }
+        </form>
 
         {this.state.readOnly || (
-          <div>
+          <div className={"no-print"}>
             <div className={styles.lineItems}>
               <div className={styles.addItem}>
-                <button type="button" onClick={this.handleAddLineItem}>
+                <button type="button" onClick={this.onAddLine}>
                   <AddIcon size="1.25em" className={styles.addIcon} />Add
                 </button>
               </div>
@@ -197,3 +305,5 @@ export default class Invoice extends Component {
     )
   }
 }
+
+export default withFirebase(InvoiceBase)

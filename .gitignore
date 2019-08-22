@@ -9,8 +9,9 @@ package-lock.json
 # production
 /build
 
-# env
+# private
 .env
+invoice.sql
 
 # firebase
 .firebase

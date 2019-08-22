@@ -8,3 +8,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
   monospace;
 }
+
+// https://lazamar.github.io/exdending-classes-within-media-queries-in-scss/
+@media print {
+  .no-print {
+    visibility: hidden;
+  }
+}
