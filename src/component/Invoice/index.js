@@ -3,7 +3,7 @@ import { MdAddCircle as AddIcon } from 'react-icons/md'
 import uuidv4 from 'uuid/v4'
 
 import { withFirebase } from '../Firebase';
-import { clone, sumArr, formatCurrency } from '../../constant/util'
+import { clone, sumArr, formatCurrency, now } from '../../constant/util'
 import Line from './Line'
 
 /*
@@ -33,6 +33,7 @@ class InvoiceBase extends Component {
     description: '',
     created: '',
     customer: '',
+    payment: '',
     lineItems: [lineItemsInitState],
 
     // selected invoice
@@ -74,16 +75,23 @@ class InvoiceBase extends Component {
         })
 
     const invoice = {
-      created: new Date(), //"2019-04-03"
-      customer: this.state.customer, //"Kamyshnikova Tatiana"
-      description: this.state.description, //"Social Worker - Counselling"
-      id: uuidv4(), //"002373"
+      created: now(),
+      customer: this.state.customer,
+      description: this.state.description,
+      id: uuidv4(),
       lineItems: items,
-      notes: "",
       payment: "",
+      notes: "",
       treatment: ""
     }
-    console.log(invoice)
+    //console.log(invoice)
+
+    if (this.state.id === ''
+      && this.state.customer.length > 0
+      && this.state.lineItems.length > 0
+      && this.state.description.length > 0) {
+      console.log("push")
+    }
 
     /*
         event.preventDefault()
@@ -187,7 +195,8 @@ class InvoiceBase extends Component {
   * setState() is then called to update the state.
   * */
   onAddLine = (event) => {
-    const quantity = this.state.description === "Speech Therapy" ? "min" : "hr"
+    const quantity =
+      (this.state.description === Object.keys(this.state.category)[4]) ? "min" : "hr" //slp
 
     this.setState({
       lineItems: this.state.lineItems.concat([{

@@ -11,9 +11,10 @@ const Layout = ({ invoices, title }) => {
         <tr>
           <th>Client</th>
           <th>Description</th>
-          {/*<th>Total</th>*/}
+          <th>Total</th>
           <th>Visits</th>
           <th>Dates</th>
+          <th>Id</th>
         </tr>
         </thead>
         <tbody>
@@ -26,7 +27,7 @@ const Layout = ({ invoices, title }) => {
               <tr key={invoice.id}>
                 <td>{invoice.customer}</td>
                 <td>{invoice.description}</td>
-                {/*<td>{"$"}{invoice.total}</td>*/}
+                <td>{"$"}{invoice.total}</td>
                 <td>{invoice.lineItems.length}</td>
                 <td>
                   <Link to={{
@@ -48,6 +49,7 @@ const Layout = ({ invoices, title }) => {
 
                   </Link>
                 </td>
+                <td>{invoice.id}</td>
               </tr>
             )
           }).reverse()}
