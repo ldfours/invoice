@@ -18,17 +18,18 @@ const Navigation = () => (
   </AuthUserContext.Consumer>
 );
 
-const NavigationAuth = ({ authUser }) => (
-  <div className={"no-print"}>
+const NavigationAuth = (props) => (
+  <nav className={"no-print"}>
+    {/*{JSON.stringify(props, null, 2)}*/}
     <Link to={ROUTES.SEARCH}>Search</Link>
-    <span> </span>
+
     <Link to={{
       pathname: ROUTES.INVOICE,
       invoice: { readOnly: false }
-    }}>Create</Link>
+    }}>New</Link>
 
     <SignOutButton />
-  </div>
+  </nav>
 );
 
 const NavigationNonAuth = () => (

@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { MdAddCircle as AddIcon } from 'react-icons/md'
-import { withFirebase } from '../Firebase';
+import uuidv4 from 'uuid/v4'
 
-import { formatCurrency } from '../../constant/util'
+import { withFirebase } from '../Firebase';
+import { clone, sumArr, formatCurrency } from '../../constant/util'
 import Line from './Line'
 
 /*
-* SCSS Modules are great
-* for ensuring there are no naming conflicts in projects with multiple
+* SCSS Modules for ensuring there are no naming conflicts in projects with multiple
 * Components that might use the same class names.
 * The ComponentName.modules.scss file looks and works just like any
 * normal SCSS file except the classes are invoked in JSX slightly differently.
@@ -21,26 +21,21 @@ import Line from './Line'
 */
 import styles from './index.module.scss'
 
+const lineItemsInitState = {
+  date: '', quantity: '', price: 0.00
+}
+
 class InvoiceBase extends Component {
 
   state = {
-    readOnly: false,
-
-    // db invoice properties
+    // initial invoice
+    id: '',
     description: '',
     created: '',
     customer: '',
-    lineItems: [
-      {
-        date: '',
-        description: '',
-        quantity: 0,
-        price: 0.00
-      }
-    ],
-    total: 0.00,
-    id: '',
+    lineItems: [lineItemsInitState],
 
+    // selected invoice
     ...this.props.location.invoice,
 
     // layout
@@ -53,7 +48,7 @@ class InvoiceBase extends Component {
     category: ''
   };
 
-  // db query
+  // db
   queryLayout = () => {
     this.props
       .firebase.layout()
@@ -69,13 +64,55 @@ class InvoiceBase extends Component {
       })
   }
 
+  saveInvoice = () => {
+    const items =
+      clone(this.state.lineItems)
+        .map(item => {
+          delete item['priceFormat']
+          delete item['description']
+          return item
+        })
+
+    const invoice = {
+      created: new Date(), //"2019-04-03"
+      customer: this.state.customer, //"Kamyshnikova Tatiana"
+      description: this.state.description, //"Social Worker - Counselling"
+      id: uuidv4(), //"002373"
+      lineItems: items,
+      notes: "",
+      payment: "",
+      treatment: ""
+    }
+    console.log(invoice)
+
+    /*
+        event.preventDefault()
+        this.props.firebase.invoice()
+          .push({
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+          })
+          .catch(error => console.log(error))
+    */
+  }
+
   // lifecycle events
   componentDidMount() {
-    this.queryLayout();
+    const setStatePriceForm = () => {
+      this.setState(state => {
+        state.lineItems.map(item =>
+          //^[0-9]+$/.test(price)
+          item.priceFormat = formatCurrency(item.price))
+        return state; // should return updated state
+      });
+    }
+
+    this.queryLayout()
+    setStatePriceForm()
   }
 
   componentWillUnmount() {
-    this.props.firebase.invoice().off();
+    this.props.firebase.invoice().off()
   }
 
   /*
@@ -107,25 +144,36 @@ class InvoiceBase extends Component {
   * (available as event.target.name)
   * corresponds to a the property name of the line item.
   */
-
-  /*
-  handleInvoiceChange = (event) => {
+  onChangeInvoice = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
-  */
+
+  onChangeLine = (elementIndex) => (event) => {
+    const hook = (item, target) => {
+      if (target.name === "priceFormat") {
+        //target.value = parseFloat(target.value)
+        const match = target.value.match(/^\$([0-9]+)\.00$/)
+        if (match) {
+          const newPrice = match[1]
+          item.price = newPrice
+        }
+      }
+    }
+
+    let lineItems = this.state.lineItems.map((item, i) => {
+      // if its not the current index, means some other element changed
+      if (elementIndex !== i) return item
+      hook(item, event.target)
+      // merge changed element with the current line
+      return { ...item, [event.target.name]: event.target.value }
+    })
+    this.setState({ lineItems })
+  }
 
   // It is sometimes convenient for users to have an input automatically
   // select its entire value whenever it receives focus.
   onInputFocus = (event) => {
     event.target.select()
-  }
-
-  onChangeLine = (elementIndex) => (event) => {
-    let lineItems = this.state.lineItems.map((item, i) => {
-      if (elementIndex !== i) return item
-      return { ...item, [event.target.name]: event.target.value }
-    })
-    this.setState({ lineItems })
   }
 
   /*
@@ -139,12 +187,14 @@ class InvoiceBase extends Component {
   * setState() is then called to update the state.
   * */
   onAddLine = (event) => {
+    const quantity = this.state.description === "Speech Therapy" ? "min" : "hr"
+
     this.setState({
-      lineItems: this.state.lineItems.concat(
-        [{
-          date: '', description: '', quantity: 0, price: 0
-        }]
-      )
+      lineItems: this.state.lineItems.concat([{
+        ...lineItemsInitState,
+        description: this.state.description,
+        quantity: quantity
+      }])
     })
   }
 
@@ -153,17 +203,16 @@ class InvoiceBase extends Component {
   * that omits the object at the i‘th position of the original array.
   * this.setState() updates the component state.
   * */
-  onDeleteLine = (elementIndex) =>
-    () => {
-      this.setState({
-        lineItems: this.state.lineItems.filter((item, i) => {
-          return elementIndex !== i
-        })
+  onDeleteLine = (elementIndex) => (event) => {
+    this.setState({
+      lineItems: this.state.lineItems.filter((item, i) => {
+        return elementIndex !== i
       })
-    }
+    })
+  }
 
-  handleSubmit = () => {
-    //alert('Not implemented')
+  onSave = (event) => {
+    this.saveInvoice()
   }
 
   render() {
@@ -171,20 +220,25 @@ class InvoiceBase extends Component {
       this.state.lineItems[this.state.lineItems.length - 1].date
 
     const note =
-      this.state.category &&
-      this.state.description &&
+      this.state.category && this.state.description &&
+      this.state.category[this.state.description] &&
       this.state.category[this.state.description].note
 
-    const totalFormatted = formatCurrency(this.state.total)
+    const total = formatCurrency(
+      sumArr(
+        this.state.lineItems.map(item => {
+          return parseInt(item.price)
+        })))
 
     return (
       <div className={styles.invoice}>
         <div className={styles.addresses}>
+          {/*{JSON.stringify(this.state.lineItems)}*/}
           {this.state.head &&
           this.state.head.map((r, i) =>
             /*
             * Conditional tag attribute
-            * <Button {...(condition ? { bsStyle: 'success' } : {})} />
+            *   <Button {...(condition ? { bsStyle: 'success' } : {})} />
             * */
             <div {...
               (i === 0 ? { className: styles.major } :
@@ -194,10 +248,13 @@ class InvoiceBase extends Component {
             </div>)}
 
         </div>
-
-        <h2>{this.state.title && this.state.title}</h2>
+        {/* "Invoice" title */}
+        <div className={styles.mainTitle}>
+          {this.state.title && this.state.title}
+        </div>
         <div className={styles.rule} />
 
+        {/* table caption */}
         <div className={styles.description}>
           <div className={styles.key}>
             {this.state.caption.length > 0 && `${this.state.caption[0]}:`}
@@ -206,13 +263,18 @@ class InvoiceBase extends Component {
           <div className={styles.value} />
           <div className={styles.key}>
             {this.state.caption && `${this.state.caption[1]}:`}
-            <span className={`${styles.value} ${styles.name}`}><span>  </span>
-              {this.state.customer}</span>
+            <span>  </span>
+            <input name="customer" value={this.state.customer}
+                   className={`${styles.value} ${styles.name}`}
+                   style={{ width: "21em" }}
+                   onChange={this.onChangeInvoice} />
+
           </div>
           <div className={styles.value} />
         </div>
 
         <form>
+          {/* table header */}
           <div className={styles.gridTable}>
             <div className={`${styles.row} ${styles.header}`}>
               {this.state.column.map &&
@@ -221,19 +283,17 @@ class InvoiceBase extends Component {
             </div>
 
             <div>
+              {/* table rows */}
               {this.state.lineItems.map((item, i) => (
-                <Line key={i}
-                      index={i}
-                      date={item.date}
-                      description={item.description}
-                      quantity={item.quantity}
-                      price={item.price}
-                      readOnly={this.state.readOnly}
+                <Line key={i} index={i}
+                      {...item}
+                      description={this.state.description}
+                      categories={Object.keys(this.state.category)}
                       addHandler={this.onAddLine}
-                      changeHandler={this.onChangeLine}
+                      changeLine={this.onChangeLine}
+                      changeInvoice={this.onChangeInvoice}
                       focusHandler={this.onInputFocus}
-                      deleteHandler={this.onDeleteLine}
-                />
+                      deleteHandler={this.onDeleteLine} />
               ))}
               <div className={styles.totalLine}>
                 <div />
@@ -242,26 +302,25 @@ class InvoiceBase extends Component {
                   <strong>Total</strong>
                 </div>
                 <div className={styles.text}
-                     style={{ textAlign: "left" }}>{totalFormatted}</div>
+                     style={{ textAlign: "left" }}>{total}</div>
               </div>
             </div>
           </div>
 
+          {/* bottom notes */}
           <div className={`${styles.note}`}>
             {note &&
-            <div className={`${styles.note} ${styles.hangingIndent}`}>
+            <div className={`${styles.text} ${styles.hangingIndent}`}>
               {note[0]}:<span> </span>
-              {note
-                .slice(1, note.length)
+              {note.slice(1, note.length)
                 .map((line, i) =>
-                  <span key={i}
-                        className={`${styles.note}`}>
-                  {line}
+                  <span key={i}>{line}
                     {line.length > 0 && i < note.length - 2 && ". "}
                 </span>)}
             </div>}
           </div>
 
+          {/* payment */}
           {this.state.segment.radio &&
           <div className={styles.valueTable}>
             <div className={styles.title}>
@@ -279,25 +338,27 @@ class InvoiceBase extends Component {
                 <div className={styles.label}>{r}</div>
               </React.Fragment>
             )}
-          </div>
-          }
+          </div>}
+
         </form>
 
-        {this.state.readOnly || (
-          <div className={"no-print"}>
-            <div className={styles.lineItems}>
-              <div className={styles.addItem}>
-                <button type="button" onClick={this.onAddLine}>
-                  <AddIcon size="1.25em" className={styles.addIcon} />Add
-                </button>
-              </div>
-            </div>
-            <div className={styles.major}>
-              <button className={styles.submit}
-                      onClick={this.handleSubmit}>Submit
+        <div className={"no-print"}>
+          {/* add button */}
+          <div className={styles.lineItems}>
+            <div className={styles.addItem}>
+              <button type="button" onClick={this.onAddLine}>
+                <AddIcon size="1.25em" className={styles.addIcon} />Add
               </button>
             </div>
-          </div>)}
+          </div>
+          {/* submit button */}
+          <div className={styles.major}>
+            <button className={styles.submit}
+                    onClick={this.onSave}>
+              Save {this.state.id}
+            </button>
+          </div>
+        </div>
 
         <div className={styles.footer}>
         </div>

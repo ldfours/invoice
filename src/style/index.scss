@@ -9,9 +9,23 @@ code {
   monospace;
 }
 
-// https://lazamar.github.io/exdending-classes-within-media-queries-in-scss/
 @media print {
   .no-print {
     visibility: hidden;
   }
+}
+
+// navigation
+nav {
+  margin-left: 8em;
+}
+
+nav a {
+  padding: 0px 10px;
+  word-wrap: normal;
+  display: inline-block;
+}
+
+a[disabled], .disabled-link {
+  pointer-events: none;
 }

@@ -1,11 +1,20 @@
 @import 'main';
 
 .invoice {
-  max-width: $invoiceMaxWidth;
-  margin: ($rhythm * 2) auto;
-  border-width: 0; //border: 1px solid $tableBorderColor;
   padding: 2 * $rhythm;
-  background: $bgColor;
+  margin: ($rhythm * 2) auto;
+  //background: $bgColor;
+  max-width: $invoiceMaxWidth;
+  border-width: 0; //border: 1px solid $tableBorderColor;
+}
+
+.mainTitle {
+  padding-top: $rhythm;
+  padding-bottom: $rhythm;
+  margin-left: $sideMargin;
+  margin-right: $sideMargin;
+  font-weight: bold;
+  font-size: 20pt;
 }
 
 .brand {
@@ -18,6 +27,8 @@
 
 .description {
   display: grid;
+  margin-left: $sideMargin;
+  margin-right: $sideMargin;
   margin-bottom: $rhythm / 2;
 
   grid-template-columns: // auto-fill or auto-fit to prevent grid wrapping
@@ -80,7 +91,6 @@
 .totalContainer {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
 }
 
 button.submit {
@@ -94,7 +104,6 @@ button.submit {
 .footer {
   display: flex;
   flex-flow: column wrap;
-  justify-content: space-between;
   align-items: center;
   .comments {
     padding: $rhythm;
@@ -135,14 +144,14 @@ button.submit {
 }
 
 .rule {
-  margin-top: -10pt;
+  // margin: <top> <right> <bottom> <left>
+  margin: -10pt $sideMargin 40px $sideMargin;
   border-top: 5px double #999;
   padding: 0 0;
-  margin-bottom: 40px;
 }
 
 .gridTable {
-  margin: 0 auto;
+  margin: $sideMargin;
   border: 1px solid $tableBorderColor;
   overflow: hidden;
   display: grid;
@@ -195,6 +204,8 @@ button.submit {
 }
 
 .valueTable {
+  margin-right: $sideMargin;
+  margin-left: $sideMargin;
   border: 3px double $tableBorderColor;
   border-radius: $borderRadius;
   overflow: hidden;
@@ -211,7 +222,6 @@ button.submit {
   }
   & > .label {
     @extend %flex-center;
-    justify-content: left;
     align-items: center;
     background-color: white;
     color: $tableBorderColor;
@@ -228,18 +238,19 @@ button.submit {
 }
 
 .note {
-  font-size: $fontSizeNotes;
-  margin-top: $rhythm;
-  font-family: $fontFamilyText;
-  margin-bottom: $rhythm * 2;
+  margin: 0 $sideMargin $rhythm*1.6 $sideMargin;
+  & > .text {
+    font-size: $fontSizeNotes;
+    font-family: $fontFamilyText;
+  }
 }
 
 .radio {
   border-radius: 50%; // circle shape
   -webkit-appearance: none; // radio or checkbox, then decorate
 
-  width: 0.4em;
-  height: 0.4em;
+  width: 0.5em;
+  height: 0.5em;
   background-color: white;
   vertical-align: middle;
   border: 1px solid black;
@@ -248,5 +259,14 @@ button.submit {
 }
 
 .radio:checked {
+  //-webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+  //-moz-appearance: checkbox;    /* Firefox */
+  //-ms-appearance: checkbox;     /* not currently supported */
+
+  //background: url(http://cdn1.iconfinder.com/data/icons/onebit/PNG/onebit_34.png);
+  //background-repeat: no-repeat;
+  //background-position: center center;
+  //background-size: 30px 30px;
+
   background-color: black;
 }

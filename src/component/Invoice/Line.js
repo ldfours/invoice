@@ -1,53 +1,46 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { MdCancel as DeleteIcon } from 'react-icons/md'
+import { MdCancel as Delete } from 'react-icons/md'
 
 import styles from './Line.module.scss'
-import { formatCurrency } from '../../constant/util'
 
 const Line = (props) => {
-
-  const priceFormatted = formatCurrency(props.price)
-
   return (
     <div className={`${styles.lineItem} ${styles.text}`}>
       <div>
         <input name="date" type="text" value={props.date}
-               onChange={props.changeHandler(props.index)}
-               readOnly={props.readOnly} />
+               onChange={props.changeLine(props.index)} />
       </div>
-
       <div>
-        <input name="description" type="text" value={props.description}
-               onChange={props.changeHandler(props.index)}
-               readOnly={props.readOnly} />
+        <select name="description"
+                value={props.description}
+                onChange={props.changeInvoice}>
+          {['', ...props.categories]
+            .map(function (category) {
+              return (<option key={category} value={category}>
+                {category}</option>)
+            })}
+        </select>
       </div>
       <div>
         <input name="quantity" value={props.quantity}
-               onChange={props.changeHandler(props.index)}
-               readOnly={props.readOnly} />
+               onChange={props.changeLine(props.index)} />
       </div>
       <div className={styles.currency}>
-        <input name="price" value={priceFormatted}
-               onChange={props.changeHandler(props.index)}
-               readOnly={props.readOnly} />
+        <input name="priceFormat" value={props.priceFormat || ''}
+          //onFocus={props.focusHandler}
+               onChange={props.changeLine(props.index)} />
       </div>
-      {!props.readOnly ? (
-          <div style={{ borderLeft: 0 }}>
-            <button type="button"
-                    className={styles.deleteItem}
-                    onClick={props.deleteHandler(props.index)}>
-              <DeleteIcon />
-            </button>
-          </div> ) :
-        <div style={{ borderLeft: 0 }} />
-      }
+      <div style={{ borderLeft: 0 }}>
+        <button type="button"
+                className={styles.deleteItem}
+                onClick={props.deleteHandler(props.index)}>
+          <Delete className={"no-print"} />
+        </button>
+      </div>
     </div>
   )
 }
-
-export default Line
-
 Line.propTypes = {
   index: PropTypes.number.isRequired,
   date: PropTypes.string,
@@ -55,3 +48,5 @@ Line.propTypes = {
   quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 }
+
+export default Line

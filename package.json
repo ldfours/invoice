@@ -10,7 +10,8 @@
     "react-beautiful-dnd": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",
-    "react-scripts": "latest"
+    "react-scripts": "latest",
+    "uuid": "latest"
   },
   "scripts": {
     "start": "env-cmd react-scripts start",

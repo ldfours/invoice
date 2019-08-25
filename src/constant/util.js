@@ -88,3 +88,10 @@ export const formatCurrency =
     }).format(amount))
   }
 
+export const sumArr = (arr) =>
+  arr.reduce((acc, val, i, arr) => {
+    return acc + val;
+  }, 0)
+
+export const clone = (obj) => //.slice(0) // copy array
+  JSON.parse(JSON.stringify(obj))

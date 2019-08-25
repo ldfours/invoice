@@ -33,20 +33,22 @@
   cursor: pointer;
 }
 
-input, input[type=number] {
+select {
+  -webkit-appearance: button;
+  background-color: white;
+}
+
+input, select {
   padding: $rhythm / 6;
   border-width: 0; // same as "border-style: none"
   width: 100%;
-}
-
-input {
-  &[name="date"] {
+  &[name=date] {
     text-align: left;
   }
-  &[name="description"], &[name="quantity"] {
+  &[name=description], &[name=quantity] {
     text-align: center;
   }
-  &[name="price"] {
+  &[name=price] {
     text-align: right;
   }
 }

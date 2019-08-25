@@ -10,8 +10,8 @@ import Invoice from '../Invoice';
 import * as ROUTES from '../../constant/route';
 import { withAuthentication } from '../Session';
 
-const App = () => (
-  <Router basename={process.env.PUBLIC_URL}>
+const App = (props) => (
+  <Router>
     <div>
       <Navigation />
 

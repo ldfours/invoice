@@ -29,9 +29,8 @@ class Firebase {
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-        this.db
-          .ref(`user:${authUser.uid}`)
-          .once('value')
+        this.db.ref(`user:${authUser.uid}`)
+          .once('value'/*,snap => console.log('from db ', snap)*/)
           .then(() => {
             authUser = {
               uid: authUser.uid,

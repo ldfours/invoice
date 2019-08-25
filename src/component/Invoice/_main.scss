@@ -1,9 +1,10 @@
 // https://sass-lang.com/guide
 $rhythm: 20px;
 
+$sideMargin: $rhythm*1.2;
 $invoiceMaxWidth: 800px;
 $borderRadius: 4px;
-$font-size-invoice: 0.6em;
+$fontSizeInvoice: 0.6em;
 
 $tableBorderColor: black;
 $boxBgColor: #eee;
@@ -12,7 +13,7 @@ $addColor: darkgreen;
 $removeColor: darkred;
 
 $fontFamilyText: "Times New Roman", "DejaVu Serif", "FreeSerif", serif;
-$fontSizeNotes: 0.96em;
+$fontSizeNotes: 0.9em;
 $fontSizeMajorHeading: 18pt;
 
 /*
