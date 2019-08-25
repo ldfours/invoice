@@ -84,24 +84,16 @@ class InvoiceBase extends Component {
       notes: "",
       treatment: ""
     }
-    //console.log(invoice)
 
     if (this.state.id === ''
       && this.state.customer.length > 0
       && this.state.lineItems.length > 0
       && this.state.description.length > 0) {
-      console.log("push")
+      console.log("push " + invoice)
+      this.props.firebase.invoice()
+        .push({ ...invoice })
+        .catch(error => console.log(error))
     }
-
-    /*
-        event.preventDefault()
-        this.props.firebase.invoice()
-          .push({
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-          })
-          .catch(error => console.log(error))
-    */
   }
 
   // lifecycle events
@@ -221,6 +213,7 @@ class InvoiceBase extends Component {
   }
 
   onSave = (event) => {
+    event.preventDefault()
     this.saveInvoice()
   }
 
