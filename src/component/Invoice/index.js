@@ -50,6 +50,8 @@ class InvoiceBase extends Component {
   };
 
   // db
+  // https://firebase.google.com/docs/database/web/read-and-write
+  // https://firebase.google.com/docs/firestore/manage-data/add-data
   queryLayout = () => {
     this.props
       .firebase.layout()
@@ -78,21 +80,34 @@ class InvoiceBase extends Component {
       created: now(),
       customer: this.state.customer,
       description: this.state.description,
-      id: uuidv4(),
       lineItems: items,
       payment: "",
       notes: "",
       treatment: ""
     }
 
-    if (this.state.id === ''
-      && this.state.customer.length > 0
-      && this.state.lineItems.length > 0
-      && this.state.description.length > 0) {
-      console.log("push " + invoice)
-      this.props.firebase.invoice()
-        .push({ ...invoice })
-        .catch(error => console.log(error))
+    const firebaseSave = (id, invoice, logInvoiceName) => {
+      this.props.firebase
+        .invoice(id)
+        .set({ ...invoice })
+        .catch(error => console.log(error + " in invoice " + logInvoiceName))
+    }
+
+    // validation
+    if (this.state.customer.length > 0 &&
+      this.state.lineItems.length > 0 &&
+      this.state.description.length > 0) {
+    } else {
+      console.log("can not save empty invoice")
+      return false
+    }
+
+    const logInvoiceName = this.state.id.substring(0,6) + " " + invoice.customer
+    // push or set
+    if (window.confirm("save invoice " + logInvoiceName)) {
+      const id = (this.state.id.length > 0) ? this.state.id : uuidv4()
+      firebaseSave(id, invoice)
+      console.log("saved " + logInvoiceName)
     }
   }
 
@@ -112,7 +127,7 @@ class InvoiceBase extends Component {
   }
 
   componentWillUnmount() {
-    this.props.firebase.invoice().off()
+    this.props.firebase.invoices().off()
   }
 
   /*

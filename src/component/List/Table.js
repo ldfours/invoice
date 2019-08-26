@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import * as ROUTES from '../../constant/route';
 
-const Layout = ({ invoices, title }) => {
+import * as ROUTES from '../../constant/route';
+import { sumArr } from '../../constant/util';
+
+const Table = ({ invoices, title }) => {
   return (
     <div>
       <label>{title}</label>
@@ -11,28 +13,30 @@ const Layout = ({ invoices, title }) => {
         <tr>
           <th>Client</th>
           <th>Description</th>
-          <th>Total</th>
           <th>Visits</th>
+          <th>Total</th>
           <th>Dates</th>
           <th>Id</th>
         </tr>
         </thead>
         <tbody>
-        {invoices.map(
-          invoice => {
-              // set the same description for each line in the invoice
-              invoice.lineItems.map(line => line.description = invoice.description)
+        {Object.keys(invoices).map(
+          id => {
+            const invoice = invoices[id]
+            // set the same description for each line in the invoice
+            invoice.lineItems.map(line => line.description = invoice.description)
 
             return (
-              <tr key={invoice.id}>
+              <tr key={id}>
                 <td>{invoice.customer}</td>
                 <td>{invoice.description}</td>
-                <td>{"$"}{invoice.total}</td>
                 <td>{invoice.lineItems.length}</td>
+                <td>{"$"}{sumArr(invoice.lineItems
+                  .map(item => parseInt(item.price)))}</td>
                 <td>
                   <Link to={{
                     pathname: ROUTES.INVOICE,
-                    invoice: { ...invoice, readOnly: true }
+                    invoice: { id, ...invoice }
                   }}>
 
                     <table>
@@ -49,7 +53,7 @@ const Layout = ({ invoices, title }) => {
 
                   </Link>
                 </td>
-                <td>{invoice.id}</td>
+                <td>{id.substring(0,6)}</td>
               </tr>
             )
           }).reverse()}
@@ -59,4 +63,4 @@ const Layout = ({ invoices, title }) => {
   )
 }
 
-export default withRouter(Layout)
+export default withRouter(Table)

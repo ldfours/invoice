@@ -29,8 +29,8 @@ class Firebase {
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-        this.db.ref(`user:${authUser.uid}`)
-          .once('value'/*,snap => console.log('from db ', snap)*/)
+        this.db.ref(`user/${authUser.uid}`)
+          .once('value', /*snap => console.log('from db ', snap)*/)
           .then(() => {
             authUser = {
               uid: authUser.uid,
@@ -45,8 +45,10 @@ class Firebase {
       }
     });
 
-  layout = () => this.db.ref('layout');
-  invoice = () => this.db.ref('invoice');
+  layout = () => this.db.ref('layout')
+
+  invoice = id => this.db.ref(`invoice/${id}`)
+  invoices = () => this.db.ref('invoice')
 }
 
 export default Firebase;

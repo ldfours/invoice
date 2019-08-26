@@ -11,24 +11,17 @@ class InvoicesBase extends Component {
 
     this.state = {
       loading: false,
-      invoices: [],
+      invoices: null,
       title: null,
       query_key: this.props.location.state.query_key,
       query_val: this.props.location.state.query_val
     };
   }
 
-  componentDidMount() {
-    this.queryInvoices(this.state.query_key,
-      this.state.query_val);
-  }
+  queryInvoices = (query_key, query_val, limit = 20) => {
+    this.setState({ loading: true })
 
-  queryInvoices = (query_key, query_val,
-                   limit = 20) => {
-
-    this.setState({ loading: true });
-
-    this.props.firebase.invoice()
+    this.props.firebase.invoices()
       .orderByChild(query_key)
       .limitToLast(limit)
 
@@ -36,30 +29,33 @@ class InvoicesBase extends Component {
       .startAt(query_val)
       .endAt(`${query_val}\uf8ff`)
       .once('value', snapshot => {
-        const invoiceObject = snapshot.val();
-
+        const invoiceObject = snapshot.val()
         if (invoiceObject) {
-          const invoiceList =
-            Object.keys(invoiceObject).map(key => ({
-              ...invoiceObject[key]
-            }));
-
+          //const invoiceList =
+          //  Object.keys(invoiceObject).map(key => ({
+          //    ...invoiceObject[key]
+          //  }));
           this.setState({
-            invoices: invoiceList,
+            invoices: invoiceObject,
             loading: false,
             title: `${query_key} = ${query_val}`,
-          });
+          })
         } else {
           this.setState({
             invoices: null,
-            loading: false,
-          });
+            loading: false
+          })
         }
-      });
-  };
+      })
+  }
+
+  componentDidMount() {
+    this.queryInvoices(this.state.query_key,
+      this.state.query_val);
+  }
 
   componentWillUnmount() {
-    this.props.firebase.invoice().off();
+    this.props.firebase.invoices().off();
   }
 
   loadMore = () => {
@@ -70,17 +66,14 @@ class InvoicesBase extends Component {
 
   render() {
     const { invoices, loading, title } = this.state;
-
     return (
       <AuthUserContext.Consumer>
         {authUser => (
           <div>
             {loading && <div>loading..</div>}
 
-            {invoices ? (
-              <Table
-                title={title}
-                invoices={invoices} />
+            {!loading && invoices ? (
+              <Table title={title} invoices={invoices} />
             ) : <div>no invoices found</div>}
             <div>
               {!loading && invoices && (
@@ -89,6 +82,7 @@ class InvoicesBase extends Component {
                 </button>
               )}
             </div>
+
           </div>
         )}
       </AuthUserContext.Consumer>
