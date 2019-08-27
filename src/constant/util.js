@@ -54,6 +54,12 @@ const invoiceText =
 export const compose = (...fns) => x =>
   fns.reduceRight((y, f) => f(y), x);
 
+
+/*
+export const range = (size, startAt = 0) => {
+  [...Array(size).keys()].map(i => i + startAt);
+}
+*/
 export const range = (start, end) =>
   Array.from({ length: (end - start) }, (v, k) => k + start);
 

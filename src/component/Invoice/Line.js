@@ -6,7 +6,7 @@ import styles from './Line.module.scss'
 
 const Line = (props) => {
   return (
-    <div className={`${styles.lineItem} ${styles.text}`}>
+    <div className={styles.lineItem}>
       <div>
         <input name="date" type="text" value={props.date}
                onChange={props.changeLine(props.index)} />
@@ -32,17 +32,18 @@ const Line = (props) => {
                onChange={props.changeLine(props.index)} />
       </div>
       <div style={{ borderLeft: 0 }}>
+        {!props.readOnly &&
         <button type="button"
                 className={styles.deleteItem}
                 onClick={props.deleteHandler(props.index)}>
           <Delete className={"no-print"} />
-        </button>
+        </button>}
       </div>
     </div>
   )
 }
 Line.propTypes = {
-  index: PropTypes.number.isRequired,
+  index: PropTypes.number, //.isRequired,
   date: PropTypes.string,
   description: PropTypes.string,
   quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

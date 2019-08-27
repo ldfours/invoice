@@ -26,7 +26,7 @@ const NavigationAuth = (props) => (
     <Link to={{
       pathname: ROUTES.INVOICE,
       invoice: { readOnly: false }
-    }}>New</Link>
+    }}>Create</Link>
 
     <SignOutButton />
   </nav>

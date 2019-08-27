@@ -3,7 +3,7 @@ import { MdAddCircle as AddIcon } from 'react-icons/md'
 import uuidv4 from 'uuid/v4'
 
 import { withFirebase } from '../Firebase';
-import { clone, sumArr, formatCurrency, now } from '../../constant/util'
+import { clone, sumArr, formatCurrency, now, range } from '../../constant/util'
 import Line from './Line'
 
 /*
@@ -94,20 +94,35 @@ class InvoiceBase extends Component {
     }
 
     // validation
-    if (this.state.customer.length > 0 &&
-      this.state.lineItems.length > 0 &&
-      this.state.description.length > 0) {
-    } else {
+    if (!(this.state.customer.length > 0 &&
+        this.state.lineItems.length > 0 &&
+        this.state.description.length > 0)) {
       console.log("can not save empty invoice")
       return false
     }
 
-    const logInvoiceName = this.state.id.substring(0,6) + " " + invoice.customer
-    // push or set
+    const logInvoiceName = this.state.id.substring(0, 6) + " " + invoice.customer
     if (window.confirm("save invoice " + logInvoiceName)) {
       const id = (this.state.id.length > 0) ? this.state.id : uuidv4()
       firebaseSave(id, invoice)
       console.log("saved " + logInvoiceName)
+    }
+  }
+
+  removeInvoice = () => {
+    const firebaseRemove = (id) => {
+      this.props.firebase
+        .invoice(id)
+        .remove()
+        .catch(error => console.log("cannot remove invoice " + id))
+    }
+
+    const id = this.state.id
+    const logInvoiceName = id.substring(0, 6)
+    if ((id.length > 0) &&
+      window.confirm("remove invoice " + logInvoiceName)) {
+      firebaseRemove(id)
+      console.log("removed " + logInvoiceName)
     }
   }
 
@@ -202,8 +217,13 @@ class InvoiceBase extends Component {
   * setState() is then called to update the state.
   * */
   onAddLine = (event) => {
-    const quantity =
-      (this.state.description === Object.keys(this.state.category)[4]) ? "min" : "hr" //slp
+    let quantity = ''
+    // category="slp"
+    if (this.state.description === Object.keys(this.state.category)[4]) {
+      quantity = "min"
+    } else if (this.state.description) {
+      quantity = "hr"
+    }
 
     this.setState({
       lineItems: this.state.lineItems.concat([{
@@ -232,6 +252,11 @@ class InvoiceBase extends Component {
     this.saveInvoice()
   }
 
+  onRemove = (event) => {
+    event.preventDefault()
+    this.removeInvoice()
+  }
+
   render() {
     const date = this.state.lineItems.length > 0 &&
       this.state.lineItems[this.state.lineItems.length - 1].date
@@ -246,6 +271,8 @@ class InvoiceBase extends Component {
         this.state.lineItems.map(item => {
           return parseInt(item.price)
         })))
+
+    const totalRows = 11
 
     return (
       <div className={styles.invoice}>
@@ -306,12 +333,22 @@ class InvoiceBase extends Component {
                       {...item}
                       description={this.state.description}
                       categories={Object.keys(this.state.category)}
+                  // focusHandler={this.onInputFocus}
                       addHandler={this.onAddLine}
                       changeLine={this.onChangeLine}
                       changeInvoice={this.onChangeInvoice}
-                      focusHandler={this.onInputFocus}
                       deleteHandler={this.onDeleteLine} />
               ))}
+              {/* read-only rows */}
+              {range(0, totalRows - this.state.lineItems.length).map(n =>
+                <Line key={n} readOnly={true}
+                      description={''}
+                      categories={[]}
+                      addHandler={f => f}
+                      changeLine={this.onChangeLine}
+                      changeInvoice={f => f}
+                      deleteHandler={f => f} />)}
+              {/* total row */}
               <div className={styles.totalLine}>
                 <div />
                 <div />
@@ -368,12 +405,20 @@ class InvoiceBase extends Component {
               </button>
             </div>
           </div>
-          {/* submit button */}
+          {/* submit buttons */}
           <div className={styles.major}>
+            {(this.state.customer.length > 0 &&
+              this.state.lineItems.length > 0 &&
+              this.state.description.length > 0) &&
             <button className={styles.submit}
                     onClick={this.onSave}>
-              Save {this.state.id}
-            </button>
+              Save
+            </button>}
+            {this.state.id &&
+            <button className={styles.submit}
+                    onClick={this.onRemove}>
+              Remove {this.state.id.substring(0, 6)}
+            </button>}
           </div>
         </div>
 

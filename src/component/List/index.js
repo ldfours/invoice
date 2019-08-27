@@ -55,7 +55,7 @@ class InvoicesBase extends Component {
   }
 
   componentWillUnmount() {
-    this.props.firebase.invoices().off();
+    this.props.firebase.invoices().off()
   }
 
   loadMore = () => {
@@ -71,18 +71,13 @@ class InvoicesBase extends Component {
         {authUser => (
           <div>
             {loading && <div>loading..</div>}
-
-            {!loading && invoices ? (
-              <Table title={title} invoices={invoices} />
-            ) : <div>no invoices found</div>}
+            {!loading && invoices &&
             <div>
-              {!loading && invoices && (
-                <button onClick={this.loadMore}>
-                  more&raquo;
-                </button>
-              )}
-            </div>
-
+              <Table title={title} invoices={invoices} />
+              <button onClick={this.loadMore}>
+                more&raquo;
+              </button>
+            </div>}
           </div>
         )}
       </AuthUserContext.Consumer>
