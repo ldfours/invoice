@@ -13,10 +13,17 @@ const config = {
 
 class Firebase {
   constructor() {
-    app.initializeApp(config);
-
-    this.auth = app.auth();
-    this.db = app.database();
+    try {
+      app.initializeApp(config)
+      // /* eslint no-unused-vars: "off" */
+      //const features = ['auth', 'database', 'messaging', 'storage']
+      //  .filter(feature => typeof app[feature] === 'function')
+      //console.log("firebase SDK loaded with "  + features.join(', '))
+      this.auth = app.auth();
+      this.db = app.database();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   // login
