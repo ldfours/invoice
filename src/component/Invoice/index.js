@@ -34,6 +34,8 @@ class InvoiceBase extends Component {
     created: '',
     customer: '',
     payment: '',
+    tag: '',
+    notes: '',
     lineItems: [lineItemsInitState],
 
     // selected invoice
@@ -81,9 +83,9 @@ class InvoiceBase extends Component {
       customer: this.state.customer,
       description: this.state.description,
       lineItems: items,
-      payment: "",
-      notes: "",
-      treatment: ""
+      payment: this.state.payment,
+      tag: this.state.tag,
+      notes: this.state.notes
     }
 
     const firebaseSave = (id, invoice, logInvoiceName) => {
@@ -105,7 +107,7 @@ class InvoiceBase extends Component {
     if (window.confirm("save invoice " + logInvoiceName)) {
       const id = (this.state.id.length > 0) ? this.state.id : uuidv4()
       firebaseSave(id, invoice)
-      console.log("saved " + logInvoiceName)
+      console.log("saved " + logInvoiceName/* + " " + JSON.stringify(invoice)*/)
     }
   }
 
@@ -175,7 +177,12 @@ class InvoiceBase extends Component {
   * corresponds to a the property name of the line item.
   */
   onChangeInvoice = (event) => {
+    //console.log(event.target.name + " = " + event.target.value)
     this.setState({ [event.target.name]: event.target.value })
+  }
+
+  resetPayment = (event) => {
+    this.setState({ payment: '' })
   }
 
   onChangeLine = (elementIndex) => (event) => {
@@ -369,7 +376,7 @@ class InvoiceBase extends Component {
               {note.slice(1, note.length)
                 .map((line, i) =>
                   <span key={i}>{line}
-                    {line.length > 0 && i < note.length - 2 && ". "}
+                    {line.length > 0 && i < note.length - 2 && ", "}
                 </span>)}
             </div>}
           </div>
@@ -377,7 +384,7 @@ class InvoiceBase extends Component {
           {/* payment */}
           {this.state.segment.radio &&
           <div className={styles.valueTable}>
-            <div className={styles.title}>
+            <div className={styles.title} onClick={this.resetPayment}>
               {this.state.segment.title && `${this.state.segment.title}:`}
             </div>
             {this.state.segment.radio.map(r =>
@@ -385,9 +392,10 @@ class InvoiceBase extends Component {
                 <div className={`${styles.label}`}>
                   <input className={styles.radio}
                          type="radio"
-                         name={this.state.segment.title}
+                         name="payment"
                          value={r}
-                         onChange={this.onChangeLine()} />
+                         checked={this.state.payment === r}
+                         onChange={this.onChangeInvoice} />
                 </div>
                 <div className={styles.label}>{r}</div>
               </React.Fragment>
