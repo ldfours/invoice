@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { MdAddCircle as AddIcon } from 'react-icons/md'
 import uuidv4 from 'uuid/v4'
 
 import { withFirebase } from '../Firebase';
@@ -326,45 +325,44 @@ class InvoiceBase extends Component {
 
         <form>
           {/* table header */}
-          <div className={styles.gridTable}>
-            <div className={`${styles.row} ${styles.header}`}>
-              {this.state.column.map &&
-              this.state.column.map(col =>
-                <div key={col} name={"col"}>{col}</div>)}
-            </div>
-
-            <div>
-              {/* table rows */}
-              {this.state.lineItems.map((item, i) => (
-                <Line key={i} index={i}
-                      {...item}
-                      description={this.state.description}
-                      categories={Object.keys(this.state.category)}
-                  // focusHandler={this.onInputFocus}
-                      addHandler={this.onAddLine}
-                      changeLine={this.onChangeLine}
-                      changeInvoice={this.onChangeInvoice}
-                      deleteHandler={this.onDeleteLine} />
-              ))}
-              {/* read-only rows */}
-              {range(0, totalRows - this.state.lineItems.length).map(n =>
-                <Line key={n} readOnly={true}
-                      description={''}
-                      categories={[]}
-                      addHandler={f => f}
-                      changeLine={this.onChangeLine}
-                      changeInvoice={f => f}
-                      deleteHandler={f => f} />)}
-              {/* total row */}
-              <div className={styles.totalLine}>
-                <div />
-                <div />
-                <div style={{ textAlign: "center" }}>
-                  <strong>Total</strong>
-                </div>
-                <div className={styles.text}
-                     style={{ textAlign: "left" }}>{total}</div>
+          <div className={`${styles.lineItem}`}>
+            {this.state.column.map && this.state.column.map(col =>
+              <div className={styles.header} key={col} name={"col"}>{col}</div>)}
+            <div />
+            <div />
+          </div>
+          <div>
+            {/* table rows */}
+            {this.state.lineItems.map((item, i) => (
+              <Line key={i} index={i}
+                    {...item}
+                    description={this.state.description}
+                    categories={Object.keys(this.state.category)}
+                    last={this.state.lineItems.length}
+                // focusHandler={this.onInputFocus}
+                    addHandler={this.onAddLine}
+                    changeLine={this.onChangeLine}
+                    changeInvoice={this.onChangeInvoice}
+                    deleteHandler={this.onDeleteLine} />
+            ))}
+            {/* read-only rows */}
+            {range(0, totalRows - this.state.lineItems.length).map(n =>
+              <Line key={n} readOnly={true}
+                    description={''}
+                    categories={[]}
+                    addHandler={f => f}
+                    changeLine={this.onChangeLine}
+                    changeInvoice={f => f}
+                    deleteHandler={f => f} />)}
+            {/* total row */}
+            <div className={styles.totalLine}>
+              <div />
+              <div />
+              <div style={{ textAlign: "center" }}>
+                <strong>Total</strong>
               </div>
+              <div className={styles.text}
+                   style={{ textAlign: "left" }}>{total}</div>
             </div>
           </div>
 
@@ -397,7 +395,10 @@ class InvoiceBase extends Component {
                          checked={this.state.payment === r}
                          onChange={this.onChangeInvoice} />
                 </div>
-                <div className={styles.label}>{r}</div>
+                <div
+                  className={styles.label}>
+                  {r === "Cheque" ? "Cheque/email transfer" : r}
+                </div>
               </React.Fragment>
             )}
           </div>}
@@ -405,14 +406,6 @@ class InvoiceBase extends Component {
         </form>
 
         <div className={"no-print"}>
-          {/* add button */}
-          <div className={styles.lineItems}>
-            <div className={styles.addItem}>
-              <button type="button" onClick={this.onAddLine}>
-                <AddIcon size="1.25em" className={styles.addIcon} />Add
-              </button>
-            </div>
-          </div>
           {/* submit buttons */}
           <div className={styles.major}>
             {(this.state.customer.length > 0 &&

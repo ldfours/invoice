@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { MdCancel as Delete } from 'react-icons/md'
 
-import styles from './Line.module.scss'
+import { MdAddCircle as AddIcon } from 'react-icons/md'
+import { MdCancel as DeleteIcon } from 'react-icons/md'
+
+import styles from './index.module.scss'
 
 const Line = (props) => {
   return (
@@ -26,18 +28,20 @@ const Line = (props) => {
         <input name="quantity" value={props.quantity}
                onChange={props.changeLine(props.index)} />
       </div>
-      <div className={styles.currency}>
+      <div>
         <input name="priceFormat" value={props.priceFormat || ''}
           //onFocus={props.focusHandler}
                onChange={props.changeLine(props.index)} />
       </div>
-      <div style={{ borderLeft: 0 }}>
+      <div>
         {!props.readOnly &&
-        <button type="button"
-                className={styles.deleteItem}
-                onClick={props.deleteHandler(props.index)}>
-          <Delete className={"no-print"} />
-        </button>}
+        <DeleteIcon className={`no-print ${styles.deleteItem}`}
+                    onClick={props.deleteHandler(props.index)} />}
+      </div>
+      <div>
+        {!props.readOnly && (props.index + 1 === props.last) &&
+        <AddIcon className={`no-print ${styles.addItem}`}
+                 onClick={props.addHandler} />}
       </div>
     </div>
   )

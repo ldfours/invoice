@@ -6,14 +6,13 @@ $invoiceMaxWidth: 800px;
 $borderRadius: 4px;
 $fontSizeInvoice: 0.6em;
 
-$tableBorderColor: black;
 $boxBgColor: #eee;
 $bgColor: white;
 $addColor: darkgreen;
 $removeColor: darkred;
 
 $fontFamilyText: "Times New Roman", "DejaVu Serif", "FreeSerif", serif;
-$fontSizeNotes: 0.9em;
+$fontSizeNotes: 0.96em;
 $fontSizeMajorHeading: 18pt;
 
 /*
@@ -22,7 +21,7 @@ and the second value is the grid tracks to repeat, e.g
     grid-template-rows: repeat(2, 100px auto 20%); =>
     grid-template-rows: 100px auto 20% 100px auto 20px;
 */
-$tableColumns: [date] 3fr [description] 5fr repeat(2, 1.2fr) [x icon] .4fr;
+$tableColumns: [date] 3fr [description] 5fr repeat(2, 1.2fr) [x icon] .4fr .4fr;
 
 %flex-center {
   //display: flex;
