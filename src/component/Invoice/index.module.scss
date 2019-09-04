@@ -1,9 +1,7 @@
 @import 'main';
 
 .invoice {
-  padding: 2 * $rhythm;
   margin: ($rhythm * 2) auto;
-  //background: $bgColor;
   max-width: $invoiceMaxWidth;
   border-width: 0;
 }
@@ -46,7 +44,7 @@
   }
 }
 
-.major, .address, .label {
+.major, .address {
   display: flex;
   padding: ($rhythm / 4) 0 ($rhythm/4) $rhythm/4;
 }
@@ -62,26 +60,6 @@
   }
   .label {
     font-style: oblique;
-  }
-  .from, .to {
-    padding: $rhythm;
-    border-radius: $borderRadius;
-    width: 100%;
-    max-width: $invoiceMaxWidth / 3;
-  }
-  .from {
-    display: block;
-    font-style: normal;
-    margin-right: $rhythm / 2;
-    border: 1px solid;
-  }
-  .to {
-    display: block;
-    margin-left: $rhythm / 2;
-    padding: 0;
-    .value {
-      text-align: right;
-    }
   }
   .address {
     display: block;
@@ -159,7 +137,7 @@ button.submit {
   min-width: $invoiceMaxWidth / 3;
   max-width: $invoiceMaxWidth / 3;
   display: grid;
-  grid-template-columns: 1em auto;
+  grid-template-columns: 1.4em auto;
   & > .title {
     grid-column-start: 1;
     grid-column-end: 3;
@@ -176,6 +154,7 @@ button.submit {
 .totalLine {
   display: grid;
   grid-template-columns: $tableColumns;
+  margin-left: $rhythm;
   text-align: right;
   & > div {
     border-top: 1px solid;
@@ -198,35 +177,31 @@ button.submit {
 }
 
 .radio {
-  border-radius: 50%; // circle shape
-  -webkit-appearance: none; // radio or checkbox, then decorate
+  //width: 0.5em;
+  //height: 0.5em;
+  //vertical-align: middle;
+  //border: 1px solid black;
+  //outline: none;
+  //cursor: pointer;
+  //border-radius: 50%;
 
-  width: 0.5em;
-  height: 0.5em;
-  background-color: white;
-  vertical-align: middle;
-  border: 1px solid black;
-  outline: none;
-  cursor: pointer;
+  -webkit-appearance: checkbox; /* Chrome, Safari */
+  -moz-appearance: checkbox; /* Firefox */
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(0.8);
 }
 
 .radio:checked {
-  //-webkit-appearance: checkbox; /* Chrome, Safari, Opera */
-  //-moz-appearance: checkbox;    /* Firefox */
-  //-ms-appearance: checkbox;     /* not currently supported */
-
-  //background: url(http://cdn1.iconfinder.com/data/icons/onebit/PNG/onebit_34.png);
-  //background-repeat: no-repeat;
-  //background-position: center center;
-  //background-size: 30px 30px;
-
-  background-color: black;
+  //background-color: black;
+  //border: 0;
+  //background: url('https://image.flaticon.com/icons/png/512/462/462951.png') no-repeat center center;
+  //background-size: 1.4em; //or "cover"
 }
 
 .lineItem {
   display: grid;
   grid-template-columns: $tableColumns;
-  padding: 0;
+  margin-left: $rhythm;
 
   & > .header {
     font-family: inherit;
@@ -238,7 +213,6 @@ button.submit {
     @extend %flex-center;
     border-left: 1px solid;
     border-top: 1px solid;
-    width: 100%;
     min-width: $rhythm;
     &:nth-last-child(2) {
       border-left: 1px solid;
@@ -274,13 +248,13 @@ select {
 }
 
 input, select {
-  padding: $rhythm / 6;
+  padding-left: $rhythm / 6;
   border-width: 0; // same as "border-style: none"
   width: 100%;
-  &[name=date] {
+  &[name=date], &[name=description] {
     text-align: left;
   }
-  &[name=description], &[name=quantity] {
+  &[name=quantity] {
     text-align: center;
   }
   &[name=price] {

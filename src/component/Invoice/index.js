@@ -327,7 +327,8 @@ class InvoiceBase extends Component {
           {/* table header */}
           <div className={`${styles.lineItem}`}>
             {this.state.column.map && this.state.column.map(col =>
-              <div className={styles.header} key={col} name={"col"}>{col}</div>)}
+              <div className={styles.header} key={col}
+                   name={"col"}>{col}</div>)}
             <div />
             <div />
           </div>
@@ -388,15 +389,14 @@ class InvoiceBase extends Component {
             {this.state.segment.radio.map(r =>
               <React.Fragment key={r}>
                 <div className={`${styles.label}`}>
-                  <input className={styles.radio}
+                  <input className={`${styles.radio}`}
                          type="radio"
                          name="payment"
                          value={r}
                          checked={this.state.payment === r}
                          onChange={this.onChangeInvoice} />
                 </div>
-                <div
-                  className={styles.label}>
+                <div className={styles.label}>
                   {r === "Cheque" ? "Cheque/email transfer" : r}
                 </div>
               </React.Fragment>
