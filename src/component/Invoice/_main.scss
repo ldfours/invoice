@@ -3,13 +3,13 @@ $rhythm: 20px;
 
 $sideMargin: $rhythm*1.2;
 $invoiceMaxWidth: 800px;
+/* https://www.rapidtables.com/web/color/gray-color.html */
+$border: 1px solid rgba(105,105,105,1);
 $borderRadius: 4px;
 $fontSizeInvoice: 0.6em;
 
 $boxBgColor: #eee;
 $bgColor: white;
-$addColor: darkgreen;
-$removeColor: darkred;
 
 $fontFamilyText: "Times New Roman", "DejaVu Serif", "FreeSerif", serif;
 $fontSizeNotes: 0.97em;

@@ -15,14 +15,6 @@
   font-size: 20pt;
 }
 
-.brand {
-  margin-bottom: $rhythm * 2;
-  .logo {
-    display: inline-block;
-    border-radius: $borderRadius;
-  }
-}
-
 .description {
   display: grid;
   margin-left: $sideMargin;
@@ -76,49 +68,11 @@ button.submit {
   padding: $rhythm $rhythm;
   background: lightyellow;
   border-radius: $borderRadius;
-  border: 1px solid #444;
-}
-
-.footer {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  .comments {
-    padding: $rhythm;
-    border-radius: $borderRadius;
-    h4, h5 {
-      margin-top: 0;
-      margin-bottom: $rhythm / 2;
-    }
-  }
-  .comments {
-    text-align: left;
-    background: #eee;
-  }
-  .closing {
-    padding-top: $rhythm;
-  }
-
+  border: $border;
 }
 
 .lineItems {
   margin-bottom: $rhythm * 4;
-  .addItem {
-    padding-top: $rhythm;
-    button {
-      @extend %flex-center;
-      background: none;
-      padding: $rhythm / 2;
-      border: 1px solid $addColor;
-      color: $addColor;
-      border-radius: $borderRadius;
-      float: right;
-      .addIcon {
-        color: $addColor;
-        margin-right: $rhythm / 4;
-      }
-    }
-  }
 }
 
 .rule {
@@ -182,13 +136,13 @@ button.submit {
   margin-left: $rhythm;
   text-align: right;
   & > div {
-    border-top: 1px solid;
-    border-bottom: 1px solid;
+    border-top: $border;
+    border-bottom: $border;
     &:first-of-type {
-      border-left: 1px solid;
+      border-left: $border;
     }
     &:last-of-type {
-      border-right: 1px solid;
+      border-right: $border;
     }
   }
 }
@@ -205,7 +159,7 @@ button.submit {
   //width: 0.5em;
   //height: 0.5em;
   //vertical-align: middle;
-  //border: 1px solid black;
+  //border: $border;
   //outline: none;
   //cursor: pointer;
   //border-radius: 50%;
@@ -236,14 +190,12 @@ button.submit {
     text-align: center;
     font-family: $fontFamilyText;
     @extend %flex-center;
-    border-left: 1px solid;
-    border-top: 1px solid;
+    border-left: $border;
+    border-top: $border;
     min-width: $rhythm;
     &:nth-last-child(2) {
-      border-left: 1px solid;
       border-top: 0;
       border-bottom: 0;
-
     }
     &:last-of-type {
       border: 0;
@@ -255,14 +207,14 @@ button.submit {
 
 .deleteItem {
   @extend %flex-center;
-  color: $removeColor;
+  color: darkred;
   background: none;
   padding: 0;
 }
 
 .addItem {
   @extend %flex-center;
-  color: $addColor;
+  color: darkgreen;
   background: none;
   padding: 0;
 }
@@ -270,6 +222,11 @@ button.submit {
 select {
   -webkit-appearance: button;
   background-color: white;
+}
+
+input[name=tag], textarea {
+  border: $border;
+  width: 100%;
 }
 
 input, select {

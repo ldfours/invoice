@@ -280,6 +280,11 @@ class InvoiceBase extends Component {
 
     const totalRows = 11
 
+    const completeInvoice =
+      this.state.customer.length > 0 &&
+      this.state.lineItems.length > 0 &&
+      this.state.description.length > 0
+
     return (
       <div className={styles.invoice}>
         <div className={styles.addresses}>
@@ -402,17 +407,19 @@ class InvoiceBase extends Component {
               </React.Fragment>
             )}
           </div>}
-
+          <div className={"no-print"}>
+            <input type="text" name="tag" value={this.state.tag}
+                   onChange={this.onChangeInvoice} />
+            <textarea rows="1" name="notes" value={this.state.notes}
+                      onChange={this.onChangeInvoice} />
+          </div>
         </form>
 
         <div className={"no-print"}>
           {/* submit buttons */}
           <div className={styles.major}>
-            {(this.state.customer.length > 0 &&
-              this.state.lineItems.length > 0 &&
-              this.state.description.length > 0) &&
-            <button className={styles.submit}
-                    onClick={this.onSave}>
+            {completeInvoice &&
+            <button className={styles.submit} onClick={this.onSave}>
               Save
             </button>}
             {this.state.id &&
@@ -421,9 +428,6 @@ class InvoiceBase extends Component {
               Remove {this.state.id.substring(0, 6)}
             </button>}
           </div>
-        </div>
-
-        <div className={styles.footer}>
         </div>
       </div>
     )
