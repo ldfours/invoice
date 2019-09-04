@@ -226,7 +226,7 @@ select {
 
 input[name=tag], textarea {
   border: $border;
-  width: 100%;
+  width: 40%;
 }
 
 input, select {
@@ -242,4 +242,10 @@ input, select {
   &[name=price] {
     text-align: right;
   }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

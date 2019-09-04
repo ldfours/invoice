@@ -407,9 +407,11 @@ class InvoiceBase extends Component {
               </React.Fragment>
             )}
           </div>}
-          <div className={"no-print"}>
+          <div className={`no-print ${styles.row}`}>
+            tag:
             <input type="text" name="tag" value={this.state.tag}
                    onChange={this.onChangeInvoice} />
+            notes:
             <textarea rows="1" name="notes" value={this.state.notes}
                       onChange={this.onChangeInvoice} />
           </div>
