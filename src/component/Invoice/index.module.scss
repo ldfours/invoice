@@ -226,7 +226,7 @@ select {
 
 input[name=tag], textarea {
   border: $border;
-  width: 40%;
+  width: 42%;
 }
 
 input, select {
@@ -245,7 +245,8 @@ input, select {
 }
 
 .row {
+  justify-content: space-between;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  padding: $rhythm;
 }

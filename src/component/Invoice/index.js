@@ -408,10 +408,10 @@ class InvoiceBase extends Component {
             )}
           </div>}
           <div className={`no-print ${styles.row}`}>
-            tag:
+            tag
             <input type="text" name="tag" value={this.state.tag}
                    onChange={this.onChangeInvoice} />
-            notes:
+            notes
             <textarea rows="1" name="notes" value={this.state.notes}
                       onChange={this.onChangeInvoice} />
           </div>
