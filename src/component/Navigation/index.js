@@ -19,16 +19,20 @@ const Navigation = () => (
 );
 
 const NavigationAuth = (props) => (
-  <nav className={"no-print"}>
+  <nav className={"no-print"} id="page-nav">
     {/*{JSON.stringify(props, null, 2)}*/}
-    <Link to={ROUTES.SEARCH}>Search</Link>
+    <label htmlFor="hamburger">&#9776;</label>
+    <input type="checkbox" id="hamburger" />
+    <ul>
+      <li><Link to={ROUTES.SEARCH}>Search</Link></li>
 
-    <Link to={{
-      pathname: ROUTES.INVOICE,
-      invoice: { readOnly: false }
-    }}>Create</Link>
+      <li><Link to={{
+        pathname: ROUTES.INVOICE,
+        invoice: { readOnly: false }
+      }}>Create</Link></li>
 
-    <SignOutButton />
+      <li><SignOutButton /></li>
+    </ul>
   </nav>
 );
 
