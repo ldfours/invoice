@@ -77,7 +77,7 @@ button.submit {
 
 .rule {
   // margin: <top> <right> <bottom> <left>
-  margin: -10pt $sideMargin 40px $sideMargin;
+  margin: -10pt $sideMargin*2.4 40px $sideMargin;
   border-top: 4px double;
   padding: 0 0;
 }
