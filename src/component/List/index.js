@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { compose } from '../../constant/util';
+import { capitalWords, compose } from '../../constant/util';
 import { AuthUserContext } from '../Session';
 import { withFirebase } from '../Firebase';
 import Table from './Table';
@@ -20,14 +20,15 @@ class InvoicesBase extends Component {
 
   queryInvoices = (query_key, query_val, limit = 20) => {
     this.setState({ loading: true })
+    const capital_query_val = capitalWords(query_val)
 
     this.props.firebase.invoices()
       .orderByChild(query_key)
       .limitToLast(limit)
 
       // filter query results to substring of a child node
-      .startAt(query_val)
-      .endAt(`${query_val}\uf8ff`)
+      .startAt(capital_query_val)
+      .endAt(`${capital_query_val}\uf8ff`)
       .once('value', snapshot => {
         const invoiceObject = snapshot.val()
         if (invoiceObject) {
@@ -38,7 +39,7 @@ class InvoicesBase extends Component {
           this.setState({
             invoices: invoiceObject,
             loading: false,
-            title: `${query_key} = ${query_val}`,
+            title: `${query_key} = ${capital_query_val}`,
           })
         } else {
           this.setState({

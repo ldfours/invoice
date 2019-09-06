@@ -20,7 +20,7 @@ code {
 /* Wrapper */
 #page-nav {
   width: 100%;
-  background: rgba(105,105,105,1);
+  background: rgba(105, 105, 105, 1);
   /* If you want the navigation bar to stick on top
   position: sticky;
   top: 0;
@@ -43,6 +43,10 @@ code {
   display: inline-block;
   padding: 10px;
   box-sizing: border-box;
+}
+
+#page-nav ul li:last-child {
+  float: right;
 }
 
 #page-nav ul li a {

@@ -17,6 +17,10 @@ function groupByRange(arr, n) {
       }, []
     ))
 }
+function isLetter(str) {
+  return str && str.length === 1 && str.match(/[a-z]/i);
+}
+
 */
 
 /*
@@ -51,18 +55,6 @@ const invoiceText =
     stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6) : {}
 */
 
-export const compose = (...fns) => x =>
-  fns.reduceRight((y, f) => f(y), x);
-
-
-/*
-export const range = (size, startAt = 0) => {
-  [...Array(size).keys()].map(i => i + startAt);
-}
-*/
-export const range = (start, end) =>
-  Array.from({ length: (end - start) }, (v, k) => k + start);
-
 /*
 export const formatDate = (date) => {
   const PARSING = "YYYY-MM-DD";
@@ -71,18 +63,25 @@ export const formatDate = (date) => {
 }
 */
 
-/*
-export const transformEntities = (lineItems, description) => {
-  lineItems.map(line => {
-      line.description = description;
+export const compose = (...fns) => x =>
+  fns.reduceRight((y, f) => f(y), x)
 
-      // date
-      line.date = formatDate(line.date);
-      return line;
-    }
-  )
-};
+/* returns type of @obj object */
+//  arguments to eslint annotation are "off" or 0, "warn" or 1, "error" or 2
+/*eslint no-unused-vars: "off"*/
+const type = obj => {
+  //const text = Function.prototype.toString.call(obj.constructor)
+  //return text.match(/function (.*)\(/)[1]
+  return Object.prototype.toString.call(obj)
+}
+
+/*
+export const range = (size, startAt = 0) => {
+  [...Array(size).keys()].map(i => i + startAt);
+}
 */
+export const range = (start, end) =>
+  Array.from({ length: (end - start) }, (v, k) => k + start);
 
 export const formatCurrency =
   (amount, currency = 'USD', locale = 'en-US') => {
@@ -109,4 +108,10 @@ export const now = () => {
   const yyyy = today.getFullYear()
 
   return (`${yyyy}-${mm}-${dd}`)
+}
+
+export const capitalWords = (alphaNum) => {
+  return alphaNum.toString().split(' ')
+    .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+    .join(' ')
 }
