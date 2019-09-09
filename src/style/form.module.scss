@@ -1,14 +1,10 @@
 @charset "UTF-8";
 .form {
-  //position: relative;
-  margin-left: 7em;
   padding: 1.2em;
   width: 372px;
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: none;
-  justify-content: space-around;
 }
 
 .field {
