@@ -2,11 +2,15 @@
   "rules": {
     ".read": "auth != null",
     ".write": "auth != null",
-    "invoice": {
-      ".indexOn": [
-        "created",
-        "customer"
-      ]
+    "user": {
+      "$user_id": {
+        "invoice": {
+          ".indexOn": [
+            "created",
+            "customer"
+          ]
+        }
+      }
     }
   }
 }

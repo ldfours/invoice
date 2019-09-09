@@ -45,17 +45,17 @@ class Firebase {
               emailVerified: authUser.emailVerified,
               providerData: authUser.providerData,
             };
-            next(authUser);
-          });
+            this.auth.userKey = `user/${authUser.uid}`
+            next(authUser)
+          })
       } else {
         fallback();
       }
     });
 
-  layout = () => this.db.ref('layout')
-
-  invoice = id => this.db.ref(`invoice/${id}`)
-  invoices = () => this.db.ref('invoice')
+  layout = () => this.db.ref(`${this.auth.userKey}/layout`)
+  invoices = () => this.db.ref(`${this.auth.userKey}/invoice`)
+  invoice = id => this.db.ref(`${this.auth.userKey}/invoice/${id}`)
 }
 
 export default Firebase;

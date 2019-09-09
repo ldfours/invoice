@@ -54,8 +54,8 @@ class InvoiceBase extends Component {
   // https://firebase.google.com/docs/database/web/read-and-write
   // https://firebase.google.com/docs/firestore/manage-data/add-data
   queryLayout = () => {
-    this.props
-      .firebase.layout()
+    this.props.firebase
+      .layout()
       .once('value', snapshot => {
         const obj = snapshot.val()
         if (obj) {
