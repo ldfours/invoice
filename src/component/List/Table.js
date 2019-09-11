@@ -1,24 +1,15 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-import * as ROUTES from '../../constant/route';
+import { INVOICE } from '../../constant/route';
 import { sumArr } from '../../constant/util';
+import styles from './Table.module.scss'
 
 const Table = ({ invoices, title }) => {
   return (
     <div>
-      <label>{title}</label>
-      <table>
-        <thead>
-        <tr>
-          <th>Client</th>
-          <th>Description</th>
-          <th>Visits</th>
-          <th>Total</th>
-          <th>Dates</th>
-          <th>Id</th>
-        </tr>
-        </thead>
+      <label style={{fontStyle: 'italic', fontWeight: 'bold'}}>{title}</label>
+      <table className={`${styles.table}`}>
         <tbody>
         {Object.keys(invoices).map(
           id => {
@@ -30,12 +21,12 @@ const Table = ({ invoices, title }) => {
               <tr key={id}>
                 <td>{invoice.customer}</td>
                 <td>{invoice.description}</td>
-                <td>{invoice.lineItems.length}</td>
+                <td>x{invoice.lineItems.length}</td>
                 <td>{"$"}{sumArr(invoice.lineItems
                   .map(item => parseInt(item.price)))}</td>
                 <td>
                   <Link to={{
-                    pathname: ROUTES.INVOICE,
+                    pathname: INVOICE,
                     invoice: { id, ...invoice }
                   }}>
 
@@ -53,7 +44,6 @@ const Table = ({ invoices, title }) => {
 
                   </Link>
                 </td>
-                <td>{id.substring(0,6)}</td>
               </tr>
             )
           }).reverse()}

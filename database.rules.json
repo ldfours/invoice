@@ -3,7 +3,7 @@
     ".read": "auth != null",
     ".write": "auth != null",
     "user": {
-      "$user_id": {
+      "$uid": {
         "invoice": {
           ".indexOn": [
             "created",
