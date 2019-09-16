@@ -35,6 +35,7 @@ class InvoiceBase extends Component {
     payment: '',
     tag: '',
     notes: '',
+    extraNote: '',
     lineItems: [lineItemsInitState],
 
     // selected invoice
@@ -84,7 +85,8 @@ class InvoiceBase extends Component {
       lineItems: items,
       payment: this.state.payment,
       tag: this.state.tag,
-      notes: this.state.notes
+      notes: this.state.notes,
+      extraNote: this.state.extraNote
     }
 
     const firebaseSave = (id, invoice, logInvoiceName) => {
@@ -208,9 +210,11 @@ class InvoiceBase extends Component {
 
   // It is sometimes convenient for users to have an input automatically
   // select its entire value whenever it receives focus.
+  /*
   onInputFocus = (event) => {
     event.target.select()
   }
+  */
 
   /*
   * When the “Add Line Item” button is clicked,
@@ -224,12 +228,13 @@ class InvoiceBase extends Component {
   * */
   onAddLine = (event) => {
     let quantity = ''
-    // category="slp"
-    if (this.state.description === Object.keys(this.state.category)[4]) {
-      quantity = "min"
-    } else if (this.state.description) {
-      quantity = "hr"
-    }
+    /*
+        if (this.state.description === Object.keys(this.state.category)[0]) {
+          quantity = "min"
+        } else if (this.state.description) {
+          quantity = "hr"
+        }
+    */
 
     this.setState({
       lineItems: this.state.lineItems.concat([{
@@ -373,16 +378,18 @@ class InvoiceBase extends Component {
           </div>
 
           {/* bottom notes */}
-          <div className={`${styles.note}`}>
+          <div className={`${styles.note} ${styles.text}`}>
             {note &&
-            <div className={`${styles.text} ${styles.hangingIndent}`}>
-              {note[0]}:<span> </span>
+            <div className={`${styles.hangingIndent}`}>
+              {note[0] + ": "}
               {note.slice(1, note.length)
                 .map((line, i) =>
                   <span key={i}>{line}
                     {line.length > 0 && i < note.length - 2 && ", "}
                 </span>)}
             </div>}
+            <input type="text" name="extraNote" value={this.state.extraNote}
+                   onChange={this.onChangeInvoice} />
           </div>
 
           {/* payment */}
@@ -408,10 +415,10 @@ class InvoiceBase extends Component {
             )}
           </div>}
           <div className={`no-print ${styles.row}`}>
-            tag
+            tag:
             <input type="text" name="tag" value={this.state.tag}
                    onChange={this.onChangeInvoice} />
-            notes
+            notes:
             <textarea rows="1" name="notes" value={this.state.notes}
                       onChange={this.onChangeInvoice} />
           </div>
@@ -425,8 +432,7 @@ class InvoiceBase extends Component {
               Save
             </button>}
             {this.state.id &&
-            <button className={styles.submit}
-                    onClick={this.onRemove}>
+            <button className={styles.submit} onClick={this.onRemove}>
               Remove {this.state.id.substring(0, 6)}
             </button>}
           </div>

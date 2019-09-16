@@ -14,17 +14,21 @@ const Line = (props) => {
                onChange={props.changeLine(props.index)} />
       </div>
       <div>
-        <select name="description"
-                value={props.description}
-                onChange={props.changeInvoice}>
-          {['', ...props.categories]
+        <textarea rows="1" /*input type="text"*/
+                  name="description" value={props.description}
+                  onChange={props.changeInvoice}
+                  list={"descriptionName"} />
+        <datalist id="descriptionName"
+                  value={props.description}>
+          {[...props.categories]
             .map(function (category) {
               return (<option key={category} value={category}>
                 {category}</option>)
             })}
-        </select>
+        </datalist>
       </div>
-      <div>
+      <div /*dangerouslySetInnerHTML={{
+          __html: '<sup>1</sup>&frasl;<sub>2</sub>' }}*/>
         <input name="quantity" value={props.quantity}
                onChange={props.changeLine(props.index)} />
       </div>
@@ -47,7 +51,7 @@ const Line = (props) => {
   )
 }
 Line.propTypes = {
-  index: PropTypes.number, //.isRequired,
+  index: PropTypes.number,
   date: PropTypes.string,
   description: PropTypes.string,
   quantity: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

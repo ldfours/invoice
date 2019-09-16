@@ -7,7 +7,7 @@
 }
 
 .mainTitle {
-  padding-top: $rhythm;
+  padding-top: 0;
   padding-bottom: $rhythm;
   margin-left: $sideMargin;
   margin-right: $sideMargin;
@@ -148,7 +148,7 @@ button.submit {
 }
 
 .note {
-  margin: 0 $sideMargin $rhythm*1.6 $sideMargin;
+  margin: 0 $sideMargin $rhythm/4 $sideMargin;
   & > .text {
     font-size: $fontSizeNotes;
     font-family: $fontFamilyText;
@@ -224,12 +224,12 @@ select {
   background-color: white;
 }
 
-input[name=tag], textarea {
+input[name=tag], textarea[name=notes] {
   border: $border;
   width: 42%;
 }
 
-input, select {
+input, select, textarea {
   padding-left: $rhythm / 6;
   border-width: 0; // same as "border-style: none"
   width: 100%;
@@ -242,6 +242,11 @@ input, select {
   &[name=price] {
     text-align: right;
   }
+}
+
+textarea {
+  padding: 0;
+  overflow: hidden;
 }
 
 .row {

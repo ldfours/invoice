@@ -39,7 +39,7 @@ class InvoicesBase extends Component {
           this.setState({
             invoices: invoiceObject,
             loading: false,
-            title: `${query_key} ${capital_query_val}`,
+            title: `${query_key}: ${capital_query_val}`,
           })
         } else {
           this.setState({
