@@ -133,9 +133,11 @@ class InvoiceBase extends Component {
   componentDidMount() {
     const setStatePriceForm = () => {
       this.setState(state => {
-        state.lineItems.map(item =>
+        state.lineItems.map(item => {
           //^[0-9]+$/.test(price)
-          item.priceFormat = formatCurrency(item.price))
+          item.priceFormat = formatCurrency(item.price)
+          return (item.priceFormat)
+        })
         return state; // should return updated state
       });
     }
@@ -190,7 +192,7 @@ class InvoiceBase extends Component {
     const hook = (item, target) => {
       if (target.name === "priceFormat") {
         //target.value = parseFloat(target.value)
-        const match = target.value.match(/^\$([0-9]+)\.00$/)
+        const match = target.value.match(/^\$([0-9]+\.[0-9][0-9])$/)
         if (match) {
           const newPrice = match[1]
           item.price = newPrice
@@ -280,7 +282,7 @@ class InvoiceBase extends Component {
     const total = formatCurrency(
       sumArr(
         this.state.lineItems.map(item => {
-          return parseInt(item.price)
+          return parseFloat(item.price)
         })))
 
     const totalRows = 11
