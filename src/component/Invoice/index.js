@@ -317,12 +317,12 @@ class InvoiceBase extends Component {
         {/* table caption */}
         <div className={styles.description}>
           <div className={styles.key}>
-            {this.state.caption.length > 0 && `${this.state.caption[0]}:`}
-            <span className={styles.value}> {date}</span>
+            {this.state.caption.length > 0 && `${this.state.caption[0]}` &&
+            <span className={styles.value}> {date}</span>}
           </div>
           <div className={styles.value} />
           <div className={styles.key}>
-            {this.state.caption && `${this.state.caption[1]}:`}
+            {this.state.caption && `${this.state.caption[1]}`}
             <span>  </span>
             <input name="customer" value={this.state.customer}
                    className={`${styles.value} ${styles.name}`}
@@ -357,14 +357,15 @@ class InvoiceBase extends Component {
                     deleteHandler={this.onDeleteLine} />
             ))}
             {/* read-only rows */}
-            {range(0, totalRows - this.state.lineItems.length).map(n =>
-              <Line key={n} readOnly={true}
-                    description={''}
-                    categories={[]}
-                    addHandler={f => f}
-                    changeLine={this.onChangeLine}
-                    changeInvoice={f => f}
-                    deleteHandler={f => f} />)}
+            {range(0, totalRows - this.state.lineItems.length)
+              .map(n =>
+                <Line key={n} readOnly={true}
+                      description={''}
+                      categories={[]}
+                      addHandler={f => f}
+                      changeLine={this.onChangeLine}
+                      changeInvoice={f => f}
+                      deleteHandler={f => f} />)}
             {/* total row */}
             <div className={styles.totalLine}>
               <div />

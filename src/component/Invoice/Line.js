@@ -7,35 +7,44 @@ import { MdCancel as DeleteIcon } from 'react-icons/md'
 import styles from './index.module.scss'
 
 const Line = (props) => {
+  const isAddLine = !props.readOnly && (props.index + 1 === props.last)
+
   return (
     <div className={styles.lineItem}>
       <div>
+        {!props.readOnly &&
         <input name="date" type="text" value={props.date}
-               onChange={props.changeLine(props.index)} />
+               onChange={props.changeLine(props.index)} />}
       </div>
       <div>
-        <textarea rows="1" /*input type="text"*/
-                  name="description" value={props.description}
-                  onChange={props.changeInvoice}
-                  list={"descriptionName"} />
-        <datalist id="descriptionName"
-                  value={props.description}>
-          {[...props.categories]
-            .map(function (category) {
-              return (<option key={category} value={category}>
-                {category}</option>)
-            })}
-        </datalist>
+        {!props.readOnly ?
+          <>
+          <textarea rows="1" /*input type="text"*/
+                    name="description" value={props.description}
+                    onChange={props.changeInvoice}
+                    list={"descriptionName"} />
+          <datalist id="descriptionName"
+                    value={props.description}>
+            {[...props.categories]
+              .map(function (category) {
+                return (<option key={category} value={category}>
+                  {category}</option>)
+              })}
+          </datalist>
+          </> :
+          <input name="description" readOnly styles={{ padding: 0 }} />}
       </div>
       <div /*dangerouslySetInnerHTML={{
           __html: '<sup>1</sup>&frasl;<sub>2</sub>' }}*/>
+        {!props.readOnly &&
         <input name="quantity" value={props.quantity}
-               onChange={props.changeLine(props.index)} />
+               onChange={props.changeLine(props.index)} />}
       </div>
       <div>
+        {!props.readOnly &&
         <input name="priceFormat" value={props.priceFormat || ''}
           //onFocus={props.focusHandler}
-               onChange={props.changeLine(props.index)} />
+               onChange={props.changeLine(props.index)} />}
       </div>
       <div>
         {!props.readOnly &&
@@ -43,7 +52,7 @@ const Line = (props) => {
                     onClick={props.deleteHandler(props.index)} />}
       </div>
       <div>
-        {!props.readOnly && (props.index + 1 === props.last) &&
+        {isAddLine &&
         <AddIcon className={`no-print ${styles.addItem}`}
                  onClick={props.addHandler} />}
       </div>
