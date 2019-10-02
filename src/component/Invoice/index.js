@@ -320,7 +320,7 @@ class InvoiceBase extends Component {
         <div className={styles.description}>
           <div className={styles.key}>
             {this.state.caption.length > 0 && `${this.state.caption[0]}` &&
-            <span className={styles.value}> {date}</span>}
+            <span className={styles.value}>Date: {date}</span>}
           </div>
           <div className={styles.value} />
           <div className={styles.key}>
