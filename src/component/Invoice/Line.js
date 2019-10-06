@@ -19,18 +19,30 @@ const Line = (props) => {
       <div>
         {!props.readOnly ?
           <>
-          <textarea rows="1" /*input type="text"*/
-                    name="description" value={props.description}
-                    onChange={props.changeInvoice}
-                    list={"descriptionName"} />
-          <datalist id="descriptionName"
-                    value={props.description}>
-            {[...props.categories]
-              .map(function (category) {
-                return (<option key={category} value={category}>
-                  {category}</option>)
-              })}
-          </datalist>
+            {/*
+            <textarea rows="1"
+                      name="description" value={props.description}
+                      onChange={props.changeInvoice}
+                      list={"descriptionName"} />
+            <datalist id="descriptionName"
+                      value={props.description}>
+              {[...props.categories]
+                .map(function (category) {
+                  return (<option key={category} value={category}>
+                    {category}</option>)
+                })}
+            </datalist>
+            */}
+            <select name="description"
+                    value={props.description}
+                    onChange={props.changeInvoice}>
+              {['', ...props.categories]
+                .map(function (category) {
+                  return (<option key={category} value={category}>
+                    {category}</option>)
+                })}
+            </select>
+
           </> :
           <input name="description" readOnly styles={{ padding: 0 }} />}
       </div>

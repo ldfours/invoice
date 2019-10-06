@@ -1,28 +1,30 @@
 {
-  "name": "react-firebase-authentication",
-  "version": "0.2.0",
-  "private": true,
-  "dependencies": {
-    "env-cmd": "latest",
-    "firebase": "latest",
-    "prop-types": "latest",
-    "react": "latest",
-    "react-beautiful-dnd": "latest",
-    "react-dom": "latest",
-    "react-router-dom": "latest",
-    "react-scripts": "latest",
-    "uuid": "latest"
-  },
-  "scripts": {
-    "start": "env-cmd react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom --passWithNoTests",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+    "name": "invoice",
+    "version": "0.2.0",
+    "private": true,
+    "dependencies": {
+        "env-cmd": "latest",
+        "firebase": "latest",
+        "firebase-tools": "^7.4.0",
+        "node-sass": "latest",
+        "prop-types": "latest",
+        "react": "latest",
+        "react-dom": "latest",
+        "react-icons": "latest",
+        "react-router-dom": "latest",
+        "react-scripts": "latest",
+        "uuid": "latest"
+    },
+    "scripts": {
+        "start": "env-cmd react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom --passWithNoTests",
+        "eject": "react-scripts eject"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ]
 }
