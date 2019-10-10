@@ -21,7 +21,7 @@ import Line from './Line'
 import styles from './index.module.scss'
 
 const lineItemsInitState = {
-  date: '', quantity: '', price: 0.00
+  date: '', /* description: '', */ quantity: '', price: 0.00
 }
 
 class InvoiceBase extends Component {
@@ -219,7 +219,7 @@ class InvoiceBase extends Component {
   */
 
   /*
-  * When the “Add Line Item” button is clicked,
+  * When the "Add Line Item" button is clicked,
   * the onClick() event calls the handleAddLineItem() function.
   * A new line item is added to the Invoice
   * by adding a new line item object to the component state’s lineItems array.

@@ -19,7 +19,6 @@ const Line = (props) => {
       <div>
         {!props.readOnly ?
           <>
-            {/*
             <textarea rows="1"
                       name="description" value={props.description}
                       onChange={props.changeInvoice}
@@ -32,7 +31,7 @@ const Line = (props) => {
                     {category}</option>)
                 })}
             </datalist>
-            */}
+            {/*
             <select name="description"
                     value={props.description}
                     onChange={props.changeInvoice}>
@@ -42,7 +41,7 @@ const Line = (props) => {
                     {category}</option>)
                 })}
             </select>
-
+            */}
           </> :
           <input name="description" readOnly styles={{ padding: 0 }} />}
       </div>
