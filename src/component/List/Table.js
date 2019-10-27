@@ -14,13 +14,13 @@ const Table = ({ invoices, title }) => {
         {Object.keys(invoices).map(
           id => {
             const invoice = invoices[id]
-            // set the same description for each line in the invoice
-            invoice.lineItems.map(line => line.description = invoice.description)
+            // set the same category for each line in the invoice
+            invoice.lineItems.map(line => line.category = invoice.category)
 
             return (
               <tr key={id}>
                 <td>{invoice.customer}</td>
-                <td>{invoice.description}</td>
+                <td>{invoice.category}</td>
                 <td>x{invoice.lineItems.length}</td>
                 <td>{"$"}{sumArr(invoice.lineItems
                   .map(item => parseInt(item.price)))}</td>
