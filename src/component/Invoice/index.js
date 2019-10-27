@@ -308,10 +308,10 @@ class InvoiceBase extends Component {
                 <div className={styles.rule} />
                 <div className={"no-print"}
                      style={{ textAlign: "center", border: 1 }}>
-                    <select
-                            name="category"
+                    <select name="category"
                             value={this.state.category}
                             onChange={this.onChangeInvoice}>
+                        <option/>
                         {Object.keys(this.state.categories)
                             .map(function (categories) {
                                 return (
