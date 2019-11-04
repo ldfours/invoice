@@ -20,7 +20,7 @@ const Table = ({ invoices, title }) => {
             return (
               <tr key={id}>
                 <td>{invoice.customer}</td>
-                <td>{invoice.category}</td>
+                <td>{invoice.lineItems[0].description || invoice.category}</td>
                 <td>x{invoice.lineItems.length}</td>
                 <td>{"$"}{sumArr(invoice.lineItems
                   .map(item => parseInt(item.price)))}</td>
@@ -29,13 +29,14 @@ const Table = ({ invoices, title }) => {
                     pathname: INVOICE,
                     invoice: { id, ...invoice }
                   }}>
-
                     <table>
                       <tbody>
                       <tr>
                         {invoice.lineItems.map((line, i) =>
                           (<td width={2} key={i}>
-                              <div>{line.date} {"$"}{line.price}</div>
+                              <div>
+                                  {line.date} {i===0 && invoice.tag}{"$"}{line.price}
+                              </div>
                             </td>
                           ))}
                       </tr>

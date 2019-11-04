@@ -97,8 +97,8 @@ class InvoiceBase extends Component {
 
         // validation
         if (!(this.state.customer.length > 0 &&
-            this.state.lineItems.length > 0 &&
-            this.state.category.length > 0)) {
+                this.state.lineItems.length > 0 &&
+                this.state.category.length > 0)) {
             console.log("can not save empty invoice")
             return false
         }
@@ -262,13 +262,21 @@ class InvoiceBase extends Component {
     }
 
     render() {
-        const date = this.state.lineItems.length > 0 &&
+        const first = this.state.category === " " ?
+            this.state.tag :
+            this.state.lineItems.length > 0 &&
+            this.state.caption[0] + " " +
             this.state.lineItems[this.state.lineItems.length - 1].date
 
         const note =
             this.state.categories && this.state.category &&
             this.state.categories[this.state.category] &&
             this.state.categories[this.state.category].note
+
+        const column =
+            this.state.categories && this.state.category &&
+            this.state.categories[this.state.category] &&
+            this.state.categories[this.state.category].column
 
         const total = formatCurrency(
             sumArr(
@@ -310,7 +318,6 @@ class InvoiceBase extends Component {
                     <select name="category"
                             value={this.state.category}
                             onChange={this.onChangeInvoice}>
-                        <option/>
                         {Object.keys(this.state.categories)
                             .map(function (categories) {
                                 return (
@@ -323,9 +330,8 @@ class InvoiceBase extends Component {
                 {/* table caption */}
                 <div className={styles.description}>
                     <div className={styles.key}>
-                        {this.state.caption.length > 0 &&
-                        `${this.state.caption[0]}` &&
-                        <span className={styles.value}>Date: {date}</span>}
+                        {this.state.caption && `${this.state.caption[0]}` &&
+                        <span className={styles.value}>{first}</span>}
                     </div>
                     <div className={styles.value} />
                     <div className={styles.key}>
@@ -343,8 +349,8 @@ class InvoiceBase extends Component {
                 <form>
                     {/* table header */}
                     <div className={`${styles.lineItem}`}>
-                        {this.state.column.map &&
-                        this.state.column.map(col =>
+                        {column && column.map &&
+                        column.map(col =>
                             <div className={styles.header} key={col}
                                  name={"col"}>{col}</div>)}
                         <div />
@@ -390,13 +396,8 @@ class InvoiceBase extends Component {
                     <div className={`${styles.note} ${styles.text}`}>
                         {note &&
                         <div className={`${styles.hangingIndent}`}>
-                            {note[0] + ": "}
-                            {note.slice(1, note.length)
-                                .map((line, i) =>
-                                    <span key={i}>{line}
-                                        {line.length > 0 &&
-                                        i < note.length - 2 && ", "}
-                                    </span>)}
+                            {note.map((line, i) =>
+                                <span key={i}>{line} </span>)}
                         </div>}
                         <input type="text" name="extraNote"
                                value={this.state.extraNote}
