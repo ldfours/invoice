@@ -280,8 +280,7 @@ class InvoiceBase extends Component {
 
         const completeInvoice =
             this.state.customer.length > 0 &&
-            this.state.lineItems.length > 0 &&
-            this.state.category.length > 0
+            this.state.lineItems.length > 0
 
         return (
             <div className={styles.invoice}>
