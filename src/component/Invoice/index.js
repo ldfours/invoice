@@ -5,19 +5,6 @@ import { withFirebase } from '../Firebase';
 import { clone, sumArr, formatCurrency, now, range } from '../../constant/util'
 import Line from './Line'
 
-/*
-* SCSS Modules for ensuring there are no naming conflicts in projects with multiple
-* Components that might use the same class names.
-* The ComponentName.modules.scss file looks and works just like any
-* normal SCSS file except the classes are invoked in JSX slightly differently.
-* Notice the import line: import styles from ...
-* To apply a give .example style to a given component,
-* you would refer to styles.example in the className prop:
-*    <ExampleComponent className={styles.example}>
-* For multiple and/or conditional styles,
-* ES6 strings + interpolation can be used to add additional expressions:
-     <ExampleComponent className={`${styles.example} ${styles.anotherExample}`} />
-*/
 import styles from './index.module.scss'
 
 const lineItemsInitState = {
@@ -308,21 +295,24 @@ class InvoiceBase extends Component {
                         </div>)}
 
                 </div>
-                {/* "Invoice" title */}
+                {/* main title */}
                 <div className={styles.mainTitle}>
                     {this.state.title && this.state.title}
                 </div>
                 <div className={styles.rule} />
                 <div className={"no-print"}
                      style={{ textAlign: "center", border: 1 }}>
+                    {/* categories dropdown */}
                     <select name="category"
                             value={this.state.category}
                             onChange={this.onChangeInvoice}>
+                        <option />
                         {Object.keys(this.state.categories)
                             .map(function (categories) {
                                 return (
                                     <option key={categories} value={categories}>
-                                        {categories}</option>)
+                                        {categories}
+                                    </option>)
                             })}
                     </select>
                 </div>
