@@ -5,10 +5,12 @@ import { INVOICE } from '../../constant/route';
 import { sumArr } from '../../constant/util';
 import styles from './Table.module.scss'
 
-const Table = ({ invoices, title }) => {
+const Table = ({ invoices, query_key, query_val }) => {
   return (
     <div>
-      <label style={{fontStyle: 'italic', fontWeight: 'bold'}}>{title}</label>
+      <label style={{fontStyle: 'italic', fontWeight: 'bold'}}>
+          {`${query_key} ${query_val}`}
+      </label>
       <table className={`${styles.table}`}>
         <tbody>
         {Object.keys(invoices).map(
@@ -27,7 +29,7 @@ const Table = ({ invoices, title }) => {
                 <td>
                   <Link to={{
                     pathname: INVOICE,
-                    invoice: { id, ...invoice }
+                    invoice: { id, query_key, query_val, ...invoice }
                   }}>
                     <table>
                       <tbody>

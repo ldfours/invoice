@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import uuidv4 from 'uuid/v4'
 
-import { withFirebase } from '../Firebase';
+import { withFirebase } from '../Firebase'
 import { clone, sumArr, formatCurrency, now, range } from '../../constant/util'
+import { LIST } from '../../constant/route'
 import Line from './Line'
 
 import styles from './index.module.scss'
@@ -241,6 +242,15 @@ class InvoiceBase extends Component {
     onSave = (event) => {
         event.preventDefault()
         this.saveInvoice()
+        console.log(this.state.query_key)
+        this.props.history.push(
+            {
+                pathname: LIST,
+                state: {
+                    query_key: this.state.query_key,
+                    query_val: this.state.query_val,
+                }
+            });
     }
 
     onRemove = (event) => {
