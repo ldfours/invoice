@@ -255,7 +255,6 @@ class InvoiceBase extends Component {
     onSave = (event) => {
         event.preventDefault()
         this.saveInvoice()
-        this.goToList()
     }
 
     onCopy = (event) => {
