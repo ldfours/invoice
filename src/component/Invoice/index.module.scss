@@ -36,11 +36,6 @@
   }
 }
 
-.major, .address {
-  display: flex;
-  padding: ($rhythm / 4) 0 ($rhythm/4) $rhythm/4;
-}
-
 .addresses {
   display: flex;
   flex-flow: column nowrap;
@@ -63,9 +58,10 @@
   flex-flow: row wrap;
 }
 
-button.submit {
-  display: block;
-  padding: $rhythm $rhythm;
+button.control {
+  display: inline;
+  padding: 0;
+  margin: 0;
   border-radius: $borderRadius;
   border: $border;
 }
@@ -78,7 +74,7 @@ button.submit {
   // margin: <top> <right> <bottom> <left>
   margin: -10pt $sideMargin*2.4 10px $sideMargin;
   border-top: 4px double;
-  padding: 0 0;
+  padding: 0;
 }
 
 .valueTable {

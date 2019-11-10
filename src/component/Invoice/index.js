@@ -82,7 +82,7 @@ class InvoiceBase extends Component {
                 .set({ ...invoice })
                 .catch(error =>
                     console.log(error + " in invoice " +
-                        id.substring(0, 6) + " " +
+                        id.substring(0, 5) + " " +
                         invoice.customer))
         }
 
@@ -101,7 +101,7 @@ class InvoiceBase extends Component {
                 this.setState({ id: id })
             }
             firebaseSave(id, invoice)
-            console.log("saved " + id.substring(0, 6) + " " + invoice.customer
+            console.log("saved " + id.substring(0, 5) + " " + invoice.customer
                 /* + " " + JSON.stringify(invoice) */)
         }
     }
@@ -115,7 +115,7 @@ class InvoiceBase extends Component {
         }
 
         const id = this.state.id
-        const logInvoiceName = id.substring(0, 6)
+        const logInvoiceName = id.substring(0, 5)
         if ((id.length > 0) &&
             window.confirm("remove invoice " + logInvoiceName)) {
             firebaseRemove(id)
@@ -323,6 +323,30 @@ class InvoiceBase extends Component {
                 {/* main title */}
                 <div className={styles.mainTitle}>
                     {this.state.title && this.state.title}
+                    <span className={"no-print"}>
+                        {/* submit buttons */}
+                        <span className={styles.control}>
+                            {completeInvoice &&
+                            <button style={{ background: 'azure' }}
+                                    onClick={this.onSave}>
+                                Save
+                            </button>}
+                            {this.state.id &&
+                            <>
+                            <button style={{ background: 'lightyellow' }}
+                                    onClick={this.onCopy}>
+                                Copy
+                            </button>
+                            <button style={{ background: 'bisque' }}
+                                    onClick={this.onRemove}>
+                                Remove
+                            </button>
+                            <span style={{ fontWeight: 'normal' }}>
+                                {this.state.id.substring(0, 5)}
+                            </span>
+                            </>}
+                        </span>
+                    </span>
                 </div>
                 <div className={styles.rule} />
                 <div className={"no-print"}
@@ -450,29 +474,6 @@ class InvoiceBase extends Component {
                                   onChange={this.onChangeInvoice} />
                     </div>
                 </form>
-
-                <div className={"no-print"}>
-                    {/* submit buttons */}
-                    <div className={styles.major}>
-                        {completeInvoice &&
-                        <button style={{ background: 'azure' }}
-                                className={styles.submit}
-                                onClick={this.onSave}>
-                            Save
-                        </button>}
-                        {this.state.id &&
-                        <React.Fragment className={styles.submit}>
-                            <button style={{ background: 'lightyellow' }}
-                                    onClick={this.onCopy}>
-                                Copy
-                            </button>
-                            <button style={{ background: 'bisque' }}
-                                    onClick={this.onRemove}>
-                                Remove {this.state.id.substring(0, 6)}
-                            </button>
-                        </React.Fragment>}
-                    </div>
-                </div>
             </div>
         )
     }
