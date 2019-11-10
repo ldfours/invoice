@@ -54,14 +54,14 @@ const Line = (props) => {
                        onChange={props.changeLine(props.index)} />}
             </div>
             <div>
-                {!props.readOnly &&
-                <DeleteIcon className={`no-print ${styles.deleteItem}`}
-                            onClick={props.deleteHandler(props.index)} />}
-            </div>
-            <div>
                 {isAddLine &&
                 <AddIcon className={`no-print ${styles.addItem}`}
                          onClick={props.addHandler} />}
+            </div>
+            <div>
+                {!props.readOnly &&
+                <DeleteIcon className={`no-print ${styles.deleteItem}`}
+                            onClick={props.deleteHandler(props.index)} />}
             </div>
         </div>
     )

@@ -76,11 +76,14 @@ class InvoiceBase extends Component {
             extraNote: this.state.extraNote
         }
 
-        const firebaseSave = (id, invoice, logInvoiceName) => {
+        const firebaseSave = (id, invoice) => {
             this.props.firebase
                 .invoice(id)
                 .set({ ...invoice })
-                .catch(error => console.log(error + " in invoice " + logInvoiceName))
+                .catch(error =>
+                    console.log(error + " in invoice " +
+                        id.substring(0, 6) + " " +
+                        invoice.customer))
         }
 
         // validation
@@ -91,11 +94,15 @@ class InvoiceBase extends Component {
             return false
         }
 
-        const logInvoiceName = this.state.id.substring(0, 6) + " " + invoice.customer
-        if (window.confirm("save invoice " + logInvoiceName)) {
-            const id = (this.state.id.length > 0) ? this.state.id : uuidv4()
+        if (window.confirm("save invoice " + invoice.customer)) {
+            let id = this.state.id
+            if (!id) {
+                id = uuidv4()
+                this.setState({ id: id })
+            }
             firebaseSave(id, invoice)
-            console.log("saved " + logInvoiceName/* + " " + JSON.stringify(invoice)*/)
+            console.log("saved " + id.substring(0, 6) + " " + invoice.customer
+                /* + " " + JSON.stringify(invoice) */)
         }
     }
 
@@ -138,16 +145,8 @@ class InvoiceBase extends Component {
     }
 
     /*
-    * Each form input element is created as a Controlled Component.
-    * This means that React completely controls the element’s state
-    * (including whatever value is currently being stored by the form element Component)
-    * rather than leaving this to the element itself.
-    * To accomplish this, each input specifies an onChange event handler whose job
-    * is to update the component’s state every time a user changes the value of an input.
-    * */
-
-    /*
-    * When a user types a value into an input, the onChange event fires
+    * When a user types a value into an input of a Controlled Component,
+    * the onChange event fires
     * and the handleLineItemChange(elementIndex) function is called.
     * The Invoice’s state is updated to reflect the input’s latest value.
     *
@@ -239,10 +238,10 @@ class InvoiceBase extends Component {
         })
     }
 
-    onSave = (event) => {
-        event.preventDefault()
-        this.saveInvoice()
-        console.log(this.state.query_key)
+    goToList = () => {
+        this.state.id &&
+        this.state.query_key &&
+        this.state.query_val &&
         this.props.history.push(
             {
                 pathname: LIST,
@@ -250,20 +249,36 @@ class InvoiceBase extends Component {
                     query_key: this.state.query_key,
                     query_val: this.state.query_val,
                 }
-            });
+            })
+    }
+
+    onSave = (event) => {
+        event.preventDefault()
+        this.saveInvoice()
+        this.goToList()
+    }
+
+    onCopy = (event) => {
+        event.preventDefault()
+        this.setState({ id: '' })
     }
 
     onRemove = (event) => {
         event.preventDefault()
         this.removeInvoice()
+        this.goToList()
     }
 
     render() {
-        const first = this.state.category === " " ?
-            this.state.tag :
+        const first =
             this.state.lineItems.length > 0 &&
-            this.state.caption[0] + " " +
-            this.state.lineItems[this.state.lineItems.length - 1].date
+            this.state.caption &&
+            this.state.caption[0] &&
+            this.state.caption[0] === 'Date:' &&
+            (this.state.lineItems[this.state.lineItems.length - 1].date.includes("20") ?
+                this.state.caption[0] + " " +
+                this.state.lineItems[this.state.lineItems.length - 1].date :
+                this.state.tag)
 
         const note =
             this.state.categories && this.state.category &&
@@ -329,13 +344,12 @@ class InvoiceBase extends Component {
 
                 {/* table caption */}
                 <div className={styles.description}>
+                    {first &&
                     <div className={styles.key}>
-                        {this.state.caption && `${this.state.caption[0]}` &&
-                        <span className={styles.value}>{first}</span>}
-                    </div>
-                    <div className={styles.value} />
+                        <span className={styles.value}>{first}</span>
+                    </div>}
                     <div className={styles.key}>
-                        {this.state.caption && `${this.state.caption[1]}`}
+                        {this.state.caption && this.state.caption[1]}
                         <span>  </span>
                         <input name="customer" value={this.state.customer}
                                className={`${styles.value} ${styles.name}`}
@@ -441,14 +455,22 @@ class InvoiceBase extends Component {
                     {/* submit buttons */}
                     <div className={styles.major}>
                         {completeInvoice &&
-                        <button className={styles.submit} onClick={this.onSave}>
+                        <button style={{ background: 'azure' }}
+                                className={styles.submit}
+                                onClick={this.onSave}>
                             Save
                         </button>}
                         {this.state.id &&
-                        <button className={styles.submit}
-                                onClick={this.onRemove}>
-                            Remove {this.state.id.substring(0, 6)}
-                        </button>}
+                        <React.Fragment className={styles.submit}>
+                            <button style={{ background: 'lightyellow' }}
+                                    onClick={this.onCopy}>
+                                Copy
+                            </button>
+                            <button style={{ background: 'bisque' }}
+                                    onClick={this.onRemove}>
+                                Remove {this.state.id.substring(0, 6)}
+                            </button>
+                        </React.Fragment>}
                     </div>
                 </div>
             </div>

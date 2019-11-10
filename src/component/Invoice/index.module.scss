@@ -66,7 +66,6 @@
 button.submit {
   display: block;
   padding: $rhythm $rhythm;
-  background: lightyellow;
   border-radius: $borderRadius;
   border: $border;
 }
@@ -221,6 +220,16 @@ button.submit {
 
 select {
   background-color: white;
+  width: 30em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+select option {
+  width: 30em;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 input[name=tag], textarea[name=notes] {

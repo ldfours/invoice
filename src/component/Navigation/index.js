@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import Login from '../Login';
 import { AuthUserContext } from '../Session';
-import SignOutButton from '../Logout';
+import LogoutButton from '../Logout';
 import * as ROUTES from '../../constant/route';
 
 const Navigation = () => (
@@ -31,7 +31,7 @@ const NavigationAuth = (props) => (
         invoice: { readOnly: false }
       }}>Create</Link></li>
 
-      <li><SignOutButton /></li>
+      <li><LogoutButton /></li>
     </ul>
   </nav>
 );

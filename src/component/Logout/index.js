@@ -1,24 +1,25 @@
 import React from 'react';
 
 import { withFirebase } from '../Firebase';
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import { SEARCH } from '../../constant/route';
 import { compose } from '../../constant/util';
 
-const SignOutButton = (props) => {
-  const logOut = () => {
-    props.firebase.doSignOut()
-    props.history.push({ pathname: "/", })
-  }
+const LogoutLink = (props) => {
+    const logOut = () => {
+        props.firebase.doSignOut()
+        props.history.push({ pathname: SEARCH, })
+    }
 
-  return (
-    <button type="button" className="logout no-print"
-            onClick={logOut}>
-      Logout
-    </button>
-  )
+    return (
+        <Link to={""} className="logout no-print"
+              onClick={logOut}>
+            Logout
+        </Link>
+    )
 }
 
 export default compose(
-  withRouter,
-  withFirebase,
-)(SignOutButton)
+    withRouter,
+    withFirebase,
+)(LogoutLink)
