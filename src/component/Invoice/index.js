@@ -303,7 +303,7 @@ class InvoiceBase extends Component {
 
         return (
             <div className={styles.invoice}>
-                <div className={styles.addresses}>
+                <div className={styles.headers}>
                     {/*{JSON.stringify(this.state.lineItems)}*/}
                     {this.state.head &&
                     this.state.head.map((r, i) =>
@@ -320,33 +320,31 @@ class InvoiceBase extends Component {
 
                 </div>
                 {/* main title */}
-                <div className={styles.mainTitle}>
+                <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {this.state.title && this.state.title}
-                    <span className={"no-print"}>
-                        {/* submit buttons */}
-                        <span className={styles.control}>
-                            {completeInvoice &&
-                            <button style={{ background: 'azure' }}
-                                    onClick={this.onSave}>
-                                Save
-                            </button>}
-                            {this.state.id &&
-                            <>
-                            <button style={{ background: 'lightyellow' }}
-                                    onClick={this.onCopy}>
-                                Copy
-                            </button>
-                            <button style={{ background: 'bisque' }}
-                                    onClick={this.onRemove}>
-                                Remove
-                            </button>
-                            <span style={{ fontWeight: 'normal' }}>
-                                {this.state.id.substring(0, 5)}
-                            </span>
-                            </>}
+                    {/* submit buttons */}
+                    <span className={`no-print`}>
+                        <span style={{ fontWeight: 'normal' }}>
+                            {this.state.id && this.state.id.substring(0, 5)}
                         </span>
+                        {completeInvoice &&
+                        <button style={{ background: 'azure' }}
+                                onClick={this.onSave}>
+                            Save
+                        </button>}
+                        {this.state.id &&
+                        <>
+                        <button style={{ background: 'lightyellow' }}
+                                onClick={this.onCopy}>
+                            Copy
+                        </button>
+                        <button style={{ background: 'bisque' }}
+                                onClick={this.onRemove}>
+                            Remove
+                        </button>
+                        </>}
                     </span>
-                </div>
+                </span>
                 <div className={styles.rule} />
                 <div className={"no-print"}
                      style={{ textAlign: "center", border: 1 }}>
