@@ -5,7 +5,7 @@
     "dependencies": {
         "env-cmd": "latest",
         "firebase": "latest",
-        "firebase-tools": "^7.4.0",
+        "firebase-tools": "latest",
         "node-sass": "latest",
         "prop-types": "latest",
         "react": "latest",
