@@ -323,27 +323,29 @@ class InvoiceBase extends Component {
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {this.state.title && this.state.title}
                     {/* submit buttons */}
-                    <span className={`no-print`}>
-                        <span style={{ fontWeight: 'normal' }}>
+                    <span className={`no-print`}
+                          style={{ fontWeight: 'normal' }}>
                             {this.state.id && this.state.id.substring(0, 5)}
                         </span>
-                        {completeInvoice &&
-                        <button style={{ background: 'azure' }}
-                                onClick={this.onSave}>
-                            Save
-                        </button>}
-                        {this.state.id &&
-                        <>
-                        <button style={{ background: 'lightyellow' }}
-                                onClick={this.onCopy}>
-                            Copy
-                        </button>
-                        <button style={{ background: 'bisque' }}
-                                onClick={this.onRemove}>
-                            Remove
-                        </button>
-                        </>}
-                    </span>
+                    {completeInvoice &&
+                    <button className={`no-print`}
+                            style={{ background: 'azure' }}
+                            onClick={this.onSave}>
+                        Save
+                    </button>}
+                    {this.state.id &&
+                    <>
+                    <button className={`no-print`}
+                            style={{ background: 'lightyellow' }}
+                            onClick={this.onCopy}>
+                        Copy
+                    </button>
+                    <button className={`no-print`}
+                            style={{ background: 'bisque' }}
+                            onClick={this.onRemove}>
+                        Remove
+                    </button>
+                    </>}
                 </span>
                 <div className={styles.rule} />
                 <div className={"no-print"}

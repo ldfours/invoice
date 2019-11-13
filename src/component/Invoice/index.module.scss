@@ -56,9 +56,11 @@
 }
 
 .controls {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  display: grid;
+  // auto-fill or auto-fit to prevent grid wrapping
+  grid-template-columns: 5em 3em 3em 3em 4em;
+  grid-column-gap: 0.5em;
+  justify-self: start;
 }
 
 .lineItems {
