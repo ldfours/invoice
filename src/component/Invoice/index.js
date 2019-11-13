@@ -323,10 +323,9 @@ class InvoiceBase extends Component {
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {this.state.title && this.state.title}
                     {/* submit buttons */}
-                    <span className={`no-print`}
-                          style={{ fontWeight: 'normal' }}>
-                            {this.state.id && this.state.id.substring(0, 5)}
-                        </span>
+                    <span className={`no-print ${styles.invoice_id}`}>
+                        {this.state.id && this.state.id.substring(0, 5)}
+                    </span>
                     {completeInvoice &&
                     <button className={`no-print`}
                             style={{ background: 'azure' }}

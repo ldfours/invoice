@@ -58,8 +58,8 @@
 .controls {
   display: grid;
   // auto-fill or auto-fit to prevent grid wrapping
-  grid-template-columns: 5em 3em 3em 3em 4em;
-  grid-column-gap: 0.5em;
+  grid-template-columns: 5em 3em 3em 3em 5em;
+  grid-column-gap: 0.2em;
   justify-self: start;
 }
 
@@ -255,4 +255,11 @@ textarea {
   display: flex;
   flex-direction: row;
   padding: $rhythm;
+}
+
+.invoice_id {
+  //color: grey;
+  //float: right;
+  font-size: 0.8em;
+  font-weight: normal;
 }
