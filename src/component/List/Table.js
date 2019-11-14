@@ -7,11 +7,11 @@ import styles from './Table.module.scss'
 
 const Table = ({ invoices, query_key, query_val }) => {
     return (
-        <div>{query_key}:<span> </span>
+        <div>{query_key && query_key}<span> </span>
             <label style={{
                 fontStyle: 'italic',
                 fontWeight: 'bold'
-            }}>{`${query_val}`}</label>
+            }}>{query_val && query_val}</label>
             <table className={`${styles.table}`}>
                 <tbody>
                 {Object.keys(invoices)

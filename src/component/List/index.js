@@ -17,37 +17,49 @@ class InvoicesBase extends Component {
         };
     }
 
+    setInvoiceState = (invoiceObject, query_key, query_val) => {
+        if (invoiceObject) {
+            //const invoiceList =
+            //  Object.keys(invoiceObject).map(key => ({
+            //    ...invoiceObject[key]
+            //  }));
+            this.setState({
+                invoices: invoiceObject,
+                loading: false,
+                query_key: query_key,
+                query_val: query_val,
+            })
+        } else {
+            this.setState({
+                invoices: null,
+                loading: false
+            })
+        }
+    }
+
     queryInvoices = (query_key, query_val, limit = 20) => {
         this.setState({ loading: true })
-        const capital_query_val = capitalWords(query_val)
 
-        this.props.firebase.invoices()
-            .orderByChild(query_key)
-            .limitToLast(limit)
+        if (query_key) {
+            const capital_query_val = capitalWords(query_val)
+            this.props.firebase.invoices()
+                .orderByChild(query_key)
+                .limitToLast(limit)
 
-            // filter query results to substring of a child node
-            .startAt(capital_query_val)
-            .endAt(`${capital_query_val}\uf8ff`)
-            .once('value', snapshot => {
-                const invoiceObject = snapshot.val()
-                if (invoiceObject) {
-                    //const invoiceList =
-                    //  Object.keys(invoiceObject).map(key => ({
-                    //    ...invoiceObject[key]
-                    //  }));
-                    this.setState({
-                        invoices: invoiceObject,
-                        loading: false,
-                        query_key: query_key,
-                        query_val: query_val,
-                    })
-                } else {
-                    this.setState({
-                        invoices: null,
-                        loading: false
-                    })
-                }
-            })
+                // filter query results to substring of a child node
+                .startAt(capital_query_val)
+                .endAt(`${capital_query_val}\uf8ff`)
+                .once('value', snapshot => {
+                    this.setInvoiceState(snapshot.val(), query_key, query_val)
+                })
+        } else {
+            // TODO: implement empty input
+            this.props.firebase.invoices()
+                .limitToLast(limit)
+                .once('value', snapshot => {
+                    this.setInvoiceState(snapshot.val(), query_key, query_val)
+                })
+        }
     }
 
     componentDidMount() {

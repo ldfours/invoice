@@ -63,6 +63,16 @@ export const formatDate = (date) => {
 }
 */
 
+/*
+export const now = () => {
+  const today = new Date()
+  const dd = String(today.getDate()).padStart(2, '0')
+  const mm = String(today.getMonth() + 1).padStart(2, '0')
+  const yyyy = today.getFullYear()
+  return (`${yyyy}-${mm}-${dd}`)
+}
+*/
+
 export const compose = (...fns) => x =>
   fns.reduceRight((y, f) => f(y), x)
 
@@ -100,15 +110,6 @@ export const sumArr = (arr) =>
 
 export const clone = (obj) => //.slice(0) // copy array
   JSON.parse(JSON.stringify(obj))
-
-export const now = () => {
-  const today = new Date()
-  const dd = String(today.getDate()).padStart(2, '0')
-  const mm = String(today.getMonth() + 1).padStart(2, '0')
-  const yyyy = today.getFullYear()
-
-  return (`${yyyy}-${mm}-${dd}`)
-}
 
 export const capitalWords = (alphaNum) => {
   return alphaNum.toString().split(' ')

@@ -12,8 +12,7 @@
         "react-dom": "latest",
         "react-icons": "latest",
         "react-router-dom": "latest",
-        "react-scripts": "latest",
-        "uuid": "latest"
+        "react-scripts": "latest"
     },
     "scripts": {
         "start": "env-cmd react-scripts start",

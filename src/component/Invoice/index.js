@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import uuidv4 from 'uuid/v4'
 
 import { withFirebase } from '../Firebase'
-import { clone, sumArr, formatCurrency, now, range } from '../../constant/util'
+import { clone, sumArr, formatCurrency, range } from '../../constant/util'
 import { LIST } from '../../constant/route'
 import Line from './Line'
 
@@ -18,7 +17,6 @@ class InvoiceBase extends Component {
         // initial invoice
         id: '',
         category: '',
-        created: '',
         customer: '',
         payment: '',
         tag: '',
@@ -66,7 +64,6 @@ class InvoiceBase extends Component {
                 })
 
         const invoice = {
-            created: now(),
             customer: this.state.customer,
             category: this.state.category,
             lineItems: items,
@@ -82,14 +79,13 @@ class InvoiceBase extends Component {
                 .set({ ...invoice })
                 .catch(error =>
                     console.log(error + " in invoice " +
-                        id.substring(0, 5) + " " +
-                        invoice.customer))
+                        id + " " + invoice.customer))
         }
 
         // validation
         if (!(this.state.customer.length > 0 &&
-                this.state.lineItems.length > 0 &&
-                this.state.category.length > 0)) {
+            this.state.lineItems.length > 0 &&
+            this.state.category.length > 0)) {
             console.log("can not save empty invoice")
             return false
         }
@@ -97,12 +93,11 @@ class InvoiceBase extends Component {
         if (window.confirm("save invoice " + invoice.customer)) {
             let id = this.state.id
             if (!id) {
-                id = uuidv4()
+                id = new Date().getTime().toString()
                 this.setState({ id: id })
             }
             firebaseSave(id, invoice)
-            console.log("saved " + id.substring(0, 5) + " " + invoice.customer
-                /* + " " + JSON.stringify(invoice) */)
+            console.log("saved " + id + " " + invoice.customer)
         }
     }
 
@@ -115,11 +110,10 @@ class InvoiceBase extends Component {
         }
 
         const id = this.state.id
-        const logInvoiceName = id.substring(0, 5)
         if ((id.length > 0) &&
-            window.confirm("remove invoice " + logInvoiceName)) {
+            window.confirm("remove invoice id " + id)) {
             firebaseRemove(id)
-            console.log("removed " + logInvoiceName)
+            console.log("removed " + id)
         }
     }
 
@@ -315,7 +309,7 @@ class InvoiceBase extends Component {
                             (i === 0 ? { className: styles.major } :
                                 (i === 1 ? { className: styles.label } :
                                     {}))}
-                             key={r}>{r}
+                            key={r}>{r}
                         </div>)}
 
                 </div>
@@ -323,36 +317,37 @@ class InvoiceBase extends Component {
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {this.state.title && this.state.title}
                     {/* submit buttons */}
-                    <span className={`no-print ${styles.invoice_id}`}>
-                        {this.state.id && this.state.id.substring(0, 5)}
+                    <span className={`no-print ${styles.invoiceId}`}>
+                        {this.state.id && !isNaN(parseInt(this.state.id)) &&
+                        (new Date(parseInt(this.state.id))).toString().substring(0, 21)}
                     </span>
                     {completeInvoice &&
                     <button className={`no-print`}
-                            style={{ background: 'azure' }}
-                            onClick={this.onSave}>
+                        style={{ background: 'azure' }}
+                        onClick={this.onSave}>
                         Save
                     </button>}
                     {this.state.id &&
                     <>
-                    <button className={`no-print`}
+                        <button className={`no-print`}
                             style={{ background: 'lightyellow' }}
                             onClick={this.onCopy}>
-                        Copy
-                    </button>
-                    <button className={`no-print`}
+                            Copy
+                        </button>
+                        <button className={`no-print`}
                             style={{ background: 'bisque' }}
                             onClick={this.onRemove}>
-                        Remove
-                    </button>
+                            Remove
+                        </button>
                     </>}
                 </span>
                 <div className={styles.rule} />
                 <div className={"no-print"}
-                     style={{ textAlign: "center", border: 1 }}>
+                    style={{ textAlign: "center", border: 1 }}>
                     {/* categories dropdown */}
                     <select name="category"
-                            value={this.state.category}
-                            onChange={this.onChangeInvoice}>
+                        value={this.state.category}
+                        onChange={this.onChangeInvoice}>
                         <option />
                         {Object.keys(this.state.categories)
                             .map(function (categories) {
@@ -374,9 +369,9 @@ class InvoiceBase extends Component {
                         {this.state.caption && this.state.caption[1]}
                         <span>  </span>
                         <input name="customer" value={this.state.customer}
-                               className={`${styles.value} ${styles.name}`}
-                               style={{ width: "21em" }}
-                               onChange={this.onChangeInvoice} />
+                            className={`${styles.value} ${styles.name}`}
+                            style={{ width: "21em" }}
+                            onChange={this.onChangeInvoice} />
 
                     </div>
                     <div className={styles.value} />
@@ -388,7 +383,7 @@ class InvoiceBase extends Component {
                         {column && column.map &&
                         column.map(col =>
                             <div className={styles.header} key={col}
-                                 name={"col"}>{col}</div>)}
+                                name={"col"}>{col}</div>)}
                         <div />
                         <div />
                     </div>
@@ -396,26 +391,26 @@ class InvoiceBase extends Component {
                         {/* table rows */}
                         {this.state.lineItems.map((item, i) => (
                             <Line key={i} index={i}
-                                  {...item}
-                                  category={this.state.category}
-                                  categories={Object.keys(this.state.categories)}
-                                  last={this.state.lineItems.length}
+                                {...item}
+                                category={this.state.category}
+                                categories={Object.keys(this.state.categories)}
+                                last={this.state.lineItems.length}
                                 // focusHandler={this.onInputFocus}
-                                  addHandler={this.onAddLine}
-                                  changeLine={this.onChangeLine}
-                                  changeInvoice={this.onChangeInvoice}
-                                  deleteHandler={this.onDeleteLine} />
+                                addHandler={this.onAddLine}
+                                changeLine={this.onChangeLine}
+                                changeInvoice={this.onChangeInvoice}
+                                deleteHandler={this.onDeleteLine} />
                         ))}
                         {/* read-only rows */}
                         {range(0, totalRows - this.state.lineItems.length)
                             .map(n =>
                                 <Line key={n} readOnly={true}
-                                      category={''}
-                                      categories={[]}
-                                      addHandler={f => f}
-                                      changeLine={this.onChangeLine}
-                                      changeInvoice={f => f}
-                                      deleteHandler={f => f} />)}
+                                    category={''}
+                                    categories={[]}
+                                    addHandler={f => f}
+                                    changeLine={this.onChangeLine}
+                                    changeInvoice={f => f}
+                                    deleteHandler={f => f} />)}
                         {/* total row */}
                         <div className={styles.totalLine}>
                             <div />
@@ -424,7 +419,7 @@ class InvoiceBase extends Component {
                                 <strong>Total</strong>
                             </div>
                             <div className={styles.text}
-                                 style={{ textAlign: "left" }}>{total}</div>
+                                style={{ textAlign: "left" }}>{total}</div>
                         </div>
                     </div>
 
@@ -436,26 +431,26 @@ class InvoiceBase extends Component {
                                 <span key={i}>{line} </span>)}
                         </div>}
                         <input type="text" name="extraNote"
-                               value={this.state.extraNote}
-                               onChange={this.onChangeInvoice} />
+                            value={this.state.extraNote}
+                            onChange={this.onChangeInvoice} />
                     </div>
 
                     {/* payment */}
                     {this.state.segment.radio &&
                     <div className={styles.valueTable}>
                         <div className={styles.title}
-                             onClick={this.resetPayment}>
+                            onClick={this.resetPayment}>
                             {this.state.segment.title && `${this.state.segment.title}:`}
                         </div>
                         {this.state.segment.radio.map(r =>
                             <React.Fragment key={r}>
                                 <div className={`${styles.label}`}>
                                     <input className={`${styles.radio}`}
-                                           type="radio"
-                                           name="payment"
-                                           value={r}
-                                           checked={this.state.payment === r}
-                                           onChange={this.onChangeInvoice} />
+                                        type="radio"
+                                        name="payment"
+                                        value={r}
+                                        checked={this.state.payment === r}
+                                        onChange={this.onChangeInvoice} />
                                 </div>
                                 <div className={styles.label}>
                                     {r === "Cheque" ? "Cheque/email transfer" : r}
@@ -466,12 +461,13 @@ class InvoiceBase extends Component {
                     <div className={`no-print ${styles.row}`}>
                         tag:
                         <input type="text" name="tag" value={this.state.tag}
-                               onChange={this.onChangeInvoice} />
+                            onChange={this.onChangeInvoice} />
                         notes:
                         <textarea rows="1" name="notes" value={this.state.notes}
-                                  onChange={this.onChangeInvoice} />
+                            onChange={this.onChangeInvoice} />
                     </div>
                 </form>
+                {/*<div className={`${styles.bottomInvoiceId}`}>{this.state.id}</div>*/}
             </div>
         )
     }

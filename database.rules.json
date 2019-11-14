@@ -6,7 +6,6 @@
       "$uid": {
         "invoice": {
           ".indexOn": [
-            "created",
             "customer"
           ]
         }
