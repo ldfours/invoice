@@ -74,15 +74,15 @@ export const now = () => {
 */
 
 export const compose = (...fns) => x =>
-  fns.reduceRight((y, f) => f(y), x)
+    fns.reduceRight((y, f) => f(y), x)
 
 /* returns type of @obj object */
 //  arguments to eslint annotation are "off" or 0, "warn" or 1, "error" or 2
 /*eslint no-unused-vars: "off"*/
 const type = obj => {
-  //const text = Function.prototype.toString.call(obj.constructor)
-  //return text.match(/function (.*)\(/)[1]
-  return Object.prototype.toString.call(obj)
+    //const text = Function.prototype.toString.call(obj.constructor)
+    //return text.match(/function (.*)\(/)[1]
+    return Object.prototype.toString.call(obj)
 }
 
 /*
@@ -91,28 +91,28 @@ export const range = (size, startAt = 0) => {
 }
 */
 export const range = (start, end) =>
-  Array.from({ length: (end - start) }, (v, k) => k + start);
+    Array.from({ length: (end - start) }, (v, k) => k + start);
 
-export const formatCurrency =
-  (amount, currency = 'USD', locale = 'en-US') => {
-    return (new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount))
-  }
+export const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        useGrouping: false,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount)
+}
 
 export const sumArr = (arr) =>
-  arr.reduce((acc, val, i, arr) => {
-    return acc + val;
-  }, 0)
+    arr.reduce((acc, val, i, arr) => {
+        return acc + val;
+    }, 0)
 
 export const clone = (obj) => //.slice(0) // copy array
-  JSON.parse(JSON.stringify(obj))
+    JSON.parse(JSON.stringify(obj))
 
 export const capitalWords = (alphaNum) => {
-  return alphaNum.toString().split(' ')
-    .map(s => s.charAt(0).toUpperCase() + s.substring(1))
-    .join(' ')
+    return alphaNum.toString().split(' ')
+        .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ')
 }

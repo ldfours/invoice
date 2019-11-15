@@ -96,31 +96,6 @@
   }
 }
 
-.valueTable:after {
-  //border: solid 4px #c00;
-  //padding: 5px;
-  //border-radius: 5px;
-  //zoom: 1;
-  //z-index: 1;
-  //filter: alpha(opacity=40);
-  //-webkit-text-shadow: 0 0 2px #c00;
-  //top: 0;
-  position: absolute;
-  left: $rhythm*5;
-  content: "PAID";
-  font-family: Arial, sans-serif;
-  -webkit-transform: $rotateDeg; /* Safari */
-  -moz-transform: $rotateDeg; /* Firefox */
-  -ms-transform: $rotateDeg; /* IE */
-  -o-transform: $rotateDeg; /* Opera */
-  transform: $rotateDeg;
-  font-size: 3.6em;
-  color: #c00;
-  opacity: 0.4;
-  text-shadow: 0 0 2px #c00;
-  box-shadow: 0 0 2px #c00;
-}
-
 .totalLine {
   display: grid;
   grid-template-columns: $tableColumns;

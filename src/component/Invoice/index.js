@@ -438,6 +438,21 @@ class InvoiceBase extends Component {
                     {/* payment */}
                     {this.state.segment.radio &&
                     <div className={styles.valueTable}>
+                        {this.state.payment &&
+                        <div style={{
+                            // WebkitFilter: 'blur(1px) saturate(2)',
+                            WebkitTransform: "rotate(-10deg)",
+                            position: 'absolute',
+                            left: '100px',
+                            fontFamily: "Arial, sans-serif",
+                            transform: "rotate(-10deg)",
+                            fontSize: "3.6em",
+                            color: "#c00",
+                            opacity: "0.4",
+                            textShadow: "0 0 2px #c00",
+                            boxShadow: "0 0 2px #c00",
+                        }}>PAID
+                        </div>}
                         <div className={styles.title}
                             onClick={this.resetPayment}>
                             {this.state.segment.title && `${this.state.segment.title}:`}
