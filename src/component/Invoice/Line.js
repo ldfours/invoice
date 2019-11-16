@@ -35,15 +35,11 @@ const Line = (props) => {
                     (() => {
                         if (props.readOnly)
                             return <input name="description" readOnly />
-                        else if (props.index === 0) {
+                        else
                             return <textarea rows="1"
                                              name="description"
                                              value={props.description}
                                              onChange={props.changeLine(props.index)} />
-                        } else
-                            return <input name="description"
-                                          value={props.description}
-                                          onChange={props.changeLine(props.index)} />
                     })()
                 }
             </div>
