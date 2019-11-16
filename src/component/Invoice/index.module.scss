@@ -157,17 +157,18 @@
 
 .deleteItem {
   @extend %flex-center;
-  color: darkred;
-  background: none;
+  color: grey;
   padding: 0;
 }
 
+/*
 .addItem {
   @extend %flex-center;
-  color: darkgreen;
+  color: lightgreen;
   background: none;
   padding: 0;
 }
+*/
 
 select {
   background-color: white;

@@ -1,10 +1,6 @@
 /*
  * group array @arr by specified number of elements, e.g.
  *    console.log(groupByRange(["a", "b", "c", "d", "e", "f", "g", "h"], 3))
- */
-
-/*eslint no-unused-vars: "off"*/
-/*
 function groupByRange(arr, n) {
   return (
     arr.reduce(
@@ -17,22 +13,18 @@ function groupByRange(arr, n) {
       }, []
     ))
 }
+
 function isLetter(str) {
   return str && str.length === 1 && str.match(/[a-z]/i);
 }
 
-*/
-
-/*
  * In the new ES2015 standard for JavaScript (formerly called ES6),
  * objects can be created with computed keys: Object Initializer spec.
-    var obj = {
-    [myKey]: value,
-    }
-    console.log(stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6))
- */
+ *   var obj = {
+ *   [myKey]: value,
+ *   }
+ *   console.log(stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6))
 
-/*
 export function stringToObject(text, n) {
   const arr = text.split(":");
   return (
@@ -53,23 +45,25 @@ export function stringToObject(text, n) {
 const invoiceText =
   process.env.REACT_APP_INVOICE_TEXT ?
     stringToObject(process.env.REACT_APP_INVOICE_TEXT, 6) : {}
-*/
 
-/*
 export const formatDate = (date) => {
   const PARSING = "YYYY-MM-DD";
   const DISPLAY = "MMMM D, YYYY";
   return moment(date, PARSING).format(DISPLAY);
 }
-*/
 
-/*
 export const now = () => {
   const today = new Date()
   const dd = String(today.getDate()).padStart(2, '0')
   const mm = String(today.getMonth() + 1).padStart(2, '0')
   const yyyy = today.getFullYear()
   return (`${yyyy}-${mm}-${dd}`)
+}
+
+export const capitalWords = (alphaNum) => {
+    return alphaNum.toString().split(' ')
+        .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ')
 }
 */
 
@@ -110,9 +104,3 @@ export const sumArr = (arr) =>
 
 export const clone = (obj) => //.slice(0) // copy array
     JSON.parse(JSON.stringify(obj))
-
-export const capitalWords = (alphaNum) => {
-    return alphaNum.toString().split(' ')
-        .map(s => s.charAt(0).toUpperCase() + s.substring(1))
-        .join(' ')
-}
