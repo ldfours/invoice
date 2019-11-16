@@ -350,6 +350,7 @@ class InvoiceBase extends Component {
                         onChange={this.onChangeInvoice}>
                         <option />
                         {Object.keys(this.state.categories)
+                            .sort((a, b) => a.length > b.length)
                             .map(function (categories) {
                                 return (
                                     <option key={categories} value={categories}>
