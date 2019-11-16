@@ -7,7 +7,7 @@ import Line from './Line'
 
 import styles from './index.module.scss'
 
-const lineItemsInitState = {
+const lineItemInitState = {
     date: '', description: '', quantity: '', price: 0.00
 }
 
@@ -22,7 +22,7 @@ class InvoiceBase extends Component {
         tag: '',
         notes: '',
         extraNote: '',
-        lineItems: [lineItemsInitState],
+        lineItems: [lineItemInitState],
 
         // selected invoice
         ...this.props.location.invoice,
@@ -164,6 +164,15 @@ class InvoiceBase extends Component {
         this.setState({ [event.target.name]: event.target.value })
     }
 
+    onChangeCategory = (event) => {
+        //console.log(event.target.name + " = " + event.target.value)
+        let item = this.state.lineItems[0] || lineItemInitState
+        item.description = event.target.value
+        const items = [item, ...this.state.lineItems.slice(1)]
+        this.setState({ lineItems: items });
+        this.onChangeInvoice(event)
+    }
+
     resetPayment = (event) => {
         this.setState({ payment: '' })
     }
@@ -208,13 +217,13 @@ class InvoiceBase extends Component {
     * It concatenates a second array containing a new blank line item object.
     * setState() is then called to update the state.
     * */
-    onAddLine = (event) => {
-        let quantity = ''
+    onAddLine = (elementIndex) => (event) => {
+        const items = (!this.state.lineItems) ? lineItemInitState :
+            this.state.lineItems[elementIndex]
         this.setState({
             lineItems: this.state.lineItems.concat([{
-                ...lineItemsInitState,
-                category: this.state.category,
-                quantity: quantity
+                ...items,
+                category: this.state.category
             }])
         })
     }
@@ -226,13 +235,12 @@ class InvoiceBase extends Component {
             })
         })
     }
-    onDeleteEmptyLine = (elementIndex) => (event) => {
-        if (!this.state.lineItems[elementIndex].date) {
-            this.setState({
-                lineItems: this.state.lineItems.filter((item, i) => {
-                    return elementIndex !== i
-                })
-            })
+    onDeleteDuplicateLine = (elementIndex) => (event) => {
+        if (this.state.lineItems[elementIndex] &&
+            this.state.lineItems[elementIndex - 1] && (
+                this.state.lineItems[elementIndex].date ===
+                this.state.lineItems[elementIndex - 1].date)) {
+            this.onDeleteLine(elementIndex)(event)
         }
     }
 
@@ -267,29 +275,22 @@ class InvoiceBase extends Component {
     }
 
     render() {
-        const first =
-            this.state.lineItems.length > 0 &&
-            this.state.caption &&
-            this.state.caption[0] &&
-            this.state.caption[0] === 'Date:' &&
-            (this.state.lineItems[this.state.lineItems.length - 1].date.includes("20") ?
+        const items = this.state.lineItems
+        const first = items.length > 0 && this.state.caption &&
+            this.state.caption[0] && this.state.caption[0] === 'Date:' &&
+            (items[items.length - 1].date.includes("20") ?
                 this.state.caption[0] + " " +
-                this.state.lineItems[this.state.lineItems.length - 1].date :
+                items[this.state.lineItems.length - 1].date :
                 this.state.tag)
 
-        const note =
-            this.state.categories && this.state.category &&
-            this.state.categories[this.state.category] &&
-            this.state.categories[this.state.category].note
-
-        const column =
-            this.state.categories && this.state.category &&
-            this.state.categories[this.state.category] &&
-            this.state.categories[this.state.category].column
+        const category = this.state.categories && this.state.category &&
+            this.state.categories[this.state.category]
+        const note = category && this.state.categories[this.state.category].note
+        const column = category && this.state.categories[this.state.category].column
 
         const total = formatCurrency(
             sumArr(
-                this.state.lineItems.map(item => {
+                items.map(item => {
                     return parseFloat(item.price)
                 })))
 
@@ -351,7 +352,7 @@ class InvoiceBase extends Component {
                     {/* categories dropdown */}
                     <select name="category"
                             value={this.state.category}
-                            onChange={this.onChangeInvoice}>
+                            onChange={this.onChangeCategory}>
                         <option />
                         {Object.keys(this.state.categories)
                             .sort((a, b) => a.length > b.length)
@@ -364,8 +365,7 @@ class InvoiceBase extends Component {
                     </select>
                 </div>
 
-                {/* table caption */}
-                <div className={styles.description}>
+                <div className={styles.tableCaption}>
                     {first &&
                     <div className={styles.key}>
                         <span className={styles.value}>{first}</span>
@@ -405,7 +405,7 @@ class InvoiceBase extends Component {
                                   changeLine={this.onChangeLine}
                                   changeInvoice={this.onChangeInvoice}
                                   deleteHandler={this.onDeleteLine}
-                                  deleteEmptyHandler={this.onDeleteEmptyLine} />
+                                  deleteDuplicateHandler={this.onDeleteDuplicateLine} />
                         ))}
                         {/* read-only rows */}
                         {range(0, totalRows - this.state.lineItems.length)
@@ -417,7 +417,7 @@ class InvoiceBase extends Component {
                                       changeLine={this.onChangeLine}
                                       changeInvoice={f => f}
                                       deleteHandler={f => f}
-                                      deleteEmptyHandler={f => f}
+                                      deleteDuplicateHandler={f => f}
                                 />)}
                         {/* total row */}
                         <div className={styles.totalLine}>

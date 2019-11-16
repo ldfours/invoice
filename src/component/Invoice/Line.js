@@ -7,8 +7,8 @@ import { MdCancel as DeleteIcon } from 'react-icons/md'
 import styles from './index.module.scss'
 
 const Line = (props) => {
-    const isLastLine = !props.readOnly && (props.index + 1 === props.last)
     const isBeforeLastLine = !props.readOnly && (props.index + 2 === props.last)
+    const isLastLine = !props.readOnly && (props.index + 1 === props.last)
 
     return (
         <div className={styles.lineItem}>
@@ -19,17 +19,32 @@ const Line = (props) => {
                 />}
             </div>
             <div>
-                {!props.readOnly ?
-                    <>
-                    <textarea rows="1"
-                              name="description"
-                              value={props.description ?
-                                  props.description : props.category}
-                              onChange={props.changeLine(props.index)}
-                    />
-                    </> :
-                    <input name="description" readOnly
-                        /*style={{ padding: 0 }}*/ />
+                {/* // IIFE
+                 {
+                   (() => {
+                       if (conditionOne)
+                          return <span>One</span>
+                       if (conditionTwo)
+                          return <span>Two</span>
+                       else (conditionOne)
+                          return <span>Three</span>
+                   })()
+                }
+                */}
+                {
+                    (() => {
+                        if (props.readOnly)
+                            return <input name="description" readOnly />
+                        else if (props.index === 0) {
+                            return <textarea rows="1"
+                                             name="description"
+                                             value={props.description}
+                                             onChange={props.changeLine(props.index)} />
+                        } else
+                            return <input name="description"
+                                          value={props.description}
+                                          onChange={props.changeLine(props.index)} />
+                    })()
                 }
             </div>
             <div /*dangerouslySetInnerHTML={{
@@ -37,14 +52,16 @@ const Line = (props) => {
                 {!props.readOnly &&
                 <input name="quantity" value={props.quantity}
                        onChange={props.changeLine(props.index)}
-                       {... isBeforeLastLine && { onFocus: props.deleteEmptyHandler(props.index + 1) }}
+                       {... isBeforeLastLine && {
+                           onFocus: props.deleteDuplicateHandler(props.index + 1)
+                       }}
                 />}
             </div>
             <div>
                 {!props.readOnly &&
                 <input name="priceFormat" value={props.priceFormat || ''}
                        onChange={props.changeLine(props.index)}
-                       {... isLastLine && { onFocus: props.addHandler }}
+                       {... isLastLine && { onFocus: props.addHandler(props.index) }}
                 />}
             </div>
             <div>
