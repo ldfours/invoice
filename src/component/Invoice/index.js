@@ -438,7 +438,7 @@ class InvoiceBase extends Component {
                     {/* payment */}
                     {this.state.segment.radio &&
                     <div className={styles.valueTable}>
-                        {this.state.payment &&
+                        {this.state.id &&
                         <div style={{
                             // WebkitFilter: 'blur(1px) saturate(2)',
                             WebkitTransform: "rotate(-10deg)",
