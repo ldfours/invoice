@@ -124,8 +124,7 @@
 
 .radio {
   -webkit-appearance: checkbox;
-  -webkit-transform: scale(1.2);
-  -moz-transform: scale(0.8);
+  -transform: scale(0.9);
 }
 
 .lineItem {
@@ -150,8 +149,6 @@
     }
     &:last-of-type {
       border: 0;
-    }
-    &:first-of-type, &:nth-child(4), &:last-of-type {
     }
   }
 }
