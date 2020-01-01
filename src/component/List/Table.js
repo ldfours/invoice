@@ -1,36 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { INVOICE, DAILY } from '../../constant/route'
+import { INVOICE } from '../../constant/route'
 import { sumArr } from '../../constant/util'
 import styles from './Table.module.scss'
 
 export default ({ invoices, query_key, query_val, query_category }) => {
-    const filteredInvoices = Object.keys(invoices)
-        .filter(id => {
-            //console.log(JSON.stringify(id, null, 2))
-            if (!query_category
-                || invoices[id].category.startsWith(query_category)) {
-                return true
-            } else {
-                return false
-            }
-        })
-        .map(id => {
-            const invoice = invoices[id]
-            invoice.id = id
-            return invoice
-        })
 
     return (
         // query parameters
-        <React.Fragment>{query_key && query_key}<span> </span>
-            <label>{query_val && query_val}
-                {query_category && ` category ${query_category}`}
-            </label>
+        <React.Fragment>
+            {/* <Link to={{ pathname: DAILY, invoices: filteredInvoices }}> daily</Link> */}
             <table className={`${styles.table}`}>
                 <tbody>
-                    {filteredInvoices.map(
+                    {invoices.map(
                         invoice => {
                             return (
                                 <tr key={invoice.id}>
@@ -43,7 +26,6 @@ export default ({ invoices, query_key, query_val, query_category }) => {
                                         <Link to={{
                                             pathname: INVOICE,
                                             invoice: {
-                                                //id: invoice,
                                                 query_key,
                                                 query_val,
                                                 ...invoice
@@ -73,7 +55,6 @@ export default ({ invoices, query_key, query_val, query_category }) => {
                         }).reverse()}
                 </tbody>
             </table>
-            <Link to={{ pathname: DAILY, invoices: filteredInvoices }}> daily</Link>
         </React.Fragment>
     )
 }

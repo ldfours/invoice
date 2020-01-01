@@ -6,20 +6,25 @@ import styles from '../../style/form.module.scss'
 
 export default class extends Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             customer: "",
             category: "",
-            categories: ["slp", "ac", "mt", "osteo", "sw", "device"]
-        };
+            categories: ["slp", "ac", "mt", "osteo", "sw", "device"],
+            isDaily: false
+        }
 
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
+        this.onChange = this.onChange.bind(this)
+        this.onCheckboxChange = this.onCheckboxChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
     onChange(event) {
         this.setState({ [event.target.name]: event.target.value })
     }
+
+    onCheckboxChange = event =>
+        this.setState({ isDaily: event.target.checked })
 
     onSubmit(event) {
         event.preventDefault()
@@ -31,14 +36,14 @@ export default class extends Component {
         } else if (this.state.category) {
             key = "category"
         }
-        const val = key && this.state[key]
         this.props.history.push(
             {
                 pathname: LIST,
                 state: {
                     query_key: key,
-                    query_val: val,
-                    query_category: category
+                    query_val: key && this.state[key],
+                    query_category: category,
+                    isDaily: this.state.isDaily
                 }
             })
     }
@@ -49,14 +54,12 @@ export default class extends Component {
                 {authUser => (
                     authUser && (
                         <form className={styles.form} onSubmit={this.onSubmit}>
-                            <label>customer</label>
                             <input className={styles.field}
                                 name="customer"
                                 value={this.state.customer}
                                 onChange={this.onChange}
                                 type="text" />
-                            <label>category</label>
-                            <select style={{ width: "368px" }}
+                            <select style={{ width: "140px" }}
                                 name="category"
                                 value={this.state.category}
                                 onChange={this.onChange}>
@@ -68,8 +71,10 @@ export default class extends Component {
                                             </option>)
                                     })}
                             </select>
-                            <button className={styles.button}
-                                type="submit">Submit
+                            <input type="checkbox"
+                                defaultChecked={this.state.isDaily}
+                                onChange={this.onCheckboxChange} />
+                            <button className={styles.button} type="submit">Submit
                             </button>
                         </form>
                     ))}

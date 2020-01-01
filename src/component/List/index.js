@@ -4,16 +4,18 @@ import { compose } from '../../constant/util'
 import { AuthUserContext } from '../Session'
 import { withFirebase } from '../Firebase'
 import Table from './Table'
+import Daily from './Daily'
 
 class InvoicesBase extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loading: false,
             invoices: null,
             query_key: this.props.location.state.query_key,
             query_val: this.props.location.state.query_val,
-            query_category: this.props.location.state.query_category
+            query_category: this.props.location.state.query_category,
+            isDaily: this.props.location.state.isDaily,
+            loading: false,
         }
     }
 
@@ -25,10 +27,10 @@ class InvoicesBase extends Component {
             //  }));
             this.setState({
                 invoices: invoiceObject,
-                loading: false,
                 query_key: query_key,
                 query_val: query_val,
                 query_category: query_category,
+                loading: false,
             })
         } else {
             this.setState({
@@ -38,7 +40,7 @@ class InvoicesBase extends Component {
         }
     }
 
-    queryInvoices = (query_key, query_val, query_category, limit = 40) => {
+    queryInvoices = (query_key, query_val, query_category, limit = 25) => {
         this.setState({ loading: true })
 
         if (query_key) {
@@ -73,7 +75,7 @@ class InvoicesBase extends Component {
     }
 
     loadMore = () => {
-        //this.setState(state => ({ limit: state.limit + 1000 }));
+        //this.setState(state => ({ limit: state.limit + 1000 }))
         this.queryInvoices(
             this.state.query_key,
             this.state.query_val,
@@ -81,8 +83,27 @@ class InvoicesBase extends Component {
             1000)
     };
 
+    filterInvoices = (invoices, query_category) =>
+        Object.keys(invoices)
+            .filter(id => {
+                //console.log(JSON.stringify(id, null, 2))
+                if (!query_category
+                    || invoices[id].category.startsWith(query_category)) {
+                    return true
+                } else {
+                    return false
+                }
+            })
+            .map(id => {
+                const invoice = invoices[id]
+                invoice.id = id
+                return invoice
+            })
+
     render() {
-        const { invoices, loading, query_key, query_val, query_category } = this.state
+        const { invoices, loading,
+            query_key, query_val, query_category, isDaily } = this.state
+        const Layout = isDaily ? Daily : Table
         return (
             <AuthUserContext.Consumer>
                 {authUser => (
@@ -90,11 +111,13 @@ class InvoicesBase extends Component {
                         {loading && <div>loading..</div>}
                         {!loading && invoices &&
                             <div>
-                                <Table
-                                    query_key={query_key}
-                                    query_val={query_val}
-                                    query_category={query_category}
-                                    invoices={invoices} />
+                                {query_key && query_key}<span> </span>
+                                <label>{query_val && query_val}
+                                    {query_category && ` category ${query_category}`}
+                                </label>
+                                <Layout invoices={this.filterInvoices(
+                                    invoices,
+                                    query_category)} />
                                 <button onClick={this.loadMore}>
                                     more&raquo;
                             </button>
