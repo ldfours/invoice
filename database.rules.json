@@ -6,7 +6,7 @@
       "$uid": {
         "invoice": {
           ".indexOn": [
-            "customer"
+            "customer", "category"
           ]
         }
       }

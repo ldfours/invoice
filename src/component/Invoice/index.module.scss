@@ -58,7 +58,7 @@
 
 .controls {
   display: grid;
-  grid-template-columns: 4em auto 3em 3em 5em;
+  grid-template-columns: 4em 4em auto 3em 3em 4em;
   grid-column-gap: 0.2em;
   justify-self: start;
 }
@@ -170,14 +170,12 @@
 
 select {
   background-color: white;
-  width: 30em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 select option {
-  width: 30em;
   overflow: hidden;
   text-overflow: ellipsis;
 }

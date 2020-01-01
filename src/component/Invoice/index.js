@@ -11,7 +11,7 @@ const lineItemInitState = {
     date: '', description: '', quantity: '', price: 0.00
 }
 
-class InvoiceBase extends Component {
+class Invoice extends Component {
 
     state = {
         // initial invoice
@@ -22,6 +22,7 @@ class InvoiceBase extends Component {
         tag: '',
         notes: '',
         extraNote: '',
+        mainHeader: '',
         lineItems: [lineItemInitState],
 
         // selected invoice
@@ -168,7 +169,8 @@ class InvoiceBase extends Component {
     onChangeCategory = (event) => {
         //console.log(event.target.name + " = " + event.target.value)
         let item = this.state.lineItems[0] || lineItemInitState
-        item.description = event.target.value
+        const category = event.target.value
+        item.description = category && this.state.categories && this.state.categories[category].description
         const items = [item, ...this.state.lineItems.slice(1)]
         this.setState({ lineItems: items });
         this.onChangeInvoice(event)
@@ -223,8 +225,7 @@ class InvoiceBase extends Component {
             this.state.lineItems[elementIndex]
         this.setState({
             lineItems: this.state.lineItems.concat([{
-                ...items,
-                category: this.state.category
+                ...items
             }])
         })
     }
@@ -322,9 +323,26 @@ class InvoiceBase extends Component {
                                 key={r}>{r}
                             </div>)}
                 </div>
-                {/* main title */}
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
+                    {/* main title */}
                     {this.state.title && this.state.title}
+                    {/* categories dropdown */}
+                    <span className={"no-print"}>
+                        {/* categories dropdown */}
+                        <select name="category"
+                            value={this.state.category}
+                            onChange={this.onChangeCategory}>
+                            <option />
+                            {Object.keys(this.state.categories)
+                                .sort((a, b) => a.length > b.length)
+                                .map(function (category) {
+                                    return (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>)
+                                })}
+                        </select>
+                    </span>
                     {/* submit buttons */}
                     <span className={`no-print ${styles.invoiceId}`}>
                         {this.state.id && !isNaN(parseInt(this.state.id)) &&
@@ -351,23 +369,6 @@ class InvoiceBase extends Component {
                         </>}
                 </span>
                 <div className={styles.rule} />
-                <div className={"no-print"}
-                    style={{ textAlign: "center", border: 1 }}>
-                    {/* categories dropdown */}
-                    <select name="category"
-                        value={this.state.category}
-                        onChange={this.onChangeCategory}>
-                        <option />
-                        {Object.keys(this.state.categories)
-                            .sort((a, b) => a.length > b.length)
-                            .map(function (categories) {
-                                return (
-                                    <option key={categories} value={categories}>
-                                        {categories}
-                                    </option>)
-                            })}
-                    </select>
-                </div>
 
                 <div className={styles.tableCaption}>
                     {first &&
@@ -500,4 +501,4 @@ class InvoiceBase extends Component {
     }
 }
 
-export default withFirebase(InvoiceBase)
+export default withFirebase(Invoice)
