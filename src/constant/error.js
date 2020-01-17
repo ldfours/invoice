@@ -7,4 +7,4 @@ export default {
   this account instead and associate your social accounts on
   your personal account page.`
     }
-};
+}

@@ -1,24 +1,11 @@
-// ----------------------------------------
-// // ------ tables config ------
-// ----------------------------------------
-
-// ----------------------------------------
-// // ------ colors ------
-// ----------------------------------------
-
+// ------ colors ------
 $table-border-color: #b8b8b8;
 
-// ----------------------------------------
-// // ------ demo container settings ------
-// ----------------------------------------
-
+// ------ demo container settings ------
 $container-width: 88%;
 $container-max-width: 40em;
 
-// ----------------------------------------
-// // ------ table settings ------
-// ----------------------------------------
-
+// ------ table settings ------
 $table-border-width: .071428571em;
 $table-border-style: solid;
 $table-margin-bottom: 1.529411765em;
@@ -38,14 +25,6 @@ $table-bordered-child-radius: .470588235em;
     Tables v1.0
     Simple table styling by Chris Ferdinandi.
     http://gomakethings.com
-
-    Adapted from Twitter Bootstrap.
-    http://twitter.github.com/bootstrap/
-
-    Licensed under the Apache License v2.0
-    http://www.apache.org/licenses/LICENSE-2.0
-
- * ============================================================= */
 
 /* =============================================================
     RESPONSIVE RESET

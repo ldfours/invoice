@@ -1,5 +1,3 @@
-@import 'normalize';
-
 body {
   font-family: "DejaVuSerif", "FreeSans", "DejaVu Sans", sans-serif;
 }
@@ -7,6 +5,25 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
   monospace;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  padding: 0.2em;
 }
 
 @media print {
