@@ -482,10 +482,7 @@ export default class extends Component {
                     </div>
                     <div>
                         {/* table rows */}
-                        <div style={{
-                            width: 220,
-                            position: "absolute", left: "0px"
-                        }} className={`no-print ${styles.row}`}>
+                        <div className={`no-print ${styles.calendar} calendar`}>
                             <Calendar
                                 onChange={this.onChangeDate}
                                 value={highlightedDay} />

@@ -99,3 +99,10 @@ li {
     display: block;
   }
 }
+
+/* hide calendar on the narrow screen */
+@media only screen and (max-width: 1196px) {
+  .calendar {
+    display: none;
+  }
+}
