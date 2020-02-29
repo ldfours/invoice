@@ -39,7 +39,7 @@ const NavigationAuth = (props) => (
 )
 
 const NavigationNonAuth = () => (
-    <div className={"ui container"}>
+    <div>
         <Login />
     </div>
 )

@@ -23,19 +23,20 @@ const Lines = ({ lines }) => {
                         date}
                 </td>
                 <td>
-                    {!invoice.category.startsWith("slp") &&
+                    {!invoice.category === "slp" &&
                         invoice.category}
+                </td>
+                <td>
+                    {invoice.customer}
                 </td>
                 <td>
                     <Link to={{
                         pathname: INVOICE,
                         invoice: { ...invoice }
                     }}>
-                        {invoice.customer}
+                        {price} <PaymentIcon />
                     </Link>
                 </td>
-                <td>{price}</td>
-                <td><PaymentIcon /></td>
             </tr>)
     })
 }
@@ -44,9 +45,9 @@ export default ({ invoices }) => {
     const lines = invoices &&
         invoices.reduce((acc, invoice) => {
             return acc.concat(invoice.lineItems
-                .map(line => [
-                    line.date,
-                    line.price,
+                .map(item => [
+                    item.date,
+                    item.price,
                     invoice
                 ]))
         }, []).sort(Comparator)

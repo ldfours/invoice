@@ -58,7 +58,7 @@
 
 .controls {
   display: grid;
-  grid-template-columns: 4em 4em auto 3em 3em 4em;
+  grid-template-columns: 4em 4em auto 0.5em 3em 3em 2em;
   grid-column-gap: 0.2em;
   justify-self: start;
 }
@@ -92,7 +92,6 @@
     font-style: oblique;
   }
   & > .label {
-    @extend %flex-center;
     align-items: center;
   }
 }
@@ -139,7 +138,6 @@
   & > div {
     text-align: center;
     font-family: $fontFamilyText;
-    @extend %flex-center;
     border-left: $border;
     border-top: $border;
     min-width: $rhythm;
@@ -154,7 +152,7 @@
 }
 
 .deleteItem {
-  @extend %flex-center;
+  align-items: center;
   color: grey;
   padding: 0;
 }

@@ -8,6 +8,7 @@
         "node-sass": "latest",
         "prop-types": "latest",
         "react": "latest",
+        "react-calendar": "latest",
         "react-dom": "latest",
         "react-icons": "latest",
         "react-router-dom": "latest",

@@ -53,12 +53,8 @@ class Firebase {
       }
     })
 
-  layout = () => {
-    //console.log(this.auth.userKey)
-    return this.db.ref(`${this.auth.userKey}/layout`)
-  }
-  invoices = () => this.db.ref(`${this.auth.userKey}/invoice`)
-  invoice = id => this.db.ref(`${this.auth.userKey}/invoice/${id}`)
+  queryMany = (key) => this.db.ref(`${this.auth.userKey}/${key}`)
+  queryOne = (key, id) => this.db.ref(`${this.auth.userKey}/${key}/${id}`)
 }
 
 export default Firebase

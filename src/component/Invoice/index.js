@@ -41,12 +41,11 @@ export const onChangeEvent = (obj, event) => {
 // https://firebase.google.com/docs/firestore/manage-data/add-data
 export const queryLayout = (obj) => {
     obj.props.firebase
-        .layout()
+        .queryMany('layout')
         .once('value', snapshot => {
             const snap = snapshot.val()
             if (snap) {
                 Object.keys(snap).map(key => {
-                    //console.log(`${key} -> ${snap[key]}`)
                     obj.setState({ [key]: snap[key] })
                     return key
                 })

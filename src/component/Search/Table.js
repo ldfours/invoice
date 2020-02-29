@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { INVOICE } from '../../constant/route'
+import { INVOICE, CUSTOMER } from '../../constant/route'
 import { sumArr } from '../../constant/util'
 import styles from './Table.module.scss'
 import { getPaymentIcon } from '.'
@@ -13,25 +13,18 @@ const InvoiceTable = ({ invoice }) =>
             <tr>
                 {invoice.lineItems.map((line, i) =>
                     (<td width={2} key={i}>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>{line.date} {`$${line.price}`}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <span style={{ whiteSpace: 'nowrap' }}>{line.date}</span>
+                        <br />
+                        <span>{`$${line.price}`}</span>
                     </td>
                     ))}
             </tr>
         </tbody>
     </table>
 
-export default ({ invoices, query_key, query_val, query_category }) => {
-
+export default ({ invoices, query_key, query_val }) => {
     return (
-        // query parameters
         <React.Fragment>
-            {/* <Link to={{ pathname: DAILY, invoices: filteredInvoices }}> daily</Link> */}
             <table className={`${styles.table}`}>
                 <tbody>
                     {invoices.map(
@@ -39,7 +32,15 @@ export default ({ invoices, query_key, query_val, query_category }) => {
                             const PaymentIcon = getPaymentIcon(invoice.payment)
                             return (
                                 <tr key={invoice.id}>
-                                    <td>{invoice.customer}</td>
+                                    <td>
+                                        <Link to={{
+                                            pathname: CUSTOMER,
+                                            customer: invoice.customer,
+                                            visits: null
+                                        }}>
+                                            {invoice.customer}
+                                        </Link>
+                                    </td>
                                     <td>{invoice.category}</td>
                                     <td>
                                         <Link to={{

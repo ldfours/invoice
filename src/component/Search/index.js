@@ -1,19 +1,25 @@
 import React, { Component } from 'react'
-import { IoMdSend as MoreIcon } from 'react-icons/io'
-import { DiJqueryLogo as LoadingIcon } from 'react-icons/di'
 import { AuthUserContext } from '../Session'
 import { withFirebase } from '../Firebase'
-import { MdAccountBalance as ChequeIcon } from 'react-icons/md'
-import { MdAccountCircle as CashIcon } from 'react-icons/md'
+
+import { DiJqueryLogo as LoadingIcon } from 'react-icons/di'
+import {
+    MdAccountBalance as ChequeIcon,
+    MdAccountCircle as CashIcon,
+    MdSearch as SearchIcon
+} from 'react-icons/md'
 
 import Table from './Table'
 import Daily from './Daily'
+import Customer from './Customers'
 
 import {
     //layoutInitState,
     queryLayout,
     onChangeEvent
 } from '../Invoice'
+
+const pageLimit = 15
 
 export const getPaymentIcon = (payment) => {
     let PaymentIcon = React.Fragment
@@ -33,7 +39,7 @@ class Format extends Component {
         Object.keys(invoices)
             .filter(id => {
                 // console.log(JSON.stringify(invoices[id].payment))
-                if ((!category || invoices[id].category.startsWith(category)) &&
+                if ((!category || invoices[id].category === category) &&
                     (!payment || invoices[id].payment === payment)) {
                     return true
                 } else {
@@ -47,10 +53,21 @@ class Format extends Component {
             })
 
     render() {
-        const {
-            invoices, category, payment, isDaily, loading
-        } = this.props
-        const Layout = isDaily ? Daily : Table
+        const { invoices, category, payment, tableType, loading,
+            query_key, query_val } = this.props
+        const Layout = (
+            function (t) {
+                switch (t) {
+                    case 'daily':
+                        return Daily
+                    case 'customer':
+                        return Customer
+                    default:
+                        return Table
+                }
+            }
+        )(tableType)
+
         const filteredInvoices = this.filterInvoices(invoices, category, payment)
         return (
             <AuthUserContext.Consumer>
@@ -59,7 +76,10 @@ class Format extends Component {
                         {loading ? <div><LoadingIcon /></div> :
                             <React.Fragment>
                                 {authUser && filteredInvoices &&
-                                    <Layout invoices={filteredInvoices} />
+                                    <Layout invoices={filteredInvoices}
+                                        query_key={query_key}
+                                        query_val={query_val}
+                                    />
                                 }
                             </React.Fragment>}
                     </React.Fragment>
@@ -76,50 +96,54 @@ class Search extends Component {
             //...layoutInitState,
             segment: { radio: ["Cheque", "Cash"] },
             categories: { slp: "", ac: "", mt: "", osteo: "", sw: "", device: "" },
-            customer: "",
-            category: "",
+            customer: this.getLocationStateParam(props, "query_key") === "customer" ?
+                this.getLocationStateParam(props, "query_val") : "",
+            category: this.getLocationStateParam(props, "query_key") === "category" ?
+                this.getLocationStateParam(props, "query_val") : "",
             payment: "",
-            isDaily: false,
-            query_key: "",
-            query_val: "",
+            tableType: "",
+            query_key: this.getLocationStateParam(props, "query_key"),
+            query_val: this.getLocationStateParam(props, "query_val"),
             loading: false,
         }
 
-        this.onCheckboxChange = this.onCheckboxChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
         this.queryLayout = queryLayout.bind(this)
     }
 
-    queryInvoices = (query_key, query_val,
-        category, payment, limit = 15) => {
+    getLocationStateParam = (props, param) => {
+        if (props.location.state && props.location.state[param]) {
+            return props.location.state[param]
+        } else {
+            return ""
+        }
+    }
+
+    queryInvoices = (query_key, query_val, limit = pageLimit) => {
         this.setState({ loading: true })
 
         if (query_key) {
-            this.props.firebase.invoices()
+            this.props.firebase.queryMany('invoice')
                 .orderByChild(query_key)
                 .limitToLast(limit)
                 // filter query results to substring of a child node
                 .startAt(query_val)
                 .endAt(`${query_val}\uf8ff`)
                 .once('value', snapshot => {
-                    this.setInvoiceState(snapshot.val(), query_key, query_val,
-                        category, payment)
+                    this.setInvoiceState(snapshot.val(), query_key, query_val)
                 })
         } else {
-            this.props.firebase.invoices()
+            this.props.firebase.queryMany('invoice')
                 .limitToLast(limit)
                 .once('value', snapshot => {
                     //console.log(snapshot.val())
                     this.setInvoiceState(
-                        snapshot.val(),
-                        query_key, query_val,
-                        category, payment)
+                        snapshot.val(), "", "")
                 })
         }
     }
 
-    setInvoiceState = (invoiceObject, query_key, query_val,
-        category, payment) => {
+    setInvoiceState = (invoiceObject, query_key, query_val) => {
         if (invoiceObject) {
             //     const invoiceList =
             //       Object.keys(invoiceObject).map(key => ({
@@ -130,8 +154,6 @@ class Search extends Component {
                 invoices: invoiceObject,
                 query_key: query_key,
                 query_val: query_val,
-                category: category,
-                payment: payment,
                 loading: false,
             })
         } else {
@@ -147,9 +169,7 @@ class Search extends Component {
         //queryLayout(this)
         this.queryInvoices(
             this.state.query_key,
-            this.state.query_val,
-            this.state.category,
-            this.state.payment)
+            this.state.query_val)
     }
 
     loadMore = () => {
@@ -157,21 +177,13 @@ class Search extends Component {
         this.queryInvoices(
             this.state.query_key,
             this.state.query_val,
-            this.state.category,
-            this.state.payment,
             1000)
     }
-
-    onCheckboxChange = event =>
-        this.setState({ isDaily: event.target.checked })
 
     query = () => {
         this.queryInvoices(
             this.state.query_key && "customer",
-            this.state.query_val,
-            this.state.category,
-            this.state.payment
-        )
+            this.state.query_val)
     }
 
     onSubmit(event) {
@@ -182,7 +194,7 @@ class Search extends Component {
     render() {
         const {
             invoices, categories, category, customer,
-            payment, isDaily, loading
+            payment, tableType, loading, query_key, query_val
         } = this.state
 
         return (
@@ -195,32 +207,31 @@ class Search extends Component {
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <span>customer </span>
                                             <input autoFocus
                                                 style={{
                                                     border: "1px solid grey", width: "360px"
                                                 }}
                                                 name="customer"
                                                 value={customer}
-                                                onFocus={this.query}
                                                 onChange={(e) => {
                                                     onChangeEvent(this, e)
-                                                    //console.log(e.target.value)
-                                                    this.queryInvoices(
-                                                        e.target.value && "customer",
-                                                        e.target.value,
-                                                        this.state.category,
-                                                        this.state.payment
-                                                    )
+                                                    this.setState({
+                                                        query_key: "customer",
+                                                        query_val: e.target.value
+                                                    })
                                                 }}
                                                 type="text" />
+                                            <span> </span>
+                                            <SearchIcon size={20} onClick={this.query} />
                                         </td>
                                         <td>
-                                            <span>category </span>
+                                            <span style={{ fontStyle: "italic" }}>category </span>
                                             <select
                                                 name="category"
                                                 value={category}
-                                                onChange={(e) => { onChangeEvent(this, e) }}>
+                                                onChange={(e) => {
+                                                    onChangeEvent(this, e)
+                                                }}>
                                                 <option />
                                                 {categories && Object.keys(categories)
                                                     .map(function (c) {
@@ -230,7 +241,7 @@ class Search extends Component {
                                             </select>
                                         </td>
                                         <td>
-                                            <span>payment </span>
+                                            <span style={{ fontStyle: "italic" }}>payment </span>
                                             <select
                                                 name="payment"
                                                 value={payment}
@@ -246,14 +257,17 @@ class Search extends Component {
                                             </select>
                                         </td>
                                         <td>
-                                            daily
-                                            <input style={{ width: "40px" }}
-                                                type="checkbox"
-                                                defaultChecked={isDaily}
-                                                onChange={this.onCheckboxChange} />
+                                            <select
+                                                name="tableType"
+                                                value={this.state.tableType}
+                                                onChange={(e) => { onChangeEvent(this, e) }}>
+                                                <option />
+                                                <option>customer</option>
+                                                <option>daily</option>
+                                            </select>
                                         </td>
                                         <td>
-                                            <MoreIcon onClick={this.loadMore} />
+                                            <SearchIcon size={24} onClick={this.loadMore} />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -264,8 +278,10 @@ class Search extends Component {
                                 invoices: invoices,
                                 category: category,
                                 payment: payment,
-                                isDaily: isDaily,
-                                loading: loading
+                                tableType: tableType,
+                                loading: loading,
+                                query_key: query_key,
+                                query_val: query_val
                             }} />
                         }
                     </React.Fragment>

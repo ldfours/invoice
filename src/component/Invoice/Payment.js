@@ -1,8 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { MdCancel as DeleteIcon } from 'react-icons/md'
+import Calendar from 'react-calendar'
 
-import { clone, sumArr, formatCurrency, range } from '../../constant/util'
+//import { IoMdCopy as CopyIcon } from "react-icons/io"
+import { GoTrashcan as RemoveIcon } from 'react-icons/go'
+import { MdCancel as DeleteIcon } from 'react-icons/md'
+import { FiChevronLeft as BackwardIcon } from "react-icons/fi"
+
+import { SEARCH } from '../../constant/route'
+import {
+    clone, sumArr, range,
+    formatCurrency, formatDate,
+} from '../../constant/util'
 import styles from './Payment.module.scss'
 import {
     lineItemInitState,
@@ -13,7 +22,28 @@ import {
     onChangeEvent,
 } from '.'
 
-const Line = (props) => {
+const NoteLine = (props) => {
+    return (
+        <div className={styles.lineItem}>
+            <div>
+                {!props.readOnly &&
+                    <input name="date" type="text" value={props.date}
+                        onChange={props.changeLine(props.index)}
+                    />}
+            </div>
+            <div>
+                {!props.readOnly &&
+                    <textarea rows="1"
+                        style={{ border: "1px solid grey", width: "510px" }}
+                        name="note" type="text" value={props.note}
+                        onChange={props.changeLine(props.index)}
+                    />}
+            </div>
+        </div>
+    )
+}
+
+const PaymentLine = (props) => {
     const isBeforeLastLine = !props.readOnly && (props.index + 2 === props.last)
     const isLastLine = !props.readOnly && (props.index + 1 === props.last)
 
@@ -22,6 +52,7 @@ const Line = (props) => {
             <div>
                 {!props.readOnly &&
                     <input name="date" type="text" value={props.date}
+                        onFocus={props.focusDate(props.index)}
                         onChange={props.changeLine(props.index)}
                     />}
             </div>
@@ -77,7 +108,7 @@ const Line = (props) => {
         </div>
     )
 }
-Line.propTypes = {
+PaymentLine.propTypes = {
     index: PropTypes.number,
     date: PropTypes.string,
     description: PropTypes.string,
@@ -86,12 +117,14 @@ Line.propTypes = {
 }
 
 export default class extends Component {
-
     state = {
         ...invoiceInitState,
-        // selected invoice
+        // an invoice selected in the Table
         ...this.props.location.invoice,
         ...layoutInitState,
+        saved: false,
+        isAssessment: false,
+        dateIndex: -1,
     }
 
     saveInvoice = () => {
@@ -115,11 +148,20 @@ export default class extends Component {
 
         const firebaseSave = (id, invoice) => {
             this.props.firebase
-                .invoice(id)
+                .queryOne('invoice', id)
                 .set({ ...invoice })
-                .catch(error =>
-                    console.log(error + " in invoice " +
-                        id + " " + invoice.customer))
+                .catch(error => {
+                    const errorMessage = error + " in invoice " +
+                        id + " " + invoice.customer
+                    window.alert(errorMessage)
+                    console.log(errorMessage)
+                    if (this.state.saved) {
+                        this.setState({ saved: false })
+                    }
+                })
+            if (!this.state.saved) {
+                this.setState({ saved: true })
+            }
         }
 
         // validation
@@ -130,21 +172,19 @@ export default class extends Component {
             return false
         }
 
-        if (window.confirm("save invoice " + invoice.customer)) {
-            let id = this.state.id
-            if (!id) {
-                id = new Date().getTime().toString()
-                this.setState({ id: id })
-            }
-            firebaseSave(id, invoice)
-            console.log("saved " + id + " " + invoice.customer)
+        let id = this.state.id
+        if (!id) {
+            id = new Date().getTime().toString()
+            this.setState({ id: id })
         }
+        firebaseSave(id, invoice)
+        console.log("saved " + id + " " + invoice.customer)
     }
 
     removeInvoice = () => {
         const firebaseRemove = (id) => {
             this.props.firebase
-                .invoice(id)
+                .queryOne('invoice', id)
                 .remove()
                 .catch(_error => console.log("cannot remove invoice " + id))
         }
@@ -168,21 +208,22 @@ export default class extends Component {
                 return state; // should return updated state
             })
         }
-
         queryLayout(this)
         setStatePriceForm()
     }
+
     componentWillUnmount() {
-        this.props.firebase.invoice().off()
-        this.props.firebase.invoices().off()
-        this.props.firebase.layout().off()
+        this.props.firebase.queryOne('invoice').off()
+        this.props.firebase.queryMany('invoice').off()
+        this.props.firebase.queryMany('layout').off()
     }
 
     onChangeCategory = (event) => {
         //console.log(event.target.name + " = " + event.target.value)
         let item = this.state.lineItems[0] || lineItemInitState
         const category = event.target.value
-        item.description = category && this.state.categories && this.state.categories[category].description
+        item.description = category && this.state.categories &&
+            this.state.categories[category].description
         const items = [item, ...this.state.lineItems.slice(1)]
         this.setState({ lineItems: items })
         onChangeEvent(this, event)
@@ -208,6 +249,23 @@ export default class extends Component {
             return { ...item, [event.target.name]: event.target.value }
         })
         this.setState({ lineItems })
+    }
+
+    onFocusDate = (elementIndex) => (event) => {
+        //console.log(elementIndex)
+        this.setState({ dateIndex: elementIndex })
+    }
+
+    onChangeDate = (date) => {
+        if (this.state.dateIndex >= 0) {
+            let lineItems = this.state.lineItems.map((item, i) => {
+                if (this.state.dateIndex !== i) return item // unchanged item
+                // merge changed element with the current line
+                return { ...item, date: formatDate(date) }
+            })
+            this.setState({ lineItems })
+        }
+        this.setState({ date })
     }
 
     /*
@@ -246,18 +304,15 @@ export default class extends Component {
         }
     }
 
-    goToList = () => {
-        // this.state.id &&
-        //     this.state.query_key &&
-        //     this.state.query_val &&
-        // this.props.history.push(
-        //     {
-        //         pathname: LIST,
-        //         state: {
-        //             query_key: this.state.query_key,
-        //             query_val: this.state.query_val,
-        //         }
-        //     })
+    goSearch = () => {
+        this.props.history.push(
+            {
+                pathname: SEARCH,
+                state: {
+                    query_key: this.state.query_key,
+                    query_val: this.state.query_val,
+                }
+            })
     }
 
     onSave = (event) => {
@@ -273,22 +328,43 @@ export default class extends Component {
     onRemove = (event) => {
         event.preventDefault()
         this.removeInvoice()
-        this.goToList()
+        this.goSearch()
+    }
+
+    toggleCheckbox(name, event) {
+        let obj = {};
+        obj[name] = !this.state[name]
+        this.setState(obj)
+
+        let item = this.state.lineItems[0] || lineItemInitState
+        if (obj[name]) {
+            item.description = "Speech-Language Assessment"
+        } else {
+            item.description = "Speech Therapy"
+        }
+        const items = [item, ...this.state.lineItems.slice(1)]
+        this.setState({ lineItems: items })
     }
 
     render() {
+        const totalRows = 11
         const items = this.state.lineItems
+        const lastItem = items.slice(-1)[0] //items[items.length - 1]
         const first = items.length > 0 && this.state.caption &&
             this.state.caption[0] && this.state.caption[0] === 'Date:' &&
-            (items[items.length - 1].date.includes("20") ?
-                this.state.caption[0] + " " +
-                items[this.state.lineItems.length - 1].date :
-                this.state.tag)
+            (lastItem.date.includes("20") ?
+                this.state.caption[0] + " " + lastItem.date : this.state.tag)
 
         const category = this.state.categories && this.state.category &&
             this.state.categories[this.state.category]
         const note = category && this.state.categories[this.state.category].note
         const column = category && this.state.categories[this.state.category].column
+
+        const timestamp = Date.parse(items && lastItem.date)
+        const highlightedDay =
+            (isNaN(timestamp) === false) ?
+                new Date(timestamp) :
+                new Date()
 
         const total = formatCurrency(
             sumArr(
@@ -296,16 +372,19 @@ export default class extends Component {
                     return parseFloat(item.price)
                 })))
 
-        const totalRows = 11
-
         const completeInvoice =
             this.state.customer.length > 0 &&
             this.state.lineItems.length > 0
 
+        let saveButtonStyle = this.state.saved ?
+            { background: 'lightgreen' } : { background: 'azure' }
+
+        const isAssessmentChecked = this.state.lineItems &&
+            this.state.lineItems[0].description === "Speech-Language Assessment"
+
         return (
             <div className={styles.invoice}>
                 <div className={styles.headers}>
-                    {/*{JSON.stringify(this.state.mainHeader)}*/}
                     {this.state.head &&
                         <input type="text" name="mainHeader"
                             className={styles.major}
@@ -323,6 +402,9 @@ export default class extends Component {
                                 key={r}>{r}
                             </div>)}
                 </div>
+                <BackwardIcon className={`no-print`}
+                    size={24}
+                    onClick={(e) => { this.goSearch() }} />
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {/* main title */}
                     {this.state.title && this.state.title}
@@ -348,24 +430,26 @@ export default class extends Component {
                         {this.state.id && !isNaN(parseInt(this.state.id)) &&
                             (new Date(parseInt(this.state.id))).toString().substring(0, 21)}
                     </span>
+                    {this.state.category === "slp" ?
+                        <input type="checkbox"
+                            className={`no-print`}
+                            name="isAssessment"
+                            value={this.state.isAssessment}
+                            checked={isAssessmentChecked}
+                            onChange={this.toggleCheckbox.bind(this, "isAssessment")} /> :
+                        <span> </span>}
                     {completeInvoice &&
                         <button className={`no-print`}
-                            style={{ background: 'azure' }}
-                            onClick={this.onSave}>
-                            Save
-                    </button>}
+                            style={saveButtonStyle}
+                            onClick={this.onSave}>Save</button>}
                     {this.state.id &&
                         <React.Fragment>
                             <button className={`no-print`}
                                 style={{ background: 'lightyellow' }}
-                                onClick={this.onCopy}>
-                                Copy
-                            </button>
-                            <button className={`no-print`}
+                                onClick={this.onCopy}>Copy</button>
+                            <RemoveIcon className={`no-print`}
                                 style={{ background: 'bisque' }}
-                                onClick={this.onRemove}>
-                                Remove
-                            </button>
+                                onClick={this.onRemove} />
                         </React.Fragment>}
                 </span>
                 <div className={styles.rule} />
@@ -382,7 +466,6 @@ export default class extends Component {
                             className={`${styles.value} ${styles.name}`}
                             style={{ width: "21em" }}
                             onChange={(e) => { onChangeEvent(this, e) }} />
-
                     </div>
                     <div className={styles.value} />
                 </div>
@@ -399,15 +482,23 @@ export default class extends Component {
                     </div>
                     <div>
                         {/* table rows */}
+                        <div style={{
+                            width: 220,
+                            position: "absolute", left: "0px"
+                        }} className={`no-print ${styles.row}`}>
+                            <Calendar
+                                onChange={this.onChangeDate}
+                                value={highlightedDay} />
+                        </div>
                         {this.state.lineItems.map((item, i) => (
-                            <Line key={i} index={i}
+                            <PaymentLine key={i} index={i}
                                 {...item}
                                 category={this.state.category}
                                 categories={Object.keys(this.state.categories)}
                                 last={this.state.lineItems.length}
-                                // focusHandler={this.onInputFocus}
                                 addHandler={this.onAddLine}
                                 changeLine={this.onChangeLine}
+                                focusDate={this.onFocusDate}
                                 changeInvoice={(e) => { onChangeEvent(this, e) }}
                                 deleteHandler={this.onDeleteLine}
                                 deleteDuplicateHandler={this.onDeleteDuplicateLine} />
@@ -415,7 +506,7 @@ export default class extends Component {
                         {/* read-only rows */}
                         {range(0, totalRows - this.state.lineItems.length)
                             .map(n =>
-                                <Line key={n} readOnly={true}
+                                <PaymentLine key={n} readOnly={true}
                                     category={''}
                                     categories={[]}
                                     addHandler={f => f}
@@ -488,14 +579,33 @@ export default class extends Component {
                                     </div>
                                 </React.Fragment>
                             )}
+                            <input type="text"
+                                className="no-print"
+                                style={{ width: "11em", position: "absolute", left: "580px" }}
+                                name="tag" value={this.state.tag}
+                                onChange={(e) => { onChangeEvent(this, e) }} />
+                            <input type="text"
+                                className="no-print"
+                                style={{
+                                    width: "14em", border: "1px solid grey",
+                                    position: "absolute", left: "760px"
+                                }}
+                                name="notes" value={this.state.notes}
+                                onChange={(e) => { onChangeEvent(this, e) }} />
                         </div>}
-                    <div className={`no-print ${styles.row}`}>
-                        tag:
-                        <input type="text" name="tag" value={this.state.tag}
-                            onChange={(e) => { onChangeEvent(this, e) }} />
-                        notes:
-                        <textarea rows="1" name="notes" value={this.state.notes}
-                            onChange={(e) => { onChangeEvent(this, e) }} />
+                    <div className="no-print">
+                        {this.state.lineItems.map((item, i) => (
+                            <NoteLine key={i} index={i}
+                                {...item}
+                                category={this.state.category}
+                                categories={Object.keys(this.state.categories)}
+                                last={this.state.lineItems.length}
+                                addHandler={this.onAddLine}
+                                changeLine={this.onChangeLine}
+                                changeInvoice={(e) => { onChangeEvent(this, e) }}
+                                deleteHandler={this.onDeleteLine}
+                                deleteDuplicateHandler={this.onDeleteDuplicateLine} />
+                        ))}
                     </div>
                 </form>
             </div>

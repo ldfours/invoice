@@ -126,7 +126,7 @@ table {
 /* Adds borders and border-radius. */
 .table-bordered,
 %table-bordered {
-  border: $table-bordered-border;
+  //border: $table-bordered-border;
   border-collapse: separate;
   *border-collapse: collapsed;
   border-radius: $table-bordered-border-radius;

@@ -1,17 +1,15 @@
+<!-- -*- mode: markdown; mode: flyspell; -*-->
 # React Invoices
 
-## Features
+## Functionality
 
-- create and edit invoices
-- tag and notes inputs
-- total sum
-- cash / cheque payment selection  
-- "PAID" stamp effect
-- date caption title at the to of invoice is the date of the last
-  item in the table
-- save them in (or remove from) Firebase DB   
+- Use Firebase to Create/Read/Update/Delete invoices
+- Cash / Cheque payment selection
+- *PAID* stamp overlay image
+- Assign categories
+- Search by description and category
 
-## Firebase Deployment
+## Deployment
 ```
     $ npm run build
     $ firebase deploy

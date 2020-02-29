@@ -1,7 +1,8 @@
 import React from 'react'
+import { FiLogOut as LogoutIcon } from "react-icons/fi"
 
 import { withFirebase } from '../Firebase'
-import { Link, withRouter } from "react-router-dom"
+import { withRouter } from "react-router-dom"
 import { SEARCH } from '../../constant/route'
 import { compose } from '../../constant/util'
 
@@ -12,10 +13,9 @@ const LogoutLink = (props) => {
     }
 
     return (
-        <Link to={""} className="logout no-print"
-              onClick={logOut}>
-            Logout
-        </Link>
+        <LogoutIcon className="logout no-print"
+            // color={"white"}
+            onClick={logOut} />
     )
 }
 
