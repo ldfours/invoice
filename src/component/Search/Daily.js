@@ -13,7 +13,7 @@ function Comparator([dateA, ...restA], [dateB, ...restB]) {
     return 0
 }
 
-const Lines = ({ lines }) => {
+const Lines = ({ lines, layout }) => {
     return lines.map(([date, price, invoice], i) => {
         const PaymentIcon = getPaymentIcon(invoice.payment)
         return (
@@ -32,7 +32,8 @@ const Lines = ({ lines }) => {
                 <td>
                     <Link to={{
                         pathname: INVOICE,
-                        invoice: { ...invoice }
+                        invoice: { ...invoice },
+                        layout: layout,
                     }}>
                         {price} <PaymentIcon />
                     </Link>
@@ -41,7 +42,7 @@ const Lines = ({ lines }) => {
     })
 }
 
-export default ({ invoices }) => {
+export default ({ invoices, layout }) => {
     const lines = invoices &&
         invoices.reduce((acc, invoice) => {
             return acc.concat(invoice.lineItems
@@ -58,7 +59,7 @@ export default ({ invoices }) => {
             {invoices &&
                 <table className={`${styles.table}`}>
                     <tbody>
-                        <Lines lines={lines} />
+                        <Lines lines={lines} layout={layout} />
                     </tbody>
                 </table>
             }

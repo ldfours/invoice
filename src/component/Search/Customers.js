@@ -5,13 +5,19 @@ import { groupBy, sumArr, formatDate } from '../../constant/util'
 import styles from './Table.module.scss'
 import { CUSTOMER } from '../../constant/route'
 
-const CategorySummary = ({ visits, categoryName, minDate, maxDate, total }) => {
-    const visitsWithNotes = Object.keys(visits)
-        .filter(key => visits[key].note)
-        .map(key => visits[key])
+const CategorySummary = ({
+    visits, categoryName,
+    minDate, maxDate, total,
+    layoutCategory,
+}) => {
+    const visitsWithNotes =
+        Object.keys(visits)
+            .filter(key => visits[key].note)
+            .map(key => visits[key])
     return (
         <React.Fragment>
             <span style={{ whiteSpace: 'nowrap' }}>{minDate} - {maxDate}</span>
+            {/* {JSON.stringify(layoutCategory)} */}
             <br />
             <span style={{ whiteSpace: 'nowrap' }}>
                 {visitsWithNotes.length ?
@@ -19,9 +25,8 @@ const CategorySummary = ({ visits, categoryName, minDate, maxDate, total }) => {
                         <Link to={{
                             pathname: CUSTOMER,
                             customer: visitsWithNotes && visitsWithNotes[0].customer,
-                            visits: {
-                                ...visitsWithNotes
-                            }
+                            layoutCategory: layoutCategory,
+                            visits: { ...visitsWithNotes }
                         }}>{categoryName}</Link> ${total}
                     </React.Fragment>
                     : `${categoryName} $${total}`}
@@ -30,13 +35,13 @@ const CategorySummary = ({ visits, categoryName, minDate, maxDate, total }) => {
     )
 }
 
-const Line = ({ customer }) => {
+const Line = ({ customer, layout }) => {
     const customerName = Object.keys(customer)[0]
     const categoryNames = Object.keys(customer[customerName])
     return (
         <tr key={customerName}>
             <td>{customerName}</td>
-            {/* <td>{JSON.stringify(categoryNames)}</td> */}
+            {/* <td>{JSON.stringify(layout)}</td> */}
             {categoryNames.map(categoryName => {
                 const visits = customer[customerName][categoryName]
                 const total = sumArr(visits.map(visit => parseFloat(visit.price)))
@@ -51,6 +56,7 @@ const Line = ({ customer }) => {
                             minDate={minDate}
                             maxDate={maxDate}
                             total={total}
+                            layoutCategory={layout.categories[categoryName]}
                         />
                     </td>
                 )
@@ -58,7 +64,7 @@ const Line = ({ customer }) => {
         </tr>)
 }
 
-export default ({ invoices }) => {
+export default ({ invoices, layout }) => {
     const lines = invoices &&
         invoices.reduce((acc, invoice) => {
             return acc.concat(invoice.lineItems
@@ -90,7 +96,7 @@ export default ({ invoices }) => {
                     <tbody>
                         {/* {JSON.stringify(customers)} */}
                         {customers.map((customer, i) => {
-                            return <Line key={i} customer={customer} />
+                            return <Line key={i} customer={customer} layout={layout} />
                         })}
                     </tbody>
                 </table>

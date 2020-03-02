@@ -9,8 +9,8 @@ class Customer extends Component {
         this.onSubmit = this.onSubmit.bind(this)
         this.state = {
             customer: props.location.customer,
-            company: "",
             dob: "",
+            company: "",
             note: "",
         }
     }
@@ -71,20 +71,27 @@ class Customer extends Component {
     }
 
     render() {
-        const visits = this.props.location.visits
         const customer = this.props.location.customer
+        const layoutCategory = this.props.location.layoutCategory
+        const visits = this.props.location.visits
         const keys = visits && Object.keys(visits)
         const lastIndex = visits && Object.keys(visits).slice(-1)[0]
         const description = visits && visits[lastIndex].description
         return (
             customer ? (
                 <React.Fragment>
+                    <div style={{ fontStyle: "oblique" }}>
+                        {layoutCategory &&
+                            layoutCategory.note.slice(1)
+                                .map((line, i) =>
+                                    <span key={i}>{line} </span>)}
+                    </div>
                     <div style={{ fontWeight: "bold", textAlign: "center" }}>
                         {description} {visits && " - NOTES"}
                     </div>
                     <form onSubmit={this.onSubmit}>
                         <div style={{ fontWeight: "bold" }}>
-                            Client's Name:<span> </span>
+                            Client:<span> </span>
                             <span style={{ fontSize: "1.1em" }}>{customer}</span>
                             <span style={{
                                 width: "15em",
@@ -107,26 +114,42 @@ class Customer extends Component {
                                 <tbody>
                                     {keys.map(key => {
                                         const date = visits[key].date
-                                        const note = visits[key].note
+                                        const text = visits[key].note
                                         return (<tr key={key}>
                                             <td style={{ width: "8em" }}>{date}</td>
-                                            <td>{note}</td>
+                                            <td>{text}<br />
+                                                {layoutCategory && layoutCategory.note
+                                                    .slice(1, 3) // slice(fromIndex, toIndex)
+                                                    .map((line, i) =>
+                                                        <span key={i}
+                                                            style={{
+                                                                fontStyle: "oblique",
+                                                                fontSize: "0.7em"
+                                                            }}>{line} </span>)
+                                                }
+                                                <img style={{
+                                                    height: "1.1em",
+                                                }}
+                                                    src={`/images/${layoutCategory.signature}`}
+                                                    alt="signature" />
+                                            </td>
                                         </tr>)
                                     })}
                                 </tbody>
                             </table>}
-                        <div className={"no-print"}>
-                            Company: <input type="text"
-                                style={{ border: "1px solid grey" }}
-                                name="company"
-                                onChange={this.onChange}
-                                value={this.state.company} />
-                            Note: <textarea
-                                style={{ border: "1px solid grey" }}
-                                name="note"
-                                onChange={this.onChange}
-                                value={this.state.note} />
-                        </div>
+                        {!visits &&
+                            <div className={"no-print"}>
+                                <input type="text"
+                                    style={{ border: "1px solid grey" }}
+                                    name="company"
+                                    onChange={this.onChange}
+                                    value={this.state.company} />
+                                <textarea
+                                    style={{ border: "1px solid grey" }}
+                                    name="note"
+                                    onChange={this.onChange}
+                                    value={this.state.note} />
+                            </div>}
                     </form>
                 </React.Fragment>) : ""
         )

@@ -22,7 +22,7 @@ const InvoiceTable = ({ invoice }) =>
         </tbody>
     </table>
 
-export default ({ invoices, query_key, query_val }) => {
+export default ({ invoices, layout, query_key, query_val }) => {
     return (
         <React.Fragment>
             <table className={`${styles.table}`}>
@@ -45,10 +45,11 @@ export default ({ invoices, query_key, query_val }) => {
                                     <td>
                                         <Link to={{
                                             pathname: INVOICE,
+                                            layout,
                                             invoice: {
                                                 query_key,
                                                 query_val,
-                                                ...invoice
+                                                ...invoice,
                                             }
                                         }}>
                                             {sumArr(invoice.lineItems

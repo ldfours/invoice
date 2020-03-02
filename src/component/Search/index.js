@@ -1,23 +1,23 @@
 import React, { Component } from 'react'
-import { AuthUserContext } from '../Session'
-import { withFirebase } from '../Firebase'
+import { Link } from 'react-router-dom'
 
 import { DiJqueryLogo as LoadingIcon } from 'react-icons/di'
+import { FiFileText as InvoiceIcon } from 'react-icons/fi'
 import {
     MdAccountBalance as ChequeIcon,
     MdAccountCircle as CashIcon,
     MdSearch as SearchIcon
 } from 'react-icons/md'
 
+import { AuthUserContext } from '../Session'
+import { withFirebase } from '../Firebase'
+import { INVOICE } from '../../constant/route'
+
 import Table from './Table'
 import Daily from './Daily'
 import Customer from './Customers'
 
-import {
-    //layoutInitState,
-    queryLayout,
-    onChangeEvent
-} from '../Invoice'
+import { onChangeEvent } from '../Invoice'
 
 const pageLimit = 15
 
@@ -53,8 +53,12 @@ class Format extends Component {
             })
 
     render() {
-        const { invoices, category, payment, tableType, loading,
-            query_key, query_val } = this.props
+        const {
+            invoices, layout, category, payment,
+            tableType, loading, query_key, query_val,
+        } = this.props
+        //console.log(layout)
+
         const Layout = (
             function (t) {
                 switch (t) {
@@ -65,8 +69,7 @@ class Format extends Component {
                     default:
                         return Table
                 }
-            }
-        )(tableType)
+            })(tableType)
 
         const filteredInvoices = this.filterInvoices(invoices, category, payment)
         return (
@@ -76,7 +79,9 @@ class Format extends Component {
                         {loading ? <div><LoadingIcon /></div> :
                             <React.Fragment>
                                 {authUser && filteredInvoices &&
-                                    <Layout invoices={filteredInvoices}
+                                    <Layout
+                                        invoices={filteredInvoices}
+                                        layout={layout}
                                         query_key={query_key}
                                         query_val={query_val}
                                     />
@@ -89,13 +94,20 @@ class Format extends Component {
     }
 }
 
+const layoutInitState = {
+    title: '',
+    caption: '',
+    column: '',
+    head: '',
+    segment: '',
+    categories: ''
+}
+
 class Search extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            //...layoutInitState,
-            segment: { radio: ["Cheque", "Cash"] },
-            categories: { slp: "", ac: "", mt: "", osteo: "", sw: "", device: "" },
+            layout: this.getLocationStateParam(props, "layout") || layoutInitState,
             customer: this.getLocationStateParam(props, "query_key") === "customer" ?
                 this.getLocationStateParam(props, "query_val") : "",
             category: this.getLocationStateParam(props, "query_key") === "category" ?
@@ -108,7 +120,6 @@ class Search extends Component {
         }
 
         this.onSubmit = this.onSubmit.bind(this)
-        this.queryLayout = queryLayout.bind(this)
     }
 
     getLocationStateParam = (props, param) => {
@@ -145,11 +156,6 @@ class Search extends Component {
 
     setInvoiceState = (invoiceObject, query_key, query_val) => {
         if (invoiceObject) {
-            //     const invoiceList =
-            //       Object.keys(invoiceObject).map(key => ({
-            //         ...invoiceObject[key]
-            //       }))
-            //       console.log(invoiceList)
             this.setState({
                 invoices: invoiceObject,
                 query_key: query_key,
@@ -165,37 +171,62 @@ class Search extends Component {
         }
     }
 
-    componentDidMount() {
-        //queryLayout(this)
-        this.queryInvoices(
-            this.state.query_key,
-            this.state.query_val)
+    // db
+    // https://firebase.google.com/docs/database/web/read-and-write
+    // https://firebase.google.com/docs/firestore/manage-data/add-data
+    queryLayout = () => {
+        this.props.firebase
+            .queryMany('layout')
+            .once('value', snapshot => {
+                const snap = snapshot.val()
+                if (snap) {
+                    Object.keys(snap).map(key => {
+                        //console.log(key)
+                        this.setState({ [key]: snap[key] })
+                        return key
+                    })
+                }
+            })
     }
 
-    loadMore = () => {
-        //this.setState(state => ({ limit: state.limit + 1000 }))
+    query = (limit) => {
         this.queryInvoices(
             this.state.query_key,
             this.state.query_val,
-            1000)
-    }
-
-    query = () => {
-        this.queryInvoices(
-            this.state.query_key && "customer",
-            this.state.query_val)
+            limit)
+        this.queryLayout()
     }
 
     onSubmit(event) {
         event.preventDefault()
-        this.query()
+        this.query(pageLimit)
+    }
+
+    componentWillUnmount() {
+        this.props.firebase.queryMany('layout').off()
+    }
+
+    componentDidMount() {
+        this.queryInvoices(
+            this.state.query_key,
+            this.state.query_val)
     }
 
     render() {
         const {
-            invoices, categories, category, customer,
+            invoices, category, customer,
             payment, tableType, loading, query_key, query_val
         } = this.state
+
+        //console.log(this.state.layout)
+        const layout = {
+            title: this.state.title || this.state.layout.title,
+            caption: this.state.caption || this.state.layout.caption,
+            column: this.state.column || this.state.layout.title,
+            head: this.state.head || this.state.layout.head,
+            segment: this.state.segment || this.state.layout.segment,
+            categories: this.state.categories || this.state.layout.categories,
+        }
 
         return (
             <AuthUserContext.Consumer>
@@ -205,24 +236,31 @@ class Search extends Component {
                         <form onSubmit={this.onSubmit}>
                             <table style={{ border: 0, padding: 0 }}>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <input autoFocus
-                                                style={{
-                                                    border: "1px solid grey", width: "360px"
-                                                }}
-                                                name="customer"
-                                                value={customer}
-                                                onChange={(e) => {
-                                                    onChangeEvent(this, e)
-                                                    this.setState({
-                                                        query_key: "customer",
-                                                        query_val: e.target.value
-                                                    })
-                                                }}
-                                                type="text" />
-                                            <span> </span>
-                                            <SearchIcon size={20} onClick={this.query} />
+                                    <tr><td>
+                                        <input autoFocus
+                                            style={{
+                                                border: "1px solid grey", width: "360px"
+                                            }}
+                                            name="customer"
+                                            value={customer}
+                                            onChange={(e) => {
+                                                onChangeEvent(this, e)
+                                                this.setState({
+                                                    query_key: "customer",
+                                                    query_val: e.target.value
+                                                })
+                                            }} type="text" />
+                                        <span> </span>
+                                        <SearchIcon size={20}
+                                            onClick={e => this.query(pageLimit)} />
+                                    </td>
+                                        <td>{layout && layout.categories &&
+                                            <Link to={{
+                                                pathname: INVOICE,
+                                                layout,
+                                                invoice: {}
+                                            }}><InvoiceIcon size={32} />
+                                            </Link>}
                                         </td>
                                         <td>
                                             <span style={{ fontStyle: "italic" }}>category </span>
@@ -233,11 +271,12 @@ class Search extends Component {
                                                     onChangeEvent(this, e)
                                                 }}>
                                                 <option />
-                                                {categories && Object.keys(categories)
-                                                    .map(function (c) {
-                                                        return (
-                                                            <option key={c} value={c}>{c}</option>)
-                                                    })}
+                                                {layout.categories &&
+                                                    Object.keys(layout.categories)
+                                                        .map(function (c) {
+                                                            return (
+                                                                <option key={c} value={c}>{c}</option>)
+                                                        })}
                                             </select>
                                         </td>
                                         <td>
@@ -247,13 +286,15 @@ class Search extends Component {
                                                 value={payment}
                                                 onChange={(e) => { onChangeEvent(this, e) }}>
                                                 <option />
-                                                {this.state.segment.radio &&
-                                                    this.state.segment.radio.map(function (payment) {
-                                                        return (
-                                                            <option key={payment} value={payment}>
-                                                                {payment}
-                                                            </option>)
-                                                    })}
+                                                {layout.segment.radio &&
+                                                    layout.segment.radio.map(
+                                                        function (payment) {
+                                                            return (
+                                                                <option key={payment}
+                                                                    value={payment}>
+                                                                    {payment}
+                                                                </option>)
+                                                        })}
                                             </select>
                                         </td>
                                         <td>
@@ -267,7 +308,8 @@ class Search extends Component {
                                             </select>
                                         </td>
                                         <td>
-                                            <SearchIcon size={24} onClick={this.loadMore} />
+                                            <SearchIcon size={24}
+                                                onClick={e => this.query(1000)} />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -276,6 +318,7 @@ class Search extends Component {
                         {invoices && Object.keys(invoices).length &&
                             <Format {...{
                                 invoices: invoices,
+                                layout: layout,
                                 category: category,
                                 payment: payment,
                                 tableType: tableType,

@@ -16,11 +16,11 @@ import styles from './Payment.module.scss'
 import {
     lineItemInitState,
     invoiceInitState,
-    layoutInitState,
     resetPayment,
-    queryLayout,
     onChangeEvent,
 } from '.'
+
+const totalRows = 11
 
 const NoteLine = (props) => {
     return (
@@ -121,7 +121,7 @@ export default class extends Component {
         ...invoiceInitState,
         // an invoice selected in the Table
         ...this.props.location.invoice,
-        ...layoutInitState,
+        layout: this.props.location.layout,
         saved: false,
         isAssessment: false,
         dateIndex: -1,
@@ -143,7 +143,7 @@ export default class extends Component {
             tag: this.state.tag,
             notes: this.state.notes,
             extraNote: this.state.extraNote,
-            mainHeader: this.state.mainHeader
+            mainHeader: this.state.mainHeader,
         }
 
         const firebaseSave = (id, invoice) => {
@@ -208,22 +208,20 @@ export default class extends Component {
                 return state; // should return updated state
             })
         }
-        queryLayout(this)
         setStatePriceForm()
     }
 
     componentWillUnmount() {
         this.props.firebase.queryOne('invoice').off()
         this.props.firebase.queryMany('invoice').off()
-        this.props.firebase.queryMany('layout').off()
     }
 
     onChangeCategory = (event) => {
         //console.log(event.target.name + " = " + event.target.value)
         let item = this.state.lineItems[0] || lineItemInitState
         const category = event.target.value
-        item.description = category && this.state.categories &&
-            this.state.categories[category].description
+        item.description = category && this.state.layout.categories &&
+            this.state.layout.categories[category].description
         const items = [item, ...this.state.lineItems.slice(1)]
         this.setState({ lineItems: items })
         onChangeEvent(this, event)
@@ -311,6 +309,7 @@ export default class extends Component {
                 state: {
                     query_key: this.state.query_key,
                     query_val: this.state.query_val,
+                    layout: this.state.layout,
                 }
             })
     }
@@ -347,18 +346,18 @@ export default class extends Component {
     }
 
     render() {
-        const totalRows = 11
         const items = this.state.lineItems
         const lastItem = items.slice(-1)[0] //items[items.length - 1]
-        const first = items.length > 0 && this.state.caption &&
-            this.state.caption[0] && this.state.caption[0] === 'Date:' &&
+        const first = items.length > 0 && this.state.layout.caption &&
+            this.state.layout.caption[0] && this.state.layout.caption[0] === 'Date:' &&
             (lastItem.date.includes("20") ?
-                this.state.caption[0] + " " + lastItem.date : this.state.tag)
+                this.state.layout.caption[0] + " " + lastItem.date : this.state.tag)
 
-        const category = this.state.categories && this.state.category &&
-            this.state.categories[this.state.category]
-        const note = category && this.state.categories[this.state.category].note
-        const column = category && this.state.categories[this.state.category].column
+        const head = this.state.layout && this.state.layout.head
+        const category = this.state.layout.categories && this.state.category &&
+            this.state.layout.categories[this.state.category]
+        const note = category && this.state.layout.categories[this.state.category].note
+        const column = category && this.state.layout.categories[this.state.category].column
 
         const timestamp = Date.parse(items && lastItem.date)
         const highlightedDay =
@@ -385,13 +384,13 @@ export default class extends Component {
         return (
             <div className={styles.invoice}>
                 <div className={styles.headers}>
-                    {this.state.head &&
+                    {head &&
                         <input type="text" name="mainHeader"
                             className={styles.major}
-                            value={this.state.mainHeader || this.state.head[0]}
+                            value={this.state.mainHeader || head[0]}
                             onChange={(e) => { onChangeEvent(this, e) }} />}
-                    {this.state.head &&
-                        this.state.head.slice(1).map((r, i) =>
+                    {head &&
+                        head.slice(1).map((r, i) =>
                             /*
                             * Conditional tag attribute
                             *   <Button {...(condition ? { bsStyle: 'success' } : {})} />
@@ -407,7 +406,7 @@ export default class extends Component {
                     onClick={(e) => { this.goSearch() }} />
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {/* main title */}
-                    {this.state.title && this.state.title}
+                    {this.state.layout.title && this.state.layout.title}
                     {/* categories dropdown */}
                     <span className={"no-print"}>
                         {/* categories dropdown */}
@@ -415,7 +414,7 @@ export default class extends Component {
                             value={this.state.category}
                             onChange={this.onChangeCategory}>
                             <option />
-                            {Object.keys(this.state.categories)
+                            {Object.keys(this.state.layout.categories)
                                 .sort((a, b) => a.length > b.length)
                                 .map(function (category) {
                                     return (
@@ -460,7 +459,7 @@ export default class extends Component {
                             <span className={styles.value}>{first}</span>
                         </div>}
                     <div className={styles.key}>
-                        {this.state.caption && this.state.caption[1]}
+                        {this.state.layout.caption && this.state.layout.caption[1]}
                         <span>  </span>
                         <input name="customer" value={this.state.customer}
                             className={`${styles.value} ${styles.name}`}
@@ -491,7 +490,7 @@ export default class extends Component {
                             <PaymentLine key={i} index={i}
                                 {...item}
                                 category={this.state.category}
-                                categories={Object.keys(this.state.categories)}
+                                categories={Object.keys(this.state.layout.categories)}
                                 last={this.state.lineItems.length}
                                 addHandler={this.onAddLine}
                                 changeLine={this.onChangeLine}
@@ -537,7 +536,7 @@ export default class extends Component {
                     </div>
 
                     {/* payment */}
-                    {this.state.segment.radio &&
+                    {this.state.layout.segment.radio &&
                         <div className={styles.valueTable}>
                             {this.state.id &&
                                 <div style={{
@@ -559,9 +558,10 @@ export default class extends Component {
                                     //this.resetPayment
                                     (e) => { resetPayment(this, e) }
                                 }>
-                                {this.state.segment.title && `${this.state.segment.title}:`}
+                                {this.state.layout.segment.title &&
+                                    `${this.state.layout.segment.title}:`}
                             </div>
-                            {this.state.segment.radio.map(r =>
+                            {this.state.layout.segment.radio.map(r =>
                                 <React.Fragment key={r}>
                                     <div className={`${styles.label}`}>
                                         <input className={`${styles.radio}`}
@@ -595,7 +595,7 @@ export default class extends Component {
                             <NoteLine key={i} index={i}
                                 {...item}
                                 category={this.state.category}
-                                categories={Object.keys(this.state.categories)}
+                                categories={Object.keys(this.state.layout.categories)}
                                 last={this.state.lineItems.length}
                                 addHandler={this.onAddLine}
                                 changeLine={this.onChangeLine}
