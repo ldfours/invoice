@@ -3,11 +3,14 @@
 
 table {
   &:nth-of-type(1) {
-    @extend %table;
+    //@extend %table;
     @extend %table-bordered;
     @extend %table-condensed;
   }
 }
+
+tr:nth-child(even) {background: #CCC}
+tr:nth-child(odd) {background: #FFF}
 
 select {
   //-moz-appearance:none; /* Firefox */
