@@ -30,6 +30,14 @@ export default ({ invoices, layout, query_key, query_val }) => {
                     {invoices.map(
                         invoice => {
                             const PaymentIcon = getPaymentIcon(invoice.payment)
+                            const sumPrice = <div>
+                                {
+                                    sumArr(invoice.lineItems
+                                        .map(item => parseInt(item.price)))
+                                }
+                                <span> </span>
+                                <PaymentIcon />
+                            </div>
                             return (
                                 <tr key={invoice.id}>
                                     <td>
@@ -43,20 +51,16 @@ export default ({ invoices, layout, query_key, query_val }) => {
                                     </td>
                                     <td>{invoice.category}</td>
                                     <td>
-                                        <Link to={{
-                                            pathname: INVOICE,
-                                            layout,
-                                            invoice: {
-                                                query_key,
-                                                query_val,
-                                                ...invoice,
-                                            }
-                                        }}>
-                                            {sumArr(invoice.lineItems
-                                                .map(item => parseInt(item.price)))}
-                                            <span> </span>
-                                            <PaymentIcon />
-                                        </Link>
+                                        {layout && layout.categories ?
+                                            <Link to={{
+                                                pathname: INVOICE,
+                                                layout,
+                                                invoice: {
+                                                    query_key,
+                                                    query_val,
+                                                    ...invoice,
+                                                }
+                                            }}>{sumPrice}</Link> : sumPrice}
                                     </td>
                                     <td>
                                         <InvoiceTable invoice={invoice} />

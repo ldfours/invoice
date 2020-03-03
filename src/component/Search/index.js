@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-import { DiJqueryLogo as LoadingIcon } from 'react-icons/di'
+import { DiFirebase as FirebaseIcon } from 'react-icons/di';
 import { FiFileText as InvoiceIcon } from 'react-icons/fi'
 import {
+    MdAccessTime as ClockIcon,
     MdAccountBalance as ChequeIcon,
     MdAccountCircle as CashIcon,
     MdSearch as SearchIcon
@@ -76,7 +77,7 @@ class Format extends Component {
             <AuthUserContext.Consumer>
                 {authUser => (
                     <React.Fragment>
-                        {loading ? <div><LoadingIcon /></div> :
+                        {loading ? <div><ClockIcon /></div> :
                             <React.Fragment>
                                 {authUser && filteredInvoices &&
                                     <Layout
@@ -234,7 +235,7 @@ class Search extends Component {
                     authUser &&
                     <React.Fragment>
                         <form onSubmit={this.onSubmit}>
-                            <table style={{ border: 0, padding: 0 }}>
+                            <table>
                                 <tbody>
                                     <tr><td>
                                         <input autoFocus
@@ -251,9 +252,21 @@ class Search extends Component {
                                                 })
                                             }} type="text" />
                                         <span> </span>
-                                        <SearchIcon size={20}
+                                        <SearchIcon size={24}
+                                            style={{ color: "rgb(13, 55, 133)" }}
                                             onClick={e => this.query(pageLimit)} />
                                     </td>
+                                        <td>
+                                            {layout && layout.categories &&
+                                                <select
+                                                    name="tableType"
+                                                    value={this.state.tableType}
+                                                    onChange={(e) => { onChangeEvent(this, e) }}>
+                                                    <option>invoice</option>
+                                                    <option>customer</option>
+                                                    <option>daily</option>
+                                                </select>}
+                                        </td>
                                         <td>{layout && layout.categories &&
                                             <Link to={{
                                                 pathname: INVOICE,
@@ -263,52 +276,43 @@ class Search extends Component {
                                             </Link>}
                                         </td>
                                         <td>
-                                            <span style={{ fontStyle: "italic" }}>category </span>
-                                            <select
-                                                name="category"
-                                                value={category}
-                                                onChange={(e) => {
-                                                    onChangeEvent(this, e)
-                                                }}>
-                                                <option />
-                                                {layout.categories &&
-                                                    Object.keys(layout.categories)
+                                            {layout.categories &&
+                                                <select
+                                                    name="category"
+                                                    value={category}
+                                                    onChange={(e) => {
+                                                        onChangeEvent(this, e)
+                                                    }}>
+                                                    <option>[category]</option>
+                                                    {Object.keys(layout.categories)
                                                         .map(function (c) {
                                                             return (
                                                                 <option key={c} value={c}>{c}</option>)
                                                         })}
-                                            </select>
+                                                </select>}
                                         </td>
                                         <td>
-                                            <span style={{ fontStyle: "italic" }}>payment </span>
-                                            <select
-                                                name="payment"
-                                                value={payment}
-                                                onChange={(e) => { onChangeEvent(this, e) }}>
-                                                <option />
-                                                {layout.segment.radio &&
-                                                    layout.segment.radio.map(
-                                                        function (payment) {
-                                                            return (
-                                                                <option key={payment}
-                                                                    value={payment}>
-                                                                    {payment}
-                                                                </option>)
-                                                        })}
-                                            </select>
+                                            {layout.segment.radio &&
+                                                <select
+                                                    name="payment"
+                                                    value={payment}
+                                                    onChange={(e) => { onChangeEvent(this, e) }}>
+                                                    <option>[payment]</option>
+                                                    {layout.segment.radio
+                                                        .map(
+                                                            function (payment) {
+                                                                return (
+                                                                    <option key={payment}
+                                                                        value={payment}>
+                                                                        {payment}
+                                                                    </option>)
+                                                            })}
+                                                </select>}
                                         </td>
                                         <td>
-                                            <select
-                                                name="tableType"
-                                                value={this.state.tableType}
-                                                onChange={(e) => { onChangeEvent(this, e) }}>
-                                                <option />
-                                                <option>customer</option>
-                                                <option>daily</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <SearchIcon size={24}
+                                            <FirebaseIcon
+                                                style={{ color: "rgb(13, 55, 133)" }}
+                                                size={26}
                                                 onClick={e => this.query(1000)} />
                                         </td>
                                     </tr>

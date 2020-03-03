@@ -20,7 +20,7 @@ const CategorySummary = ({
             {/* {JSON.stringify(layoutCategory)} */}
             <br />
             <span style={{ whiteSpace: 'nowrap' }}>
-                {visitsWithNotes.length ?
+                {visitsWithNotes.length && layoutCategory ?
                     <React.Fragment>
                         <Link to={{
                             pathname: CUSTOMER,

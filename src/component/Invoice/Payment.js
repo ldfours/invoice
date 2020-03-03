@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Calendar from 'react-calendar'
 
 //import { IoMdCopy as CopyIcon } from "react-icons/io"
-import { GoTrashcan as RemoveIcon } from 'react-icons/go'
+import { GoTrashcan as TrashIcon } from 'react-icons/go'
 import { MdCancel as DeleteIcon } from 'react-icons/md'
 import { FiChevronLeft as BackwardIcon } from "react-icons/fi"
 
@@ -194,6 +194,9 @@ export default class extends Component {
             window.confirm("remove invoice id " + id)) {
             firebaseRemove(id)
             console.log("removed " + id)
+            return true
+        } else {
+            return false
         }
     }
 
@@ -326,8 +329,9 @@ export default class extends Component {
 
     onRemove = (event) => {
         event.preventDefault()
-        this.removeInvoice()
-        this.goSearch()
+        if (this.removeInvoice()) {
+            this.goSearch()
+        }
     }
 
     toggleCheckbox(name, event) {
@@ -348,16 +352,18 @@ export default class extends Component {
     render() {
         const items = this.state.lineItems
         const lastItem = items.slice(-1)[0] //items[items.length - 1]
-        const first = items.length > 0 && this.state.layout.caption &&
+        const first = items.length > 0 && this.state.layout && this.state.layout.caption &&
             this.state.layout.caption[0] && this.state.layout.caption[0] === 'Date:' &&
             (lastItem.date.includes("20") ?
                 this.state.layout.caption[0] + " " + lastItem.date : this.state.tag)
 
         const head = this.state.layout && this.state.layout.head
-        const category = this.state.layout.categories && this.state.category &&
-            this.state.layout.categories[this.state.category]
-        const note = category && this.state.layout.categories[this.state.category].note
-        const column = category && this.state.layout.categories[this.state.category].column
+        const category = this.state.layout && this.state.layout.categories &&
+            this.state.category && this.state.layout.categories[this.state.category]
+        const note = category && this.state.layout &&
+            this.state.layout.categories[this.state.category].note
+        const column = category && this.state.layout &&
+            this.state.layout.categories[this.state.category].column
 
         const timestamp = Date.parse(items && lastItem.date)
         const highlightedDay =
@@ -402,11 +408,12 @@ export default class extends Component {
                             </div>)}
                 </div>
                 <BackwardIcon className={`no-print`}
+                    style={{ color: "rgb(13, 55, 133)" }}
                     size={24}
                     onClick={(e) => { this.goSearch() }} />
                 <span className={`${styles.mainTitle} ${styles.controls}`}>
                     {/* main title */}
-                    {this.state.layout.title && this.state.layout.title}
+                    {this.state.layout && this.state.layout.title && this.state.layout.title}
                     {/* categories dropdown */}
                     <span className={"no-print"}>
                         {/* categories dropdown */}
@@ -414,7 +421,7 @@ export default class extends Component {
                             value={this.state.category}
                             onChange={this.onChangeCategory}>
                             <option />
-                            {Object.keys(this.state.layout.categories)
+                            {this.state.layout && Object.keys(this.state.layout.categories)
                                 .sort((a, b) => a.length > b.length)
                                 .map(function (category) {
                                     return (
@@ -446,8 +453,8 @@ export default class extends Component {
                             <button className={`no-print`}
                                 style={{ background: 'lightyellow' }}
                                 onClick={this.onCopy}>Copy</button>
-                            <RemoveIcon className={`no-print`}
-                                style={{ background: 'bisque' }}
+                            <TrashIcon className={`no-print`}
+                                style={{ color: "rgb(13, 55, 133)" }}
                                 onClick={this.onRemove} />
                         </React.Fragment>}
                 </span>
@@ -459,7 +466,8 @@ export default class extends Component {
                             <span className={styles.value}>{first}</span>
                         </div>}
                     <div className={styles.key}>
-                        {this.state.layout.caption && this.state.layout.caption[1]}
+                        {this.state.layout && this.state.layout.caption &&
+                            this.state.layout.caption[1]}
                         <span>  </span>
                         <input name="customer" value={this.state.customer}
                             className={`${styles.value} ${styles.name}`}
@@ -490,7 +498,8 @@ export default class extends Component {
                             <PaymentLine key={i} index={i}
                                 {...item}
                                 category={this.state.category}
-                                categories={Object.keys(this.state.layout.categories)}
+                                categories={this.state.layout &&
+                                    Object.keys(this.state.layout.categories)}
                                 last={this.state.lineItems.length}
                                 addHandler={this.onAddLine}
                                 changeLine={this.onChangeLine}
@@ -536,7 +545,7 @@ export default class extends Component {
                     </div>
 
                     {/* payment */}
-                    {this.state.layout.segment.radio &&
+                    {this.state.layout && this.state.layout.segment.radio &&
                         <div className={styles.valueTable}>
                             {this.state.id &&
                                 <div style={{
@@ -558,44 +567,50 @@ export default class extends Component {
                                     //this.resetPayment
                                     (e) => { resetPayment(this, e) }
                                 }>
-                                {this.state.layout.segment.title &&
+                                {this.state.layout && this.state.layout.segment.title &&
                                     `${this.state.layout.segment.title}:`}
                             </div>
-                            {this.state.layout.segment.radio.map(r =>
-                                <React.Fragment key={r}>
-                                    <div className={`${styles.label}`}>
-                                        <input className={`${styles.radio}`}
-                                            type="radio"
-                                            name="payment"
-                                            value={r}
-                                            checked={this.state.payment === r}
-                                            onChange={(e) => { onChangeEvent(this, e) }} />
-                                    </div>
-                                    <div className={styles.label}>
-                                        {r === "Cheque" ? "Cheque/email transfer" : r}
-                                    </div>
-                                </React.Fragment>
-                            )}
-                            <input type="text"
-                                className="no-print"
-                                style={{ width: "11em", position: "absolute", left: "580px" }}
-                                name="tag" value={this.state.tag}
-                                onChange={(e) => { onChangeEvent(this, e) }} />
-                            <input type="text"
-                                className="no-print"
+                            {this.state.layout &&
+                                this.state.layout.segment.radio.map(r =>
+                                    <React.Fragment key={r}>
+                                        <div className={`${styles.label}`}>
+                                            <input className={`${styles.radio}`}
+                                                type="radio"
+                                                name="payment"
+                                                value={r}
+                                                checked={this.state.payment === r}
+                                                onChange={(e) => { onChangeEvent(this, e) }} />
+                                        </div>
+                                        <div className={styles.label}>
+                                            {r === "Cheque" ? "Cheque/email transfer" : r}
+                                        </div>
+                                    </React.Fragment>
+                                )}
+                            <span className="no-print"
                                 style={{
-                                    width: "14em", border: "1px solid grey",
-                                    position: "absolute", left: "760px"
-                                }}
-                                name="notes" value={this.state.notes}
-                                onChange={(e) => { onChangeEvent(this, e) }} />
+                                    position: "absolute",
+                                    left: "540px",
+                                }}>
+                                <input type="text"
+                                    style={{ width: "14em" }}
+                                    name="tag" value={this.state.tag}
+                                    onChange={(e) => { onChangeEvent(this, e) }} />
+                                <textarea rows="2"
+                                    style={{
+                                        width: "12em",
+                                        border: "1px solid grey",
+                                    }}
+                                    name="notes" value={this.state.notes}
+                                    onChange={(e) => { onChangeEvent(this, e) }} />
+                            </span>
                         </div>}
                     <div className="no-print">
                         {this.state.lineItems.map((item, i) => (
                             <NoteLine key={i} index={i}
                                 {...item}
                                 category={this.state.category}
-                                categories={Object.keys(this.state.layout.categories)}
+                                categories={this.state.layout &&
+                                    Object.keys(this.state.layout.categories)}
                                 last={this.state.lineItems.length}
                                 addHandler={this.onAddLine}
                                 changeLine={this.onChangeLine}

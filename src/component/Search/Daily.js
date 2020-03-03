@@ -30,13 +30,15 @@ const Lines = ({ lines, layout }) => {
                     {invoice.customer}
                 </td>
                 <td>
-                    <Link to={{
-                        pathname: INVOICE,
-                        invoice: { ...invoice },
-                        layout: layout,
-                    }}>
-                        {price} <PaymentIcon />
-                    </Link>
+                    {layout && layout.categories ?
+                        <Link to={{
+                            pathname: INVOICE,
+                            invoice: { ...invoice },
+                            layout: layout,
+                        }}>
+                            {price} <PaymentIcon />
+                        </Link> :
+                        <span>{price} < PaymentIcon /></span>}
                 </td>
             </tr>)
     })
