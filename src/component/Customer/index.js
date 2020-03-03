@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
+
 import { withFirebase } from '../Firebase'
+import { DateComparator } from '../../constant/util'
 
 //export default (props) => {
 class Customer extends Component {
@@ -44,7 +46,6 @@ class Customer extends Component {
     }
 
     onChange = (event) => {
-        //console.log(event.target.name + " = " + event.target.value)
         this.setState({ [event.target.name]: event.target.value })
     }
 
@@ -77,6 +78,11 @@ class Customer extends Component {
         const visitsKeys = visits && Object.keys(visits)
         const lastIndex = visits && Object.keys(visits).slice(-1)[0]
         const description = visits && visits[lastIndex].description
+        const visitsArray = visitsKeys &&
+            visitsKeys.map(key => [
+                visits[key].date,
+                visits[key].note,
+            ])
         return (
             customer ? (
                 <React.Fragment>
@@ -112,26 +118,28 @@ class Customer extends Component {
                             <table>
                                 <thead><tr><th>Date</th><th>Notes</th></tr></thead>
                                 <tbody>
-                                    {visitsKeys.map(key => {
-                                        const date = visits[key].date
-                                        const text = visits[key].note
-                                        return (<tr key={key}>
-                                            <td style={{ width: "8em" }}>{date}</td>
-                                            <td><Markdown source={text} />
-                                                {layoutCategory && layoutCategory.note
-                                                    .slice(1, 3) // slice(fromIndex, toIndex)
-                                                    .map((line, i) =>
-                                                        <span key={i}
-                                                            style={{
-                                                                fontStyle: "oblique",
-                                                                fontSize: "0.7em"
-                                                            }}>{line} </span>)}
-                                                <img style={{ height: "1.1em", }}
-                                                    src={`/images/${layoutCategory.signature}`}
-                                                    alt="signature" />
-                                            </td>
-                                        </tr>)
-                                    })}
+                                    {visitsArray
+                                        .sort(DateComparator)
+                                        .map((element, i) => {
+                                            const date = element[0]
+                                            const text = element[1]
+                                            return (<tr key={i}>
+                                                <td style={{ width: "8em" }}>{date}</td>
+                                                <td><Markdown source={text} />
+                                                    {layoutCategory && layoutCategory.note
+                                                        .slice(1, 3) // slice(fromIndex, toIndex)
+                                                        .map((line, i) =>
+                                                            <span key={i}
+                                                                style={{
+                                                                    fontStyle: "oblique",
+                                                                    fontSize: "0.7em"
+                                                                }}>{line} </span>)}
+                                                    <img style={{ height: "1.1em", }}
+                                                        src={`/images/${layoutCategory.signature}`}
+                                                        alt="signature" />
+                                                </td>
+                                            </tr>)
+                                        })}
                                 </tbody>
                             </table>}
                         {!visits &&

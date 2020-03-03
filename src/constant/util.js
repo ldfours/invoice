@@ -73,6 +73,14 @@ export const range = (size, startAt = 0) => {
 export const range = (start, end) =>
   Array.from({ length: (end - start) }, (v, k) => k + start)
 
+export function DateComparator([dateA, ...restA], [dateB, ...restB]) {
+  const a = new Date(dateA)
+  const b = new Date(dateB)
+  if (a < b) return -1
+  if (a > b) return 1
+  return 0
+}
+
 export const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',

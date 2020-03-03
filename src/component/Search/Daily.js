@@ -1,17 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import styles from './Table.module.scss'
+import { DateComparator } from '../../constant/util'
 import { INVOICE } from '../../constant/route'
-import { getPaymentIcon } from '.'
 
-function Comparator([dateA, ...restA], [dateB, ...restB]) {
-    const a = new Date(dateA)
-    const b = new Date(dateB)
-    if (a < b) return 1
-    if (a > b) return -1
-    return 0
-}
+import styles from './Table.module.scss'
+import { getPaymentIcon } from '.'
 
 const Lines = ({ lines, layout }) => {
     return lines.map(([date, price, invoice], i) => {
@@ -53,7 +47,7 @@ export default ({ invoices, layout }) => {
                     item.price,
                     invoice
                 ]))
-        }, []).sort(Comparator)
+        }, []).sort(DateComparator)
 
     return (
         <React.Fragment>
