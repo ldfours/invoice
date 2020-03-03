@@ -134,7 +134,7 @@ class Search extends Component {
     queryInvoices = (query_key, query_val, limit = pageLimit) => {
         this.setState({ loading: true })
 
-        if (query_key) {
+        if (query_key && query_val) {
             this.props.firebase.queryMany('invoice')
                 .orderByChild(query_key)
                 .limitToLast(limit)
@@ -195,7 +195,9 @@ class Search extends Component {
             this.state.query_key,
             this.state.query_val,
             limit)
-        this.queryLayout()
+        if (!this.state.layout.categories) {
+            this.queryLayout()
+        }
     }
 
     onSubmit(event) {

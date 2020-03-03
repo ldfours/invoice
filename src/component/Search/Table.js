@@ -10,7 +10,7 @@ const InvoiceTable = ({ invoice }) =>
     <table>
         <caption>{invoice.tag}</caption>
         <tbody>
-            <tr style={{ background: "#ffffcc" }}>
+            <tr style={{ background: "#ffffff" }}>
                 {invoice.lineItems.map((line, i) =>
                     (<td width={2} key={i}>
                         <span style={{ whiteSpace: 'nowrap' }}>{line.date}</span>

@@ -43,6 +43,7 @@ const Line = ({ customer, layout }) => {
             <td>{customerName}</td>
             {/* <td>{JSON.stringify(layout)}</td> */}
             {categoryNames.map(categoryName => {
+                // console.log(customerName + " " + categoryName)
                 const visits = customer[customerName][categoryName]
                 const total = sumArr(visits.map(visit => parseFloat(visit.price)))
                 const dates = visits.map(visit => new Date(visit.date))
@@ -69,10 +70,11 @@ export default ({ invoices, layout }) => {
         invoices.reduce((acc, invoice) => {
             return acc.concat(invoice.lineItems
                 .map(item => {
+                    // console.log(`${invoice.customer} ${invoice.category}`)
                     return {
+                        ...item,
                         customer: invoice.customer,
                         category: invoice.category,
-                        ...item
                     }
                 }))
         }, [])
@@ -94,7 +96,7 @@ export default ({ invoices, layout }) => {
             {invoices &&
                 <table className={`${styles.table}`}>
                     <tbody>
-                        {/* {JSON.stringify(customers)} */}
+                        {/* {JSON.stringify(lines)} */}
                         {customers.map((customer, i) => {
                             return <Line key={i} customer={customer} layout={layout} />
                         })}

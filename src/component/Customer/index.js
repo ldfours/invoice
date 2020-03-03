@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import Markdown from 'react-markdown'
 import { withFirebase } from '../Firebase'
 
 //export default (props) => {
@@ -74,7 +74,7 @@ class Customer extends Component {
         const customer = this.props.location.customer
         const layoutCategory = this.props.location.layoutCategory
         const visits = this.props.location.visits
-        const keys = visits && Object.keys(visits)
+        const visitsKeys = visits && Object.keys(visits)
         const lastIndex = visits && Object.keys(visits).slice(-1)[0]
         const description = visits && visits[lastIndex].description
         return (
@@ -112,12 +112,12 @@ class Customer extends Component {
                             <table>
                                 <thead><tr><th>Date</th><th>Notes</th></tr></thead>
                                 <tbody>
-                                    {keys.map(key => {
+                                    {visitsKeys.map(key => {
                                         const date = visits[key].date
                                         const text = visits[key].note
                                         return (<tr key={key}>
                                             <td style={{ width: "8em" }}>{date}</td>
-                                            <td>{text}<br />
+                                            <td><Markdown source={text} />
                                                 {layoutCategory && layoutCategory.note
                                                     .slice(1, 3) // slice(fromIndex, toIndex)
                                                     .map((line, i) =>
@@ -125,11 +125,8 @@ class Customer extends Component {
                                                             style={{
                                                                 fontStyle: "oblique",
                                                                 fontSize: "0.7em"
-                                                            }}>{line} </span>)
-                                                }
-                                                <img style={{
-                                                    height: "1.1em",
-                                                }}
+                                                            }}>{line} </span>)}
+                                                <img style={{ height: "1.1em", }}
                                                     src={`/images/${layoutCategory.signature}`}
                                                     alt="signature" />
                                             </td>
