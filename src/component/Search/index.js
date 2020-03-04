@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom'
 import { DiFirebase as FirebaseIcon } from 'react-icons/di';
 import { FiFileText as InvoiceIcon } from 'react-icons/fi'
 import {
+    //MdToday as DailyIcon,
+    //MsPerson as CustomerIcon,
     MdAccessTime as ClockIcon,
     MdAccountBalance as ChequeIcon,
     MdAccountCircle as CashIcon,
-    MdSearch as SearchIcon
+    MdSearch as SearchIcon,
 } from 'react-icons/md'
 
 import { AuthUserContext } from '../Session'
@@ -114,7 +116,7 @@ class Search extends Component {
             category: this.getLocationStateParam(props, "query_key") === "category" ?
                 this.getLocationStateParam(props, "query_val") : "",
             payment: "",
-            tableType: "",
+            tableType: "invoice",
             query_key: this.getLocationStateParam(props, "query_key"),
             query_val: this.getLocationStateParam(props, "query_val"),
             loading: false,
@@ -260,13 +262,13 @@ class Search extends Component {
                                     </td>
                                         <td>
                                             {layout && layout.categories &&
-                                                <select
+                                                <select size="3" multiple={true}
                                                     name="tableType"
-                                                    value={this.state.tableType}
+                                                    value={[this.state.tableType]}
                                                     onChange={(e) => { onChangeEvent(this, e) }}>
-                                                    <option>invoice</option>
-                                                    <option>customer</option>
-                                                    <option>daily</option>
+                                                    <option value="invoice" />
+                                                    <option value="customer">customer</option>
+                                                    <option value="daily">daily</option>
                                                 </select>}
                                         </td>
                                         <td>{layout && layout.categories &&
@@ -285,7 +287,7 @@ class Search extends Component {
                                                     onChange={(e) => {
                                                         onChangeEvent(this, e)
                                                     }}>
-                                                    <option>[category]</option>
+                                                    <option />
                                                     {Object.keys(layout.categories)
                                                         .map(function (c) {
                                                             return (
@@ -295,32 +297,34 @@ class Search extends Component {
                                         </td>
                                         <td>
                                             {layout.segment.radio &&
-                                                <select
+                                                <select multiple={true} size="3"
                                                     name="payment"
-                                                    value={payment}
+                                                    value={[payment]}
                                                     onChange={(e) => { onChangeEvent(this, e) }}>
-                                                    <option>[payment]</option>
+                                                    <option></option>
                                                     {layout.segment.radio
                                                         .map(
                                                             function (payment) {
                                                                 return (
                                                                     <option key={payment}
-                                                                        value={payment}>
-                                                                        {payment}
+                                                                        value={payment}>{payment}
                                                                     </option>)
                                                             })}
                                                 </select>}
-                                        </td>
-                                        <td>
-                                            <FirebaseIcon
-                                                style={{ color: "rgb(13, 55, 133)" }}
-                                                size={26}
-                                                onClick={e => this.query(1000)} />
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </form>
+                        <FirebaseIcon
+                            style={{
+                                position: "absolute",
+                                top: "0px",
+                                right: "50px",
+                                color: "rgb(13, 55, 133)",
+                            }}
+                            size={26}
+                            onClick={e => this.query(1000)} />
                         {invoices && Object.keys(invoices).length &&
                             <Format {...{
                                 invoices: invoices,

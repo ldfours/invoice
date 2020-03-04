@@ -83,6 +83,17 @@ class Customer extends Component {
                 visits[key].date,
                 visits[key].note,
             ])
+        const provider = layoutCategory && layoutCategory.note
+            // slice(fromIndex, toIndex)
+            .slice(1, 3)
+            .map((line, i) =>
+                <span key={i}
+                    style={{
+                        fontStyle: "oblique",
+                        fontSize: "0.7em"
+                    }}>{line}
+                </span>)
+
         return (
             customer ? (
                 <React.Fragment>
@@ -115,30 +126,34 @@ class Customer extends Component {
                             </span>
                         </div>
                         {visits &&
-                            <table>
-                                <thead><tr><th>Date</th><th>Notes</th></tr></thead>
+                            <table style={{ width: "100%" }}>
                                 <tbody>
                                     {visitsArray
                                         .sort(DateComparator)
                                         .map((element, i) => {
                                             const date = element[0]
                                             const text = element[1]
-                                            return (<tr key={i}>
-                                                <td style={{ width: "8em" }}>{date}</td>
-                                                <td><Markdown source={text} />
-                                                    {layoutCategory && layoutCategory.note
-                                                        .slice(1, 3) // slice(fromIndex, toIndex)
-                                                        .map((line, i) =>
-                                                            <span key={i}
-                                                                style={{
-                                                                    fontStyle: "oblique",
-                                                                    fontSize: "0.7em"
-                                                                }}>{line} </span>)}
-                                                    <img style={{ height: "1.1em", }}
-                                                        src={`/images/${layoutCategory.signature}`}
-                                                        alt="signature" />
-                                                </td>
-                                            </tr>)
+                                            return (
+                                                <tr key={i}>
+                                                    <td style={{
+                                                        width: "8em",
+                                                        border: "1px solid grey"
+                                                    }}>{date}
+                                                        <div>
+                                                            {provider}
+                                                        </div>
+                                                        <div>
+                                                            <img style={{ height: "1.4em", }}
+                                                                src={`/images/${
+                                                                    layoutCategory.signature
+                                                                    }`}
+                                                                alt="signature" />
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ border: "1px solid grey" }}>
+                                                        <Markdown source={text} />
+                                                    </td>
+                                                </tr>)
                                         })}
                                 </tbody>
                             </table>}

@@ -33,11 +33,7 @@ nav ul {
 }
 main {
 	float: left;
-	width: 60%;
-}
-aside {
-	float: right;
-    width: 30%;
+	/* width: 60%; */
 }
 .contact {
     font-size: 22px;
@@ -58,10 +54,7 @@ footer {
 footer p {
 	padding: 20px;
 }
-aside > div {
-	margin: 10px auto;
-	min-height: 100px;
-}
+
 #logo {
     display: inline-block;
     vertical-align: middle;

@@ -49,30 +49,36 @@ export default (
               <a href="http://www.osla.on.ca/">OSLA</a>
               ) <strong>Логопед</strong>.
             </h3>
-            <p>У Елены большой опыт работы с детьми всех возрастов и взрослыми.
-              Если вы чувствуете, что вашему ребенку необходима
-              логопедическая помощь, позвоните или пошлите электронное
-              сообщение, чтобы обсудить вашу проблему или назначить встречу:
-            <span className="contact"> (416) 498-5006,
-              <span> </span>
-                <a href="mailto:ldfours@gmail.com">Ldfours@gmail.com</a>
-              </span>
-            </p>
-            <address>
-              <em>32 Chardonnay Dr., Thornhill Woods, ON L4J&nbsp;8R8</em>
-            </address>
-            <div className="flex-container">
-              <img height={320} alt="office address" src="/images/chardonnay-map.png" />
-              <span> </span>
+            <div style={{ padding: "0px" }}
+              className="flex-container">
               <img height={320} alt="elena business card" src="/images/elena-card.jpg" />
+              <div style={{ marginLeft: "15px" }}>
+                <div>
+                  У Елены большой опыт работы с детьми всех возрастов и взрослыми.
+                </div>
+                <div>
+                  Если вы чувствуете, что вашему ребенку необходима
+                  логопедическая помощь, позвоните или пошлите электронное
+                  сообщение, чтобы обсудить вашу проблему или назначить встречу:
+                <div className="contact"> (416) 498-5006,
+                  <span> </span>
+                    <a href="mailto:ldfours@gmail.com">Ldfours@gmail.com</a>
+                  </div>
+                  <div style={{ margin: "10px" }}>
+                    <address>
+                      <em>32 Chardonnay Dr., Thornhill Woods, ON L4J&nbsp;8R8</em>
+                    </address>
+                    <img height={160}
+                      alt="speech-success centre"
+                      src="/images/speech-success.png" />
+                    {/* <img alt="office address" src="/images/chardonnay-map.png" /> */}
+                  </div>
+                </div>
+              </div>
             </div>
           </article>
         </main>
-        <aside>
-          <div><img height={160} alt="speech-success centre" src="/images/speech-success.png" /></div>
-        </aside>
       </section>
-      <footer></footer>
-    </React.Fragment>
+    </React.Fragment >
   )
 }
