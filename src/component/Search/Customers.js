@@ -47,15 +47,17 @@ const Line = ({ customer, layout }) => {
                 const visits = customer[customerName][categoryName]
                 const total = sumArr(visits.map(visit => parseFloat(visit.price)))
                 const dates = visits.map(visit => new Date(visit.date))
-                const minDate = formatDate(new Date(Math.min.apply(null, dates)))
-                const maxDate = formatDate(new Date(Math.max.apply(null, dates)))
+                const minDate = //new Date(Math.min.apply(null, dates))
+                    dates.reduce(function (a, b) { return a < b ? a : b })
+                const maxDate = //new Date(Math.max.apply(null, dates))
+                    dates.reduce(function (a, b) { return a > b ? a : b })
                 return (
                     <td key={categoryName}>
                         <CategorySummary key={categoryName}
                             visits={visits}
                             categoryName={categoryName}
-                            minDate={minDate}
-                            maxDate={maxDate}
+                            minDate={formatDate(minDate)}
+                            maxDate={formatDate(maxDate)}
                             total={total}
                             layoutCategory={layout.categories[categoryName]}
                         />

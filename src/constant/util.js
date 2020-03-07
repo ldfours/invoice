@@ -48,6 +48,7 @@ const invoiceText =
 */
 
 export const formatDate = (date) => {
+  //date.toISOString().slice(0, 10)
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
   return date.toLocaleDateString("en-US", options)
 }

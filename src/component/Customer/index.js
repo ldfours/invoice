@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import Markdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown/with-html'
 
 import { withFirebase } from '../Firebase'
 import { DateComparator } from '../../constant/util'
 
-//export default (props) => {
-class Customer extends Component {
+class Customer extends Component { //export default (props) => {
     constructor(props) {
         super(props)
         this.onSubmit = this.onSubmit.bind(this)
@@ -83,32 +82,32 @@ class Customer extends Component {
                 visits[key].date,
                 visits[key].note,
             ])
-        const provider = layoutCategory && layoutCategory.note
-            // slice(fromIndex, toIndex)
-            .slice(1, 3)
-            .map((line, i) =>
-                <span key={i}
-                    style={{
-                        fontStyle: "oblique",
-                        fontSize: "0.7em"
-                    }}>{line}
-                </span>)
+        const headDate = visitsArray && visitsArray[0][0]
+
+        const provider = layoutCategory &&
+            layoutCategory.note.slice(1, 3)
+                .map((line, i) =>
+                    <span key={i}
+                        style={{
+                            fontStyle: "oblique",
+                            fontSize: "0.7em",
+                        }}>{line}
+                    </span>)
 
         return (
             customer ? (
                 <React.Fragment>
-                    <div style={{ fontStyle: "oblique" }}>
+                    <div style={{ fontStyle: "oblique", padding: "0.6em" }}>
                         {layoutCategory &&
-                            layoutCategory.note.slice(1)
-                                .map((line, i) =>
-                                    <span key={i}>{line} </span>)}
-                    </div>
-                    <div style={{ fontWeight: "bold", textAlign: "center" }}>
-                        {description} {visits && " - NOTES"}
+                            <span>
+                                {layoutCategory.note.slice(1)
+                                    .map((line, i) =>
+                                        <span key={i}>{line} </span>)}
+                                <span style={{ fontWeight: "bold" }}>- {description}</span>
+                            </span>}
                     </div>
                     <form onSubmit={this.onSubmit}>
                         <div style={{ fontWeight: "bold" }}>
-                            Client:<span> </span>
                             <span style={{ fontSize: "1.1em" }}>{customer}</span>
                             <span style={{
                                 width: "15em",
@@ -125,6 +124,7 @@ class Customer extends Component {
                                 <button type="submit" className="no-print">update</button>
                             </span>
                         </div>
+                        <div style={{ padding: "8px" }}>{headDate && `Date: ${headDate}`}</div>
                         {visits &&
                             <table style={{ width: "100%" }}>
                                 <tbody>
@@ -139,9 +139,7 @@ class Customer extends Component {
                                                         width: "8em",
                                                         border: "1px solid grey"
                                                     }}>{date}
-                                                        <div>
-                                                            {provider}
-                                                        </div>
+                                                        <div>{provider}</div>
                                                         <div>
                                                             <img style={{ height: "1.4em", }}
                                                                 src={`/images/${
@@ -151,7 +149,9 @@ class Customer extends Component {
                                                         </div>
                                                     </td>
                                                     <td style={{ border: "1px solid grey" }}>
-                                                        <Markdown source={text} />
+                                                        <ReactMarkdown
+                                                            source={text}
+                                                            escapeHtml={false} />
                                                     </td>
                                                 </tr>)
                                         })}
