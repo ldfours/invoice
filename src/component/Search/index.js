@@ -241,25 +241,26 @@ class Search extends Component {
                         <form onSubmit={this.onSubmit}>
                             <table>
                                 <tbody>
-                                    <tr><td>
-                                        <input autoFocus
-                                            style={{
-                                                border: "1px solid grey", width: "360px"
-                                            }}
-                                            name="customer"
-                                            value={customer}
-                                            onChange={(e) => {
-                                                onChangeEvent(this, e)
-                                                this.setState({
-                                                    query_key: "customer",
-                                                    query_val: e.target.value
-                                                })
-                                            }} type="text" />
-                                        <span> </span>
-                                        <SearchIcon size={24}
-                                            style={{ color: "rgb(13, 55, 133)" }}
-                                            onClick={e => this.query(pageLimit)} />
-                                    </td>
+                                    <tr className="no-print">
+                                        <td>
+                                            <input autoFocus
+                                                style={{
+                                                    border: "1px solid grey", width: "360px"
+                                                }}
+                                                name="customer"
+                                                value={customer}
+                                                onChange={(e) => {
+                                                    onChangeEvent(this, e)
+                                                    this.setState({
+                                                        query_key: "customer",
+                                                        query_val: e.target.value
+                                                    })
+                                                }} type="text" />
+                                            <span> </span>
+                                            <SearchIcon size={24}
+                                                style={{ color: "rgb(13, 55, 133)" }}
+                                                onClick={e => this.query(pageLimit)} />
+                                        </td>
                                         <td>
                                             {layout && layout.categories &&
                                                 <select size="3" multiple={true}
@@ -317,6 +318,7 @@ class Search extends Component {
                             </table>
                         </form>
                         <FirebaseIcon
+                            className="no-print"
                             style={{
                                 position: "absolute",
                                 top: "0px",

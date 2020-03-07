@@ -8,19 +8,28 @@ import { getPaymentIcon } from '.'
 
 const InvoiceTable = ({ invoice }) =>
     <table>
-        <caption>{invoice.tag}</caption>
+        <caption style={{
+            textAlign: "left",
+            fontStyle: "oblique",
+            color: "maroon",
+        }}>
+            {invoice.tag}
+        </caption>
         <tbody>
             <tr style={{ background: "#ffffff" }}>
                 {invoice.lineItems.map((line, i) =>
                     (<td width={2} key={i}>
-                        <span style={{ whiteSpace: 'nowrap' }}>{line.date}</span>
-                        <br />
-                        <span>{`$${line.price}`}</span>
+                        <div>
+                            <span style={{ whiteSpace: 'nowrap' }}>{line.date}</span>
+                        </div>
+                        <div>
+                            <span>{`$${line.price}`}</span>
+                        </div>
                     </td>
                     ))}
             </tr>
         </tbody>
-    </table>
+    </table >
 
 export default ({ invoices, layout, query_key, query_val }) => {
     return (

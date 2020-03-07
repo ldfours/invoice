@@ -1,3 +1,4 @@
+import React from 'react'
 /*
  * group array @arr by specified number of elements, e.g.
  *    console.log(groupByRange(["a", "b", "c", "d", "e", "f", "g", "h"], 3))
@@ -51,6 +52,11 @@ export const formatDate = (date) => {
   //date.toISOString().slice(0, 10)
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
   return date.toLocaleDateString("en-US", options)
+}
+
+export const arraySpan = (array, spanStyle = {}) => {
+  return array.map((line, i) =>
+    <span key={i} style={spanStyle}>{line} </span>)
 }
 
 /* example usage: export default compose( withFirebase, )(List) */

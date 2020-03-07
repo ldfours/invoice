@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactMarkdown from 'react-markdown/with-html'
 
 import { withFirebase } from '../Firebase'
-import { DateComparator } from '../../constant/util'
+import { DateComparator, arraySpan } from '../../constant/util'
 
 class Customer extends Component { //export default (props) => {
     constructor(props) {
@@ -85,14 +85,8 @@ class Customer extends Component { //export default (props) => {
         const headDate = visitsArray && visitsArray[0][0]
 
         const provider = layoutCategory &&
-            layoutCategory.note.slice(1, 3)
-                .map((line, i) =>
-                    <span key={i}
-                        style={{
-                            fontStyle: "oblique",
-                            fontSize: "0.7em",
-                        }}>{line}
-                    </span>)
+            arraySpan(layoutCategory.note.slice(1, 3),
+                { fontStyle: "oblique", fontSize: "0.7em" })
 
         return (
             customer ? (
@@ -100,9 +94,7 @@ class Customer extends Component { //export default (props) => {
                     <div style={{ fontStyle: "oblique", padding: "0.6em" }}>
                         {layoutCategory &&
                             <span>
-                                {layoutCategory.note.slice(1)
-                                    .map((line, i) =>
-                                        <span key={i}>{line} </span>)}
+                                {arraySpan(layoutCategory.note.slice(1))}
                                 <span style={{ fontWeight: "bold" }}>- {description}</span>
                             </span>}
                     </div>

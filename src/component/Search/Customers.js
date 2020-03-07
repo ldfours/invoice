@@ -16,21 +16,24 @@ const CategorySummary = ({
             .map(key => visits[key])
     return (
         <React.Fragment>
-            <span style={{ whiteSpace: 'nowrap' }}>{minDate} - {maxDate}</span>
+            <div>
+                <span style={{ whiteSpace: 'nowrap' }}>{minDate} - {maxDate}</span>
+            </div>
             {/* {JSON.stringify(layoutCategory)} */}
-            <br />
-            <span style={{ whiteSpace: 'nowrap' }}>
-                {visitsWithNotes.length && layoutCategory ?
-                    <React.Fragment>
-                        <Link to={{
-                            pathname: CUSTOMER,
-                            customer: visitsWithNotes && visitsWithNotes[0].customer,
-                            layoutCategory: layoutCategory,
-                            visits: { ...visitsWithNotes }
-                        }}>{categoryName}</Link> ${total}
-                    </React.Fragment>
-                    : `${categoryName} $${total}`}
-            </span>
+            <div>
+                <span style={{ whiteSpace: 'nowrap' }}>
+                    {visitsWithNotes.length && layoutCategory ?
+                        <React.Fragment>
+                            <Link to={{
+                                pathname: CUSTOMER,
+                                customer: visitsWithNotes && visitsWithNotes[0].customer,
+                                layoutCategory: layoutCategory,
+                                visits: { ...visitsWithNotes }
+                            }}>{categoryName}</Link> ${total}
+                        </React.Fragment>
+                        : `${categoryName} $${total}`}
+                </span>
+            </div>
         </React.Fragment>
     )
 }
