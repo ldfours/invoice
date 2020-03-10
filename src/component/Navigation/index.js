@@ -6,12 +6,16 @@ import Login from '../Login'
 import { AuthUserContext } from '../Session'
 import LogoutButton from '../Logout'
 
-const NavigationAuth = (props) => (
-    <span style={{ position: "absolute", top: "0", right: "0" }}>
-        <LogoutButton label={props.authUser.email} />
-    </span>)
+const NavigationAuth = (props) => {
+    return (
+        <span style={{ position: "absolute", top: "0", right: "0" }}>
+            <LogoutButton label={props.authUser.email} />
+        </span>)
+}
 
-const NavigationNonAuth = () => <Login />
+const NavigationNonAuth = () => {
+    return <Login />
+}
 
 export default () => (
     <AuthUserContext.Consumer>

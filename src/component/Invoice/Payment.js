@@ -310,8 +310,8 @@ export default class extends Component {
             {
                 pathname: SEARCH,
                 state: {
-                    query_key: this.state.query_key,
-                    query_val: this.state.query_val,
+                    queryKey: this.state.queryKey,
+                    queryVal: this.state.queryVal,
                     layout: this.state.layout,
                 }
             })
@@ -342,6 +342,9 @@ export default class extends Component {
         let item = this.state.lineItems[0] || lineItemInitState
         if (obj[name]) {
             item.description = "Speech-Language Assessment"
+            item.quantity = "50 min"
+            item.price = 180.00
+            item.priceFormat = formatCurrency(item.price)
         } else {
             item.description = "Speech Therapy"
         }

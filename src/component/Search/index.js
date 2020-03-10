@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-import { DiFirebase as FirebaseIcon } from 'react-icons/di';
-import { FiFileText as InvoiceIcon } from 'react-icons/fi'
+import {
+    FiFileText as InvoiceIcon,
+    FiMoreVertical as MoreIcon
+} from 'react-icons/fi'
 import {
     //MdToday as DailyIcon,
     //MsPerson as CustomerIcon,
@@ -21,8 +23,6 @@ import Daily from './Daily'
 import Customer from './Customers'
 
 import { onChangeEvent } from '../Invoice'
-
-const pageLimit = 15
 
 export const getPaymentIcon = (payment) => {
     let PaymentIcon = React.Fragment
@@ -48,8 +48,7 @@ class Format extends Component {
                 } else {
                     return false
                 }
-            })
-            .map(id => {
+            }).map(id => {
                 const invoice = invoices[id]
                 invoice.id = id
                 return invoice
@@ -58,7 +57,7 @@ class Format extends Component {
     render() {
         const {
             invoices, layout, category, payment,
-            tableType, loading, query_key, query_val,
+            tableType, loading, queryKey, queryVal,
         } = this.props
         //console.log(layout)
 
@@ -75,20 +74,21 @@ class Format extends Component {
             })(tableType)
 
         const filteredInvoices = this.filterInvoices(invoices, category, payment)
+
         return (
             <AuthUserContext.Consumer>
                 {authUser => (
                     <React.Fragment>
-                        {loading ? <div><ClockIcon /></div> :
+                        {loading ?
+                            <div><ClockIcon /></div> :
                             <React.Fragment>
                                 {authUser && filteredInvoices &&
                                     <Layout
                                         invoices={filteredInvoices}
                                         layout={layout}
-                                        query_key={query_key}
-                                        query_val={query_val}
-                                    />
-                                }
+                                        queryKey={queryKey}
+                                        queryVal={queryVal}
+                                    />}
                             </React.Fragment>}
                     </React.Fragment>
                 )}
@@ -111,18 +111,25 @@ class Search extends Component {
         super(props)
         this.state = {
             layout: this.getLocationStateParam(props, "layout") || layoutInitState,
-            customer: this.getLocationStateParam(props, "query_key") === "customer" ?
-                this.getLocationStateParam(props, "query_val") : "",
-            category: this.getLocationStateParam(props, "query_key") === "category" ?
-                this.getLocationStateParam(props, "query_val") : "",
+            customer: this.getLocationStateParam(props, "queryKey") === "customer" ?
+                this.getLocationStateParam(props, "queryVal") : "",
+            category: this.getLocationStateParam(props, "queryKey") === "category" ?
+                this.getLocationStateParam(props, "queryVal") : "",
             payment: "",
             tableType: "invoice",
-            query_key: this.getLocationStateParam(props, "query_key"),
-            query_val: this.getLocationStateParam(props, "query_val"),
+            queryKey: this.getLocationStateParam(props, "queryKey"),
+            queryVal: this.getLocationStateParam(props, "queryVal"),
+            pageLimit: 15,
             loading: false,
         }
 
         this.onSubmit = this.onSubmit.bind(this)
+    }
+
+    queryMore = () => {
+        const pageLimit = this.state.pageLimit + 10
+        this.setState({ pageLimit })
+        this.query()
     }
 
     getLocationStateParam = (props, param) => {
@@ -133,18 +140,18 @@ class Search extends Component {
         }
     }
 
-    queryInvoices = (query_key, query_val, limit = pageLimit) => {
+    queryInvoices = (queryKey, queryVal, limit) => {
         this.setState({ loading: true })
 
-        if (query_key && query_val) {
+        if (queryKey && queryVal) {
             this.props.firebase.queryMany('invoice')
-                .orderByChild(query_key)
+                .orderByChild(queryKey)
                 .limitToLast(limit)
                 // filter query results to substring of a child node
-                .startAt(query_val)
-                .endAt(`${query_val}\uf8ff`)
+                .startAt(queryVal)
+                .endAt(`${queryVal}\uf8ff`)
                 .once('value', snapshot => {
-                    this.setInvoiceState(snapshot.val(), query_key, query_val)
+                    this.setInvoiceState(snapshot.val(), queryKey, queryVal)
                 })
         } else {
             this.props.firebase.queryMany('invoice')
@@ -157,12 +164,12 @@ class Search extends Component {
         }
     }
 
-    setInvoiceState = (invoiceObject, query_key, query_val) => {
+    setInvoiceState = (invoiceObject, queryKey, queryVal) => {
         if (invoiceObject) {
             this.setState({
                 invoices: invoiceObject,
-                query_key: query_key,
-                query_val: query_val,
+                queryKey: queryKey,
+                queryVal: queryVal,
                 loading: false,
             })
         } else {
@@ -192,11 +199,11 @@ class Search extends Component {
             })
     }
 
-    query = (limit) => {
+    query = () => {
         this.queryInvoices(
-            this.state.query_key,
-            this.state.query_val,
-            limit)
+            this.state.queryKey,
+            this.state.queryVal,
+            this.state.pageLimit)
         if (!this.state.layout.categories) {
             this.queryLayout()
         }
@@ -204,23 +211,23 @@ class Search extends Component {
 
     onSubmit(event) {
         event.preventDefault()
-        this.query(pageLimit)
+        this.query()
     }
 
     componentWillUnmount() {
+        // window.removeEventListener('scroll', this.handleScroll)
         this.props.firebase.queryMany('layout').off()
     }
 
     componentDidMount() {
-        this.queryInvoices(
-            this.state.query_key,
-            this.state.query_val)
+        // window.addEventListener('scroll', this.handleScroll)
+        this.query()
     }
 
     render() {
         const {
             invoices, category, customer,
-            payment, tableType, loading, query_key, query_val
+            payment, tableType, loading, queryKey, queryVal
         } = this.state
 
         //console.log(this.state.layout)
@@ -252,14 +259,14 @@ class Search extends Component {
                                                 onChange={(e) => {
                                                     onChangeEvent(this, e)
                                                     this.setState({
-                                                        query_key: "customer",
-                                                        query_val: e.target.value
+                                                        queryKey: "customer",
+                                                        queryVal: e.target.value
                                                     })
                                                 }} type="text" />
                                             <span> </span>
                                             <SearchIcon size={24}
                                                 style={{ color: "rgb(13, 55, 133)" }}
-                                                onClick={e => this.query(pageLimit)} />
+                                                onClick={e => this.query()} />
                                         </td>
                                         <td>
                                             {layout && layout.categories &&
@@ -313,20 +320,17 @@ class Search extends Component {
                                                             })}
                                                 </select>}
                                         </td>
+                                        <td>
+                                            <div style={{ color: "rgb(13, 55, 133)", }}
+                                                onClick={e => this.queryMore()}>
+                                                {this.state.pageLimit}
+                                                <MoreIcon size={24} />
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </form>
-                        <FirebaseIcon
-                            className="no-print"
-                            style={{
-                                position: "absolute",
-                                top: "0px",
-                                right: "50px",
-                                color: "rgb(13, 55, 133)",
-                            }}
-                            size={26}
-                            onClick={e => this.query(1000)} />
                         {invoices && Object.keys(invoices).length &&
                             <Format {...{
                                 invoices: invoices,
@@ -335,8 +339,8 @@ class Search extends Component {
                                 payment: payment,
                                 tableType: tableType,
                                 loading: loading,
-                                query_key: query_key,
-                                query_val: query_val
+                                queryKey: queryKey,
+                                queryVal: queryVal
                             }} />
                         }
                     </React.Fragment>
