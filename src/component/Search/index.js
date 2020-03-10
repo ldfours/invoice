@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 
 import {
     FiFileText as InvoiceIcon,
-    FiMoreVertical as MoreIcon
+    FiChevronUp as MoreIcon,
+    FiChevronDown as LessIcon,
 } from 'react-icons/fi'
 import {
     //MdToday as DailyIcon,
@@ -119,17 +120,16 @@ class Search extends Component {
             tableType: "invoice",
             queryKey: this.getLocationStateParam(props, "queryKey"),
             queryVal: this.getLocationStateParam(props, "queryVal"),
-            pageLimit: 15,
+            pageLimit: 10,
             loading: false,
         }
 
         this.onSubmit = this.onSubmit.bind(this)
     }
 
-    queryMore = () => {
-        const pageLimit = this.state.pageLimit + 10
-        this.setState({ pageLimit })
-        this.query()
+    queryUpdateLimit = (fun) => {
+        this.setState({ pageLimit: fun(this.state.pageLimit) },
+            () => { this.query() })
     }
 
     getLocationStateParam = (props, param) => {
@@ -321,10 +321,28 @@ class Search extends Component {
                                                 </select>}
                                         </td>
                                         <td>
-                                            <div style={{ color: "rgb(13, 55, 133)", }}
-                                                onClick={e => this.queryMore()}>
+                                            <div>
+                                                <MoreIcon
+                                                    style={{ color: "rgb(13, 55, 133)", }}
+                                                    onClick={e =>
+                                                        this.queryUpdateLimit(
+                                                            function (x) {
+                                                                return Math.ceil(x * 2)
+                                                            })}
+                                                    size={24} />
+                                            </div>
+                                            <div style={{ color: "#444444", }}>
                                                 {this.state.pageLimit}
-                                                <MoreIcon size={24} />
+                                            </div>
+                                            <div>
+                                                <LessIcon
+                                                    style={{ color: "rgb(13, 55, 133)", }}
+                                                    onClick={e =>
+                                                        this.queryUpdateLimit(
+                                                            function (x) {
+                                                                return Math.ceil(x / 2)
+                                                            })}
+                                                    size={24} />
                                             </div>
                                         </td>
                                     </tr>
