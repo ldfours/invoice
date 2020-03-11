@@ -241,6 +241,13 @@ class Search extends Component {
         this.query()
     }
 
+    handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            // console.log(this.state.customer)
+            this.query()
+        }
+    }
+
     componentWillUnmount() {
         this.props.firebase.queryMany('layout').off()
     }
@@ -283,10 +290,11 @@ class Search extends Component {
                                         <td>
                                             <input autoFocus
                                                 style={{
-                                                    border: "1px solid grey", width: "360px"
+                                                    border: "1px solid grey", width: "90%"
                                                 }}
                                                 name="customer"
                                                 value={customer}
+                                                onKeyPress={this.handleKeyPress}
                                                 onChange={(e) => {
                                                     onChangeEvent(this, e)
                                                     this.setState({
