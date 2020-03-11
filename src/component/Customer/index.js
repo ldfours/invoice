@@ -113,7 +113,7 @@ class Customer extends Component { //export default (props) => {
                                     name="dob"
                                     onChange={this.onChange}
                                     value={this.state.dob ? `${this.state.dob}` : ""} />
-                                <button type="submit" className="no-print">update</button>
+                                <button type="submit" className="no-print">submit</button>
                             </span>
                         </div>
                         <div style={{ padding: "8px" }}>{headDate && `Date: ${headDate}`}</div>

@@ -30,7 +30,7 @@ const Lines = ({ lines, layout }) => {
                             invoice: { ...invoice },
                             layout: layout,
                         }}>
-                            {price} <PaymentIcon />
+                            <PaymentIcon />{price}
                         </Link> :
                         <span>{price} < PaymentIcon /></span>}
                 </td>

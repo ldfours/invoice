@@ -16,7 +16,7 @@ const LogoutLink = (props) => {
         <span style={{color: "rgb(0,72,186)"}} className="no-print"
             onClick={logOut}>
             {/* {props.label} */}
-            <LogoutIcon size={24} />
+            <LogoutIcon size={17} />
         </span>
     )
 }

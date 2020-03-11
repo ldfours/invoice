@@ -18,7 +18,7 @@ const InvoiceTable = ({ invoice }) =>
         <tbody>
             <tr style={{ background: "#ffffff" }}>
                 {invoice.lineItems.map((line, i) =>
-                    (<td width={2} key={i}>
+                    (<td style={{border: "1px solid grey"}} width={2} key={i}>
                         <div>
                             <span style={{ whiteSpace: 'nowrap' }}>{line.date}</span>
                         </div>
@@ -39,14 +39,13 @@ export default ({ invoices, layout, queryKey, queryVal }) => {
                     {invoices.map(
                         invoice => {
                             const PaymentIcon = getPaymentIcon(invoice.payment)
-                            const sumPrice = <div>
-                                {
-                                    sumArr(invoice.lineItems
-                                        .map(item => parseInt(item.price)))
-                                }
-                                <span> </span>
-                                <PaymentIcon />
-                            </div>
+                            const sumPrice =
+                                <div>
+                                    <PaymentIcon />
+                                    {sumArr(invoice.lineItems
+                                        .map(item => parseInt(item.price)))}
+                                </div>
+
                             return (
                                 <tr key={invoice.id}>
                                     <td>

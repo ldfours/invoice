@@ -1,17 +1,23 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import Select from 'react-select'
 
+import { AiOutlineDollar as CashIcon, } from 'react-icons/ai'
 import {
-    FiFileText as InvoiceIcon,
+    FaFileInvoice //FaFileInvoiceDollar
+        as InvoiceIcon,
+    FaMoneyCheckAlt as ChequeIcon,
+    FaNotesMedical as MedicalIcon
+} from 'react-icons/fa'
+import {
+    FiDollarSign as DollarIcon,
     FiChevronUp as MoreIcon,
     FiChevronDown as LessIcon,
 } from 'react-icons/fi'
 import {
-    //MdToday as DailyIcon,
-    //MsPerson as CustomerIcon,
+    MdToday as DailyIcon,
+    MdPerson as CustomerIcon,
     MdAccessTime as ClockIcon,
-    MdAccountBalance as ChequeIcon,
-    MdAccountCircle as CashIcon,
     MdSearch as SearchIcon,
 } from 'react-icons/md'
 
@@ -36,6 +42,20 @@ export const getPaymentIcon = (payment) => {
     }
     return PaymentIcon
 }
+
+const tableTypeOptions = [
+    { value: 'invoice', label: <InvoiceIcon /> },
+    { value: 'customer', label: <CustomerIcon /> },
+    { value: 'daily', label: <DailyIcon /> },
+]
+
+const paymentOptions = [ //layout.segment.radio.map()
+    { value: '', label: <DollarIcon style={{ color: "blue" }} /> },
+    { value: 'Cash', label: <CashIcon /> },
+    { value: 'Cheque', label: <ChequeIcon /> },
+]
+
+const categoryInitOption = { value: "", label: <MedicalIcon style={{ color: "blue" }} /> }
 
 class Format extends Component {
 
@@ -116,8 +136,9 @@ class Search extends Component {
                 this.getLocationStateParam(props, "queryVal") : "",
             category: this.getLocationStateParam(props, "queryKey") === "category" ?
                 this.getLocationStateParam(props, "queryVal") : "",
-            payment: "",
-            tableType: "invoice",
+            paymentOption: paymentOptions[0],
+            tableTypeOption: tableTypeOptions[0],
+            categoryOption: categoryInitOption,
             queryKey: this.getLocationStateParam(props, "queryKey"),
             queryVal: this.getLocationStateParam(props, "queryVal"),
             pageLimit: 10,
@@ -199,6 +220,12 @@ class Search extends Component {
             })
     }
 
+    onOptionChange = (key, selectedOption) => {
+        this.setState({ [key]: selectedOption },
+            //() => console.log(`Option selected:`, this.state.tableType.value)
+        )
+    }
+
     query = () => {
         this.queryInvoices(
             this.state.queryKey,
@@ -215,20 +242,18 @@ class Search extends Component {
     }
 
     componentWillUnmount() {
-        // window.removeEventListener('scroll', this.handleScroll)
         this.props.firebase.queryMany('layout').off()
     }
 
     componentDidMount() {
-        // window.addEventListener('scroll', this.handleScroll)
         this.query()
     }
 
     render() {
-        const {
-            invoices, category, customer,
-            payment, tableType, loading, queryKey, queryVal
-        } = this.state
+        const { invoices, customer, loading, queryKey, queryVal } = this.state
+        const tableType = this.state.tableTypeOption.value
+        const payment = this.state.paymentOption.value
+        const category = this.state.categoryOption.value
 
         //console.log(this.state.layout)
         const layout = {
@@ -240,15 +265,21 @@ class Search extends Component {
             categories: this.state.categories || this.state.layout.categories,
         }
 
+        const categoryOptions = layout.categories &&
+            Object.keys(layout.categories)
+                .map(function (c) {
+                    return ({ value: c, label: c })
+                })
+
         return (
             <AuthUserContext.Consumer>
                 {authUser => (
                     authUser &&
                     <React.Fragment>
                         <form onSubmit={this.onSubmit}>
-                            <table>
+                            <table style={{ width: "100%" }} className="no-print">
                                 <tbody>
-                                    <tr className="no-print">
+                                    <tr>
                                         <td>
                                             <input autoFocus
                                                 style={{
@@ -265,65 +296,13 @@ class Search extends Component {
                                                 }} type="text" />
                                             <span> </span>
                                             <SearchIcon size={24}
-                                                style={{ color: "rgb(13, 55, 133)" }}
+                                                style={{ color: "blue" }}
                                                 onClick={e => this.query()} />
-                                        </td>
-                                        <td>
-                                            {layout && layout.categories &&
-                                                <select size="3" multiple={true}
-                                                    name="tableType"
-                                                    value={[this.state.tableType]}
-                                                    onChange={(e) => { onChangeEvent(this, e) }}>
-                                                    <option value="invoice" />
-                                                    <option value="customer">customer</option>
-                                                    <option value="daily">daily</option>
-                                                </select>}
-                                        </td>
-                                        <td>{layout && layout.categories &&
-                                            <Link to={{
-                                                pathname: INVOICE,
-                                                layout,
-                                                invoice: {}
-                                            }}><InvoiceIcon size={32} />
-                                            </Link>}
-                                        </td>
-                                        <td>
-                                            {layout.categories &&
-                                                <select
-                                                    name="category"
-                                                    value={category}
-                                                    onChange={(e) => {
-                                                        onChangeEvent(this, e)
-                                                    }}>
-                                                    <option />
-                                                    {Object.keys(layout.categories)
-                                                        .map(function (c) {
-                                                            return (
-                                                                <option key={c} value={c}>{c}</option>)
-                                                        })}
-                                                </select>}
-                                        </td>
-                                        <td>
-                                            {layout.segment.radio &&
-                                                <select multiple={true} size="3"
-                                                    name="payment"
-                                                    value={[payment]}
-                                                    onChange={(e) => { onChangeEvent(this, e) }}>
-                                                    <option></option>
-                                                    {layout.segment.radio
-                                                        .map(
-                                                            function (payment) {
-                                                                return (
-                                                                    <option key={payment}
-                                                                        value={payment}>{payment}
-                                                                    </option>)
-                                                            })}
-                                                </select>}
                                         </td>
                                         <td>
                                             <div>
                                                 <MoreIcon
-                                                    style={{ color: "rgb(13, 55, 133)", }}
+                                                    style={{ color: "blue", }}
                                                     onClick={e =>
                                                         this.queryUpdateLimit(
                                                             function (x) {
@@ -336,7 +315,7 @@ class Search extends Component {
                                             </div>
                                             <div>
                                                 <LessIcon
-                                                    style={{ color: "rgb(13, 55, 133)", }}
+                                                    style={{ color: "blue", }}
                                                     onClick={e =>
                                                         this.queryUpdateLimit(
                                                             function (x) {
@@ -344,6 +323,40 @@ class Search extends Component {
                                                             })}
                                                     size={24} />
                                             </div>
+                                        </td>
+                                        <td>{layout && layout.categories &&
+                                            <Link to={{
+                                                pathname: INVOICE,
+                                                layout,
+                                                invoice: {}
+                                            }}><InvoiceIcon size={32} />
+                                            </Link>}
+                                        </td>
+                                        <td style={{ width: "40px" }}>
+                                            {layout && layout.categories &&
+                                                <Select
+                                                    value={this.state.paymentOption}
+                                                    onChange={e =>
+                                                        this.onOptionChange("paymentOption", e)}
+                                                    options={paymentOptions} />}
+                                        </td>
+                                        <td style={{ width: "50px" }}>
+                                            {layout && layout.categories &&
+                                            <Select
+                                                value={this.state.categoryOption}
+                                                onChange={e =>
+                                                    this.onOptionChange("categoryOption", e)}
+                                                options={[categoryInitOption,
+                                                    ...categoryOptions]} />}
+                                        </td>
+                                        <td style={{ width: "40px" }}>
+                                            {layout &&
+                                                layout.categories &&
+                                                <Select menuIsOpen={true}
+                                                    value={this.state.tableTypeOption}
+                                                    onChange={e =>
+                                                        this.onOptionChange("tableTypeOption", e)}
+                                                    options={tableTypeOptions} />}
                                         </td>
                                     </tr>
                                 </tbody>
