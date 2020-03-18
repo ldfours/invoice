@@ -149,7 +149,9 @@ class Search extends Component {
     }
 
     queryUpdateLimit = (fun) => {
-        this.setState({ pageLimit: fun(this.state.pageLimit) },
+        this.setState({
+            pageLimit: Math.ceil(fun(this.state.pageLimit))
+        },
             () => { this.query() })
     }
 
@@ -313,9 +315,7 @@ class Search extends Component {
                                                     style={{ color: "blue", }}
                                                     onClick={e =>
                                                         this.queryUpdateLimit(
-                                                            function (x) {
-                                                                return Math.ceil(x * 2)
-                                                            })}
+                                                            x => x * 2)}
                                                     size={24} />
                                             </div>
                                             <div style={{ color: "#444444", }}>
@@ -326,9 +326,7 @@ class Search extends Component {
                                                     style={{ color: "blue", }}
                                                     onClick={e =>
                                                         this.queryUpdateLimit(
-                                                            function (x) {
-                                                                return Math.ceil(x / 2)
-                                                            })}
+                                                            x => x / 2)}
                                                     size={24} />
                                             </div>
                                         </td>
@@ -350,12 +348,12 @@ class Search extends Component {
                                         </td>
                                         <td style={{ width: "50px" }}>
                                             {layout && layout.categories &&
-                                            <Select
-                                                value={this.state.categoryOption}
-                                                onChange={e =>
-                                                    this.onOptionChange("categoryOption", e)}
-                                                options={[categoryInitOption,
-                                                    ...categoryOptions]} />}
+                                                <Select
+                                                    value={this.state.categoryOption}
+                                                    onChange={e =>
+                                                        this.onOptionChange("categoryOption", e)}
+                                                    options={[categoryInitOption,
+                                                        ...categoryOptions]} />}
                                         </td>
                                         <td style={{ width: "40px" }}>
                                             {layout &&
