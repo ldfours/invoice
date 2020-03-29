@@ -57,6 +57,23 @@ const paymentOptions = [ //layout.segment.radio.map()
 
 const categoryInitOption = { value: "", label: <MedicalIcon style={{ color: "blue" }} /> }
 
+const UpdateLimit = ({ queryFun, pageLimit }) =>
+    <td>
+        <div>
+            <MoreIcon
+                style={{ color: "blue", }}
+                onClick={e => queryFun(x => x * 2)}
+                size={24} />
+        </div>
+        <div style={{ color: "#444444", }}>{pageLimit}</div>
+        <div>
+            <LessIcon
+                style={{ color: "blue", }}
+                onClick={e => queryFun(x => x / 2)}
+                size={24} />
+        </div>
+    </td>
+
 class Format extends Component {
 
     filterInvoices = (invoices, category, payment) =>
@@ -309,27 +326,9 @@ class Search extends Component {
                                                 style={{ color: "blue" }}
                                                 onClick={e => this.query()} />
                                         </td>
-                                        <td>
-                                            <div>
-                                                <MoreIcon
-                                                    style={{ color: "blue", }}
-                                                    onClick={e =>
-                                                        this.queryUpdateLimit(
-                                                            x => x * 2)}
-                                                    size={24} />
-                                            </div>
-                                            <div style={{ color: "#444444", }}>
-                                                {this.state.pageLimit}
-                                            </div>
-                                            <div>
-                                                <LessIcon
-                                                    style={{ color: "blue", }}
-                                                    onClick={e =>
-                                                        this.queryUpdateLimit(
-                                                            x => x / 2)}
-                                                    size={24} />
-                                            </div>
-                                        </td>
+                                        <UpdateLimit
+                                            queryFun={this.queryUpdateLimit}
+                                            pageLimit={this.state.pageLimit} />
                                         <td>{layout && layout.categories &&
                                             <Link to={{
                                                 pathname: INVOICE,

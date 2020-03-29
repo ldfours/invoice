@@ -82,7 +82,6 @@ class Customer extends Component { //export default (props) => {
                 visits[key].date,
                 visits[key].note,
             ])
-        const headDate = visitsArray && visitsArray[0][0]
 
         const provider = layoutCategory &&
             arraySpan(layoutCategory.note.slice(1, 3),
@@ -116,7 +115,6 @@ class Customer extends Component { //export default (props) => {
                                 <button type="submit" className="no-print">submit</button>
                             </span>
                         </div>
-                        <div style={{ padding: "8px" }}>{headDate && `Date: ${headDate}`}</div>
                         {visits &&
                             <table style={{ width: "100%" }}>
                                 <tbody>
