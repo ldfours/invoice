@@ -11,10 +11,11 @@
         "firebase-tools": "latest",
         "env-cmd": "latest",
         "node-sass": "latest",
-        "react-calendar": "latest",
+        "react-calendar": "^2.19",
         "react-icons": "latest",
         "react-markdown": "latest",
-        "react-select": "latest"
+        "react-select": "latest",
+        "react-sliding-pane": "latest"
     },
     "scripts": {
         "start": "env-cmd react-scripts start",

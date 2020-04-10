@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Calendar from 'react-calendar'
+import Modal from 'react-modal'
+import SlidingPane from 'react-sliding-pane'
 
-//import { IoMdCopy as CopyIcon } from "react-icons/io"
+import { IoMdArrowDropupCircle as UpIcon } from "react-icons/io"
 import { GoTrashcan as TrashIcon } from 'react-icons/go'
 import { MdCancel as DeleteIcon } from 'react-icons/md'
 import { FiChevronLeft as BackwardIcon } from "react-icons/fi"
+import { FaEllipsisH as EllipsesIcon } from "react-icons/fa"
 
 import { SEARCH } from '../../constant/route'
 import {
@@ -24,7 +27,7 @@ const totalRows = 11
 
 const NoteLine = (props) => {
     return (
-        <div className={styles.lineItem}>
+        <div>
             <div>
                 {!props.readOnly &&
                     <input name="date" type="text" value={props.date}
@@ -33,8 +36,8 @@ const NoteLine = (props) => {
             </div>
             <div>
                 {!props.readOnly &&
-                    <textarea rows="1"
-                        style={{ border: "1px solid grey", width: "510px" }}
+                    <textarea rows="7"
+                        style={{ border: "1px solid grey", width: "100%" }}
                         name="note" type="text" value={props.note}
                         onChange={props.changeLine(props.index)}
                     />}
@@ -125,6 +128,7 @@ export default class extends Component {
         saved: false,
         isAssessment: false,
         dateIndex: -1,
+        isPaneOpen: false,
     }
 
     saveInvoice = () => {
@@ -212,6 +216,7 @@ export default class extends Component {
             })
         }
         setStatePriceForm()
+        Modal.setAppElement(this.el)
     }
 
     componentWillUnmount() {
@@ -391,7 +396,8 @@ export default class extends Component {
             this.state.lineItems[0].description === "Speech-Language Assessment"
 
         return (
-            <div className={styles.invoice}>
+            <div className={styles.invoice}
+                ref={ref => this.el = ref}>
                 <div className={styles.headers}>
                     {head &&
                         <input type="text" name="mainHeader"
@@ -589,41 +595,55 @@ export default class extends Component {
                                         </div>
                                     </React.Fragment>
                                 )}
-                            <span className="no-print"
-                                style={{
-                                    position: "absolute",
-                                    left: "540px",
-                                }}>
-                                <input type="text"
-                                    style={{ width: "14em" }}
-                                    name="tag" value={this.state.tag}
-                                    onChange={(e) => { onChangeEvent(this, e) }} />
-                                <textarea rows="2"
-                                    style={{
-                                        width: "12em",
-                                        border: "1px solid grey",
-                                    }}
-                                    name="notes" value={this.state.notes}
-                                    onChange={(e) => { onChangeEvent(this, e) }} />
-                            </span>
                         </div>}
-                    <div className="no-print">
-                        {this.state.lineItems.map((item, i) => (
-                            <NoteLine key={i} index={i}
-                                {...item}
-                                category={this.state.category}
-                                categories={this.state.layout &&
-                                    Object.keys(this.state.layout.categories)}
-                                last={this.state.lineItems.length}
-                                addHandler={this.onAddLine}
-                                changeLine={this.onChangeLine}
-                                changeInvoice={(e) => { onChangeEvent(this, e) }}
-                                deleteHandler={this.onDeleteLine}
-                                deleteDuplicateHandler={this.onDeleteDuplicateLine} />
-                        ))}
+                    <div className="no-print"
+                        style={{ display: "flex" }}>
+                        {!this.state.isPaneOpen &&
+                            <EllipsesIcon className='no-print'
+                                size={32}
+                                style={{ color: "rgb(13, 55, 133)", marginRight: "1em" }}
+                                onClick={() => this.setState({ isPaneOpen: true })} />}
+                        <input type="text"
+                            style={{ width: "1fr" }}
+                            name="tag" value={this.state.tag}
+                            onChange={(e) => { onChangeEvent(this, e) }} />
+                        <input type="text"
+                            style={{
+                                width: "3fr",
+                                border: "1px solid grey",
+                            }}
+                            name="notes" value={this.state.notes}
+                            onChange={(e) => { onChangeEvent(this, e) }} />
                     </div>
+
+                    {this.state.isPaneOpen &&
+                        <SlidingPane
+                            closeIcon={<UpIcon className='no-print'
+                                size={24}
+                                style={{
+                                    color: "rgb(13, 55, 133)",
+                                    pageBreakBefore: "always"
+                                }} />}
+                            isOpen={this.state.isPaneOpen}
+                            onRequestClose={() => {
+                                this.setState({ isPaneOpen: false });
+                            }}>
+                            {this.state.lineItems.map((item, i) => (
+                                <NoteLine key={i} index={i}
+                                    {...item}
+                                    category={this.state.category}
+                                    categories={this.state.layout &&
+                                        Object.keys(this.state.layout.categories)}
+                                    last={this.state.lineItems.length}
+                                    addHandler={this.onAddLine}
+                                    changeLine={this.onChangeLine}
+                                    changeInvoice={(e) => { onChangeEvent(this, e) }}
+                                    deleteHandler={this.onDeleteLine}
+                                    deleteDuplicateHandler={this.onDeleteDuplicateLine} />
+                            ))}
+                        </SlidingPane>}
                 </form>
-            </div>
+            </div >
         )
     }
 }
