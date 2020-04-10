@@ -34,8 +34,13 @@ li {
   }
 }
 
-// https://code-boxx.com/simple-responsive-pure-css-hamburger-menu/
-/* hide calendar on the narrow screen */
+/* page-break-after works, as well */
+@media print {
+  .pagebreak { page-break-before: always; }
+}
+
+/* https://code-boxx.com/simple-responsive-pure-css-hamburger-menu/
+  hide calendar on the narrow screen */
 @media only screen and (max-width: 1196px) {
   .calendar {
     display: none;

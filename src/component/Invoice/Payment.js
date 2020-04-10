@@ -618,12 +618,9 @@ export default class extends Component {
 
                     {this.state.isPaneOpen &&
                         <SlidingPane
-                            closeIcon={<UpIcon className='no-print'
+                            closeIcon={<UpIcon className="no-print pagebreak"
                                 size={24}
-                                style={{
-                                    color: "rgb(13, 55, 133)",
-                                    pageBreakBefore: "always"
-                                }} />}
+                                style={{ color: "rgb(13, 55, 133)", }} />}
                             isOpen={this.state.isPaneOpen}
                             onRequestClose={() => {
                                 this.setState({ isPaneOpen: false });
