@@ -17,25 +17,6 @@ export default (
         <nav>
           <ul>
             <li>Speech-Language Pathologist</li>
-            <li>
-              <form className={styles.form} onSubmit={onSubmit}>
-                <div>
-                  <input style={{ width: 170 }}
-                    name="email"
-                    value={email}
-                    onChange={onChange}
-                    autoComplete="username" />
-                  <span> </span>
-                  <input style={{ width: 60 }}
-                    name="password"
-                    value={password}
-                    onChange={onChange}
-                    type='password'
-                    autoComplete="current-password" />
-                  {isValid && <LoginIcon size={20} onClick={onSubmit} />}
-                </div>
-              </form>
-            </li>
           </ul>
         </nav>
       </header>
@@ -75,6 +56,23 @@ export default (
                   </div>
                 </div>
               </div>
+            </div>
+            <div>
+              <form className={styles.form} onSubmit={onSubmit}>
+                  <input style={{ width: 170 }}
+                    name="email"
+                    value={email}
+                    onChange={onChange}
+                    autoComplete="username" />
+                  <span> </span>
+                  <input style={{ width: 60 }}
+                    name="password"
+                    value={password}
+                    onChange={onChange}
+                    type='password'
+                    autoComplete="current-password" />
+                  {isValid && <LoginIcon size={20} onClick={onSubmit} />}
+              </form>
             </div>
           </article>
         </main>
