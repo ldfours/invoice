@@ -329,7 +329,7 @@ export default class extends Component {
 
     onCopy = (event) => {
         event.preventDefault()
-        this.setState({ id: '' })
+        this.setState({ id: '', saved: false })
     }
 
     onRemove = (event) => {

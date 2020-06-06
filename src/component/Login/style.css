@@ -75,6 +75,11 @@ body > section {
     color: #333;
 }
 
+.login {
+    width: 60;
+    border: 2px solid #dadada;
+}
+
 @media screen and (max-width: 1000px) {
 	body > section {
 		padding: 30px 20px;

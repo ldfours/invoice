@@ -59,19 +59,19 @@ export default (
             </div>
             <div>
               <form className={styles.form} onSubmit={onSubmit}>
-                  <input style={{ width: 170 }}
-                    name="email"
-                    value={email}
-                    onChange={onChange}
-                    autoComplete="username" />
-                  <span> </span>
-                  <input style={{ width: 60 }}
-                    name="password"
-                    value={password}
-                    onChange={onChange}
-                    type='password'
-                    autoComplete="current-password" />
-                  {isValid && <LoginIcon size={20} onClick={onSubmit} />}
+                <input className="login"
+                  name="email"
+                  value={email}
+                  onChange={onChange}
+                  autoComplete="username" />
+                <span> </span>
+                <input className="login"
+                  name="password"
+                  value={password}
+                  onChange={onChange}
+                  type='password'
+                  autoComplete="current-password" />
+                {isValid && <LoginIcon size={20} onClick={onSubmit} />}
               </form>
             </div>
           </article>
