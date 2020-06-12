@@ -21,8 +21,6 @@
   margin-right: $sideMargin;
   margin-bottom: $rhythm / 2;
 
-  grid-template-columns: // auto-fill or auto-fit to prevent grid wrapping
-          repeat(auto-fit, 1fr);
   grid-column-gap: 2px;
   .key {
     margin-top: $rhythm / 4;
