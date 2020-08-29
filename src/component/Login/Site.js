@@ -32,7 +32,9 @@ export default (
             </h3>
             <div style={{ padding: "0px" }}
               className="flex-container">
-              <img height={320} alt="elena business card" src="/images/elena-card.jpg" />
+              <img height={320} alt="elena business card"
+                  src="/images/elena-card.svg"
+                  onError="this.src='/images/elena-fours.png'" />
               <div style={{ marginLeft: "15px" }}>
                 <div>
                   У Елены большой опыт работы с детьми всех возрастов и взрослыми.
@@ -41,7 +43,7 @@ export default (
                   Если вы чувствуете, что вашему ребенку необходима
                   логопедическая помощь, позвоните или пошлите электронное
                   сообщение, чтобы обсудить вашу проблему или назначить встречу:
-                <div className="contact"> (416) 498-5006,
+                <div className="contact"> (416) 887-3478,
                   <span> </span>
                     <a href="mailto:ldfours@gmail.com">Ldfours@gmail.com</a>
                   </div>

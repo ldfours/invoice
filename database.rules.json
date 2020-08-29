@@ -1,9 +1,9 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null",
     "user": {
       "$uid": {
+        ".read": "auth != null && $uid === auth.uid",
+        ".write": "auth != null && $uid === auth.uid",
         "invoice": {
           ".indexOn": [
             "customer", "category"

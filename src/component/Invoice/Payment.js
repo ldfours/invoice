@@ -102,7 +102,7 @@ const PaymentLine = (props) => {
                     />}
             </div>
             <div>
-                {!props.readOnly &&
+                {!props.readOnly && props.last > 1 &&
                     <DeleteIcon className={`no-print ${styles.deleteItem}`}
                         onClick={props.deleteHandler(props.index)} />}
             </div>
@@ -125,7 +125,7 @@ export default class extends Component {
         // an invoice selected in the Table
         ...this.props.location.invoice,
         layout: this.props.location.layout,
-        saved: false,
+        saved: true,
         isAssessment: false,
         dateIndex: -1,
         isPaneOpen: false,
@@ -231,7 +231,7 @@ export default class extends Component {
         item.description = category && this.state.layout.categories &&
             this.state.layout.categories[category].description
         const items = [item, ...this.state.lineItems.slice(1)]
-        this.setState({ lineItems: items })
+        this.setState({ lineItems: items, saved: false })
         onChangeEvent(this, event)
     }
 
@@ -254,7 +254,7 @@ export default class extends Component {
             // merge changed element with the current line
             return { ...item, [event.target.name]: event.target.value }
         })
-        this.setState({ lineItems })
+        this.setState({ lineItems, saved: false })
     }
 
     onFocusDate = (elementIndex) => (event) => {
@@ -269,7 +269,7 @@ export default class extends Component {
                 // merge changed element with the current line
                 return { ...item, date: formatDate(date) }
             })
-            this.setState({ lineItems })
+            this.setState({ lineItems, saved: false })
         }
         this.setState({ date })
     }
@@ -290,7 +290,8 @@ export default class extends Component {
         this.setState({
             lineItems: this.state.lineItems.concat([{
                 ...items
-            }])
+            }]),
+            saved: false
         })
     }
 
@@ -298,7 +299,8 @@ export default class extends Component {
         this.setState({
             lineItems: this.state.lineItems.filter((_item, i) => {
                 return elementIndex !== i
-            })
+            }),
+            saved: false
         })
     }
     onDeleteDuplicateLine = (elementIndex) => (event) => {
@@ -354,7 +356,7 @@ export default class extends Component {
             item.description = "Speech Therapy"
         }
         const items = [item, ...this.state.lineItems.slice(1)]
-        this.setState({ lineItems: items })
+        this.setState({ lineItems: items, saved: false })
     }
 
     render() {
@@ -403,7 +405,10 @@ export default class extends Component {
                         <input type="text" name="mainHeader"
                             className={styles.major}
                             value={this.state.mainHeader || head[0]}
-                            onChange={(e) => { onChangeEvent(this, e) }} />}
+                            onChange={(e) => {
+                                this.setState({ saved: false })
+                                onChangeEvent(this, e)
+                            }} />}
                     {head &&
                         head.slice(1).map((r, i) =>
                             /*
@@ -481,7 +486,10 @@ export default class extends Component {
                         <input name="customer" value={this.state.customer}
                             className={`${styles.value} ${styles.name}`}
                             style={{ width: "21em" }}
-                            onChange={(e) => { onChangeEvent(this, e) }} />
+                            onChange={(e) => {
+                                this.setState({ saved: false })
+                                onChangeEvent(this, e)
+                            }} />
                     </div>
                     <div className={styles.value} />
                 </div>
@@ -550,7 +558,10 @@ export default class extends Component {
                             </div>}
                         <input type="text" name="extraNote"
                             value={this.state.extraNote}
-                            onChange={(e) => { onChangeEvent(this, e) }} />
+                            onChange={(e) => {
+                                this.setState({ saved: false })
+                                onChangeEvent(this, e)
+                            }} />
                     </div>
 
                     {/* payment */}
@@ -574,7 +585,10 @@ export default class extends Component {
                             <div className={styles.title}
                                 onClick={
                                     //this.resetPayment
-                                    (e) => { resetPayment(this, e) }
+                                    (e) => {
+                                        this.setState({ saved: false })
+                                        resetPayment(this, e)
+                                    }
                                 }>
                                 {this.state.layout && this.state.layout.segment.title &&
                                     `${this.state.layout.segment.title}:`}
@@ -588,7 +602,10 @@ export default class extends Component {
                                                 name="payment"
                                                 value={r}
                                                 checked={this.state.payment === r}
-                                                onChange={(e) => { onChangeEvent(this, e) }} />
+                                                onChange={(e) => {
+                                                    this.setState({ saved: false })
+                                                    onChangeEvent(this, e)
+                                                }} />
                                         </div>
                                         <div className={styles.label}>
                                             {r === "Cheque" ? "Cheque/email transfer" : r}
@@ -606,14 +623,20 @@ export default class extends Component {
                         <input type="text"
                             style={{ width: "1fr" }}
                             name="tag" value={this.state.tag}
-                            onChange={(e) => { onChangeEvent(this, e) }} />
+                            onChange={(e) => {
+                                this.setState({ saved: false })
+                                onChangeEvent(this, e)
+                            }} />
                         <input type="text"
                             style={{
                                 width: "3fr",
                                 border: "1px solid grey",
                             }}
                             name="notes" value={this.state.notes}
-                            onChange={(e) => { onChangeEvent(this, e) }} />
+                            onChange={(e) => {
+                                this.setState({ saved: false })
+                                onChangeEvent(this, e)
+                            }} />
                     </div>
 
                     {this.state.isPaneOpen &&

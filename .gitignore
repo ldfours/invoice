@@ -1,9 +1,9 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 # dependencies
-node_modules
+node_modules/
 
 # production
-build
+build/
 
 # private
 .env
@@ -15,3 +15,6 @@ project-*-export.json
 
 # images
 public/images/*.signature.png
+
+# editor
+.idea/
