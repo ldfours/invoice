@@ -147,7 +147,7 @@ export default class extends Component {
             tag: this.state.tag,
             notes: this.state.notes,
             extraNote: this.state.extraNote,
-            mainHeader: this.state.mainHeader,
+            head: this.state.head,
         }
 
         const firebaseSave = (id, invoice) => {
@@ -402,24 +402,25 @@ export default class extends Component {
                 ref={ref => this.el = ref}>
                 <div className={styles.headers}>
                     {head &&
-                        <input type="text" name="mainHeader"
-                            className={styles.major}
-                            value={this.state.mainHeader || head[0]}
-                            onChange={(e) => {
-                                this.setState({ saved: false })
-                                onChangeEvent(this, e)
-                            }} />}
-                    {head &&
-                        head.slice(1).map((r, i) =>
+                        head.map((r, i) =>
                             /*
                             * Conditional tag attribute
                             *   <Button {...(condition ? { bsStyle: 'success' } : {})} />
                             * */
-                            <div {...
-                                (i === 1 ? { className: styles.label } :
-                                    {})}
-                                key={r}>{r}
-                            </div>)}
+                            <input type="text" name={`head${i}`}
+                                {...
+                                (i === 0 ? { className: styles.major } :
+                                    (i === 2 ? { className: styles.label } :
+                                        {}))}
+                                value={this.state.head[i] || head[i]}
+                                onChange={(e, i) => {
+                                    this.setState({ saved: false })
+                                    let h = this.state.head.slice(); // clone the state
+                                    let n = parseInt(e.target.name.charAt(e.target.name.length - 1))
+                                    h[n] = e.target.value
+                                    this.setState({ head: h })
+                                }} key={r} />
+                        )}
                 </div>
                 <BackwardIcon className={`no-print`}
                     style={{ color: "rgb(13, 55, 133)" }}

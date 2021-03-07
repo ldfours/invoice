@@ -39,10 +39,12 @@
   flex-flow: column nowrap;
   align-items: center;
   padding: $rhythm / 6;
+  & > input {
+    text-align: center;
+  }
   .major {
     font-size: $fontSizeMajorHeading;
     font-weight: bold;
-    text-align: center;
   }
   .label {
     font-style: oblique;

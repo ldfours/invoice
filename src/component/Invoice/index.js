@@ -17,7 +17,7 @@ export const invoiceInitState = {
     tag: '',
     notes: '',
     extraNote: '',
-    mainHeader: '',
+    head: ['', '', '', ''],
     lineItems: [lineItemInitState],
 }
 
